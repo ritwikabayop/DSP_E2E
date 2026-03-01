@@ -1,0 +1,225 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f6f8fa;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ── Ribbon ── */
+.ribbon {
+  background: linear-gradient(135deg, #217346 0%, #185C37 60%, #0d3320 100%);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16;
+  box-shadow: 0 3px 12px rgba(0,0,0,.2);
+  position: relative;
+  z-index: 10;
+}
+
+.ribbon-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Mode toggle in ribbon ── */
+.mode-toggle .ant-segmented {
+  background: rgba(255,255,255,.18) !important;
+  border-radius: 8px;
+}
+.mode-toggle .ant-segmented-item-label {
+  color: rgba(255,255,255,.85) !important;
+  font-size: 12px;
+}
+.mode-toggle .ant-segmented-item-selected {
+  background: rgba(255,255,255,.92) !important;
+}
+.mode-toggle .ant-segmented-item-selected .ant-segmented-item-label {
+  color: #185C37 !important;
+  font-weight: 600;
+}
+
+/* ── Formula bar ── */
+.formula-bar {
+  background: #fff;
+  border-bottom: 2px solid #e1e4e8;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+
+.fx-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  min-width: 26px;
+  text-align: center;
+  font-style: italic;
+  user-select: none;
+}
+
+/* ── Glass cards ── */
+.glass-card {
+  border-radius: 10px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04) !important;
+  transition: box-shadow .2s, transform .15s;
+}
+.glass-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.1), 0 0 0 1px rgba(0,0,0,.06) !important;
+}
+
+/* ── Stat cards ── */
+.stat-card {
+  border-radius: 12px !important;
+  transition: transform .2s, box-shadow .2s;
+  cursor: default;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.1) !important;
+}
+
+/* ── Editable cells ── */
+.editable-cell {
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-height: 22px;
+  transition: background .15s;
+  border: 1px solid transparent;
+}
+.editable-cell:hover {
+  background: #e6f7ff;
+  border-color: #91caff;
+}
+
+.cell-placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+
+.editable-input {
+  border-color: #217346 !important;
+  box-shadow: 0 0 0 2px rgba(33,115,70,.15) !important;
+}
+
+/* ── Error row highlight ── */
+.row-error {
+  background: #fff1f0 !important;
+}
+.row-error td {
+  color: #cf1322 !important;
+  font-style: italic;
+}
+
+/* ── Environment row ── */
+.env-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background .15s;
+}
+.env-row:hover {
+  background: #fafafa;
+}
+.env-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #1890ff;
+  font-weight: 500;
+}
+.env-link:hover {
+  color: #096dd9;
+}
+
+/* ── Bottom sheet tabs – Excel style ── */
+.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-tab {
+  border-radius: 0 0 6px 6px !important;
+  padding: 4px 16px !important;
+  font-weight: 500;
+  transition: all .2s;
+}
+.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-tab-active {
+  background: #fff !important;
+  border-top-color: #fff !important;
+  font-weight: 700;
+}
+
+/* ── Table polish ── */
+.ant-table-small .ant-table-tbody > tr > td {
+  padding: 5px 10px !important;
+}
+.ant-table-small .ant-table-thead > tr > th {
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+/* ── Month selector in ribbon ── */
+.month-selector .ant-select-selector {
+  background: rgba(255,255,255,.18) !important;
+  border: 1px solid rgba(255,255,255,.25) !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+}
+.month-selector .ant-select-selection-item {
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 12px;
+}
+.month-selector .ant-select-arrow {
+  color: rgba(255,255,255,.7) !important;
+}
+
+/* ── User name input in ribbon ── */
+.user-input .ant-input-affix-wrapper {
+  background: rgba(255,255,255,.18) !important;
+  border: 1px solid rgba(255,255,255,.25) !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+}
+.user-input .ant-input {
+  color: #fff !important;
+  font-size: 12px;
+}
+.user-input .ant-input::placeholder {
+  color: rgba(255,255,255,.5) !important;
+}
+
+/* ── Status select (borderless, always clickable) ── */
+.status-select .ant-select-selector {
+  padding: 0 4px !important;
+  cursor: pointer !important;
+}
+.status-select:hover .ant-select-selector {
+  background: rgba(0,0,0,.04) !important;
+  border-radius: 4px;
+}
+
+/* ── Smooth scrollbar ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #aaa; }
+::-webkit-scrollbar-track { background: transparent; }
+
