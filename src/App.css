@@ -1,42 +1,152 @@
+/* App.css — global overrides & Ant Design token patches */
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+/* ── Ant Design overrides ── */
+
+/* Card header tighter padding */
+.ant-card-head {
+  min-height: 40px !important;
+  padding: 0 16px !important;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.ant-card-head-title {
+  padding: 8px 0 !important;
+  font-size: 13px !important;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.ant-card-body {
+  padding: 12px !important;
+}
+.ant-card-small > .ant-card-body {
+  padding: 10px !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Badge count tweaks */
+.ant-badge-count {
+  font-size: 10px !important;
+  line-height: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  padding: 0 4px !important;
+  border-radius: 8px !important;
+}
+
+/* Alert tweaks */
+.ant-alert {
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}
+
+/* Statistic value size */
+.ant-statistic-content-value {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+.ant-statistic-title {
+  font-size: 11px !important;
+}
+
+/* Tag line-height fix */
+.ant-tag {
+  line-height: 20px !important;
+  border-radius: 4px !important;
+}
+
+/* Select inside table cells */
+.ant-select-single.ant-select-sm .ant-select-selector {
+  padding: 0 6px !important;
+}
+
+/* Progress bar inside stat cards */
+.ant-progress-circle .ant-progress-text {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+
+/* Popconfirm */
+.ant-popconfirm-title {
+  font-weight: 600 !important;
+}
+
+/* Float button position */
+.ant-float-btn-body {
+  background: #217346 !important;
+}
+.ant-float-btn-body:hover {
+  background: #185C37 !important;
+}
+
+/* Segmented control */
+.ant-segmented {
+  font-size: 12px !important;
+}
+
+/* Table filter dropdowns */
+.ant-table-filter-trigger {
+  color: #8c8c8c;
+}
+.ant-table-filter-trigger.active {
+  color: #217346 !important;
+}
+
+/* ── Ribbon role selector ── */
+.ribbon .ant-select-selector {
+  background: rgba(255,255,255,.18) !important;
+  border: 1px solid rgba(255,255,255,.25) !important;
+  border-radius: 6px !important;
+}
+.ribbon .ant-select-arrow {
+  color: rgba(255,255,255,.7) !important;
+}
+
+/* ── Save All button pulse when dirty ── */
+@keyframes pulse-warning {
+  0%   { box-shadow: 0 0 0 0 rgba(250,173,20, 0.55); }
+  70%  { box-shadow: 0 0 0 6px rgba(250,173,20, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(250,173,20, 0); }
+}
+.save-all-btn {
+  animation: pulse-warning 1.8s infinite;
+}
+
+/* ── Home page section labels ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* ── Report table ── */
+.report-table .ant-table-thead > tr > th {
+  background: #fafafa !important;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Unsaved change row highlight ── */
+.row-modified {
+  background: #fffbe6 !important;
+}
+.row-modified td::after {
+  content: '●';
+  color: #faad14;
+  font-size: 8px;
+  margin-left: 4px;
+  vertical-align: super;
+}
+
+/* ── Responsive: hide less important ribbon items on small screens ── */
+@media (max-width: 900px) {
+  .ribbon-secondary {
+    display: none;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
