@@ -4,10 +4,10 @@ import { Crown, UserCheck, User, Eye } from 'lucide-react';
    ROLES
    ══════════════════════════════════════════════════════ */
 export const ROLES = {
-  admin:  { label: 'Admin',     color: '#cf1322', bg: '#fff1f0', border: '#ffa39e', icon: Crown,     canEdit: true,  canDelete: true,  canAddRow: true,  onlyOwnRows: false },
-  tl:     { label: 'Team Lead', color: '#1d39c4', bg: '#f0f5ff', border: '#adc6ff', icon: UserCheck, canEdit: true,  canDelete: false, canAddRow: true,  onlyOwnRows: false },
-  tester: { label: 'Tester',    color: '#0958d9', bg: '#e6f4ff', border: '#91caff', icon: User,      canEdit: true,  canDelete: false, canAddRow: false, onlyOwnRows: true  },
-  viewer: { label: 'Viewer',    color: '#8c8c8c', bg: '#fafafa', border: '#d9d9d9', icon: Eye,       canEdit: false, canDelete: false, canAddRow: false, onlyOwnRows: false },
+  admin:  { label: 'Operation User', color: '#cf1322', bg: '#fff1f0', border: '#ffa39e', icon: Crown,     canEdit: true,  canDelete: true,  canAddRow: true,  onlyOwnRows: false },
+  tl:     { label: 'Super User',     color: '#1d39c4', bg: '#f0f5ff', border: '#adc6ff', icon: UserCheck, canEdit: true,  canDelete: false, canAddRow: true,  onlyOwnRows: false },
+  tester: { label: 'Support SA',     color: '#0958d9', bg: '#e6f4ff', border: '#91caff', icon: User,      canEdit: true,  canDelete: false, canAddRow: false, onlyOwnRows: true  },
+  viewer: { label: 'Viewer',         color: '#8c8c8c', bg: '#fafafa', border: '#d9d9d9', icon: Eye,       canEdit: false, canDelete: false, canAddRow: false, onlyOwnRows: false },
 };
 
 /* ══════════════════════════════════════════════════════

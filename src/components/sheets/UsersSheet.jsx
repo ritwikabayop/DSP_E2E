@@ -6,17 +6,17 @@ import { listUserProfiles, updateUserRole } from '../../services/api.js';
 const { Text } = Typography;
 
 const ROLE_OPTIONS = [
-  { value: 'admin',  label: 'Admin' },
-  { value: 'tl',     label: 'Team Lead' },
-  { value: 'tester', label: 'Tester' },
+  { value: 'admin',  label: 'Operation User' },
+  { value: 'tl',     label: 'Super User' },
+  { value: 'tester', label: 'Support SA' },
   { value: 'viewer', label: 'Viewer' },
 ];
 
 const roleTag = (r) => {
   const map = {
-    admin:  { color: 'red',    icon: Crown,     label: 'Admin' },
-    tl:     { color: 'blue',   icon: UserCheck, label: 'Team Lead' },
-    tester: { color: 'cyan',   icon: User,      label: 'Tester' },
+    admin:  { color: 'red',    icon: Crown,     label: 'Operation User' },
+    tl:     { color: 'blue',   icon: UserCheck, label: 'Super User' },
+    tester: { color: 'cyan',   icon: User,      label: 'Support SA' },
     viewer: { color: 'default',icon: Eye,       label: 'Viewer' },
   };
   const cfg = map[r] ?? map.viewer;

@@ -204,7 +204,7 @@ function App() {
     },
     { key: 'report', icon: React.createElement(FileText,  { size: 15 }), label: 'Report' },
   ].concat(canSeeLogs ? [{ key: 'logs', icon: React.createElement(Activity, { size: 15 }), label: 'Logs' }] : [])
-   .concat(role === 'admin' ? [{ key: 'users', icon: React.createElement(UserCog, { size: 15 }), label: 'Users' }] : []);
+   .concat(role === 'admin' || role === 'tl' ? [{ key: 'users', icon: React.createElement(UserCog, { size: 15 }), label: 'Users' }] : []);
 
   const renderSheet = () => {
     switch (activeTab) {
@@ -252,7 +252,7 @@ function App() {
       case 'logs':
         return React.createElement(ActivityLogSheet, { currentUser: currentUser, role: role });
       case 'users':
-        if (role !== 'admin') return null;
+        if (role !== 'admin' && role !== 'tl') return null;
         return React.createElement(UsersSheet, { currentUserId: user.id, role });
       default:
         return null;
