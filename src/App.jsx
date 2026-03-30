@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import {
   Home, Monitor, Shield, Users, FileText, Activity,
-  FileSpreadsheet, LayoutDashboard, Calendar, Search, Copy, Save, Download,
+  LayoutDashboard, Calendar, Search, Copy, Save, Download,
   PenTool, Eye, AlertTriangle, LogOut, UserCog,
 } from 'lucide-react';
 

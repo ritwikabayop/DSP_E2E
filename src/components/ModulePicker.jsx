@@ -105,7 +105,7 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 0 14px rgba(34,197,94,0.25)',
         }}>
-          <FileSpreadsheet size={17} color="#fff" />
+          <LayoutDashboard size={17} color="#fff" />
         </div>
         <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>MyISP</span>
 
