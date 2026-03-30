@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import {
   Home, Monitor, Shield, Users, FileText, Activity,
-  FileSpreadsheet, Calendar, Search, Copy, Save, Download,
+  FileSpreadsheet, LayoutDashboard, Calendar, Search, Copy, Save, Download,
   PenTool, Eye, AlertTriangle, LogOut, UserCog,
 } from 'lucide-react';
 
@@ -288,12 +288,12 @@ function App() {
                   cursor: 'pointer',
                 }}
               >
-                <FileSpreadsheet size={18} color="#fff" />
+                <LayoutDashboard size={18} color="#fff" />
               </div>
             </Tooltip>
             {!collapsed && (
               <div style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => setActiveModule(null)}>
-                <span style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>E2E Testing</span>
+                <span style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>MyISP</span>
                 <span style={{ color: '#4b5568', fontSize: 10 }}>◀ Modules</span>
               </div>
             )}

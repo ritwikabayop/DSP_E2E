@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Tag, Tooltip } from 'antd';
 import {
-  FileSpreadsheet, Calendar, LogOut, ArrowRight, ExternalLink,
+  LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
   Monitor, Shield, Users, FileText, Activity, Video, BookOpen,
 } from 'lucide-react';
 import { ROLES } from '../utils/constants.js';
@@ -11,7 +11,7 @@ const modules = [
     key: 'e2e',
     label: 'E2E Testing',
     description: 'DSP Manual & Automation, SSA/GenAI test coverage, team roster and reporting.',
-    icon: FileSpreadsheet,
+    icon: LayoutDashboard,
     color: '#22c55e',
     bg: 'rgba(34,197,94,0.08)',
     border: 'rgba(34,197,94,0.25)',
@@ -107,7 +107,7 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
         }}>
           <FileSpreadsheet size={17} color="#fff" />
         </div>
-        <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>E2E Master Hub</span>
+        <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>MyISP</span>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           {/* User pill */}

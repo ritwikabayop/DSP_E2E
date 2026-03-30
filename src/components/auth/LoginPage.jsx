@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Form, Input, Button, Typography, Alert, Space } from 'antd';
-import { FileSpreadsheet, Mail, Lock, LogIn, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Mail, Lock, LogIn, ShieldCheck, FileSpreadsheet } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -25,15 +25,15 @@ export default function LoginPage({ onSignIn }) {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 80px', borderRight: '1px solid #1e2332', background: 'linear-gradient(160deg, #0f1822 0%, #0d0f18 100%)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 48 }}>
           <div style={{ width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 24px rgba(34,197,94,0.3)' }}>
-            <FileSpreadsheet size={26} color="#fff" />
+            <LayoutDashboard size={26} color="#fff" />
           </div>
           <div>
-            <Title level={3} style={{ margin: 0, color: '#e2e8f0', lineHeight: 1.2, fontSize: 20 }}>E2E Testing</Title>
-            <Text style={{ color: '#4b5568', fontSize: 12 }}>Master Hub</Text>
+            <Title level={3} style={{ margin: 0, color: '#e2e8f0', lineHeight: 1.2, fontSize: 20 }}>MyISP</Title>
+            <Text style={{ color: '#4b5568', fontSize: 12 }}>Insight &amp; Status Platform</Text>
           </div>
         </div>
         <Title level={1} style={{ color: '#e2e8f0', marginBottom: 12, fontSize: 36, lineHeight: 1.15, fontWeight: 800 }}>Welcome back</Title>
-        <Text style={{ color: '#64748b', fontSize: 15, lineHeight: 1.7, display: 'block', marginBottom: 40, maxWidth: 380 }}>Your central hub for DSP, SSA and team E2E testing data. Sign in to continue.</Text>
+        <Text style={{ color: '#64748b', fontSize: 15, lineHeight: 1.7, display: 'block', marginBottom: 40, maxWidth: 380 }}>Your central hub for DSP, SSA, team testing data and attendance insights. Sign in to continue.</Text>
         <Space direction='vertical' size={14}>
           {[{ Icon: ShieldCheck, label: 'Role-based access control' }, { Icon: FileSpreadsheet, label: 'Real-time data sync via Supabase' }, { Icon: LogIn, label: 'Secure Supabase authentication' }].map(({ Icon, label }) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

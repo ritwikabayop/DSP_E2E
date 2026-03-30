@@ -1,6 +1,6 @@
 import { Select, Input, Button, Space, Tooltip, Tag, Typography, Segmented } from 'antd';
 import {
-  FileSpreadsheet, Calendar, User, Save, Download, Search, Copy,
+  LayoutDashboard, Calendar, User, Save, Download, Search, Copy,
   PenTool, Eye, Edit3, AlertTriangle, LogOut,
 } from 'lucide-react';
 import { ROLES, MONTH_OPTIONS } from '../../utils/constants.js';
@@ -45,11 +45,11 @@ export default function Ribbon({
       <div className="ribbon">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div className="ribbon-icon">
-            <FileSpreadsheet size={24} color="#fff" />
+            <LayoutDashboard size={24} color="#fff" />
           </div>
           <div>
             <AntTitle level={4} style={{ margin: 0, color: '#fff', letterSpacing: 0.3, lineHeight: 1.2 }}>
-              E2E Testing Master Hub
+              MyISP – Insight &amp; Status Platform
             </AntTitle>
             <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11 }}>
               DSP_E2E — {monthLabel}

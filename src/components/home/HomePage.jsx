@@ -75,7 +75,7 @@ export default function HomePage({
               </span>
             </Text>
             <Title level={3} style={{ color: '#fff', margin: 0, fontWeight: 700 }}>
-              E2E Testing Master Hub
+              MyISP – Insight &amp; Status Platform
             </Title>
             <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13 }}>
               <Calendar size={12} style={{ marginRight: 4 }} />{monthLabel}
