@@ -1,0 +1,47 @@
+# Azure Static Web Apps — E2E Testing Master Hub
+# Triggered on every push to main.
+# Requires the following pipeline variable (secret):
+#   AZURE_STATIC_WEB_APPS_API_TOKEN  — from Azure Portal → Static Web App → Manage deployment token
+# And the following variable group (non-secret):
+#   VITE_SUPABASE_URL
+#   VITE_SUPABASE_ANON_KEY
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: e2e-dashboard-vars   # create this variable group in Azure DevOps Library
+
+stages:
+  - stage: Build
+    displayName: 'Build & Deploy'
+    jobs:
+      - job: BuildAndDeploy
+        displayName: 'Build Vite app and deploy to Azure Static Web Apps'
+        steps:
+          - task: NodeTool@0
+            displayName: 'Use Node 20.x'
+            inputs:
+              versionSpec: '20.x'
+
+          - script: npm ci
+            displayName: 'Install dependencies'
+
+          - script: npm run build
+            displayName: 'Build production bundle'
+            env:
+              VITE_SUPABASE_URL:      $(VITE_SUPABASE_URL)
+              VITE_SUPABASE_ANON_KEY: $(VITE_SUPABASE_ANON_KEY)
+
+          - task: AzureStaticWebApp@0
+            displayName: 'Deploy to Azure Static Web Apps'
+            inputs:
+              app_location:          '/'       # root of repo
+              output_location:       'dist'    # Vite build output
+              skip_app_build:        true      # already built above
+              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)

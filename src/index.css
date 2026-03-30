@@ -1,421 +1,387 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ═══════════════════════════════════════════════
+   DARK THEME — E2E Testing Master Hub
+   ═══════════════════════════════════════════════ */
+:root {
+  --bg-base:      #0d0f18;
+  --bg-surface:   #131720;
+  --bg-card:      #1a1f2e;
+  --bg-card-hover:#1e2438;
+  --bg-sidebar:   #0f1117;
+  --bg-header:    #131720;
+  --border:       #252d42;
+  --border-light: #1e2638;
+  --accent:       #22c55e;
+  --accent-dim:   #16a34a;
+  --accent-glow:  rgba(34,197,94,0.15);
+  --text-primary: #e2e8f0;
+  --text-secondary:#8892a4;
+  --text-muted:   #4b5568;
+  --danger:       #ef4444;
+  --warning:      #f59e0b;
+  --info:         #3b82f6;
+  --purple:       #8b5cf6;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f6f8fa;
+  background: var(--bg-base);
+  color: var(--text-primary);
 }
 
-#root {
-  min-height: 100vh;
-}
+/* ─── SCROLLBAR ──────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4560; }
 
-/* ── Ribbon ── */
-.ribbon {
-  background: linear-gradient(135deg, #217346 0%, #185C37 60%, #0d3320 100%);
-  padding: 8px 20px;
+/* ─── APP SIDEBAR ────────────────────────────── */
+.app-sidebar {
+  background: var(--bg-sidebar) !important;
+  border-right: 1px solid var(--border) !important;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 3px 12px rgba(0,0,0,.2);
-  position: relative;
-  z-index: 10;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.ribbon-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: rgba(255,255,255,.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(4px);
-  flex-shrink: 0;
-}
-
-/* ── Mode toggle in ribbon ── */
-.mode-toggle .ant-segmented {
-  background: rgba(255,255,255,.18) !important;
-  border-radius: 8px;
-}
-.mode-toggle .ant-segmented-item-label {
-  color: rgba(255,255,255,.85) !important;
-  font-size: 12px;
-}
-.mode-toggle .ant-segmented-item-selected {
-  background: rgba(255,255,255,.92) !important;
-}
-.mode-toggle .ant-segmented-item-selected .ant-segmented-item-label {
-  color: #185C37 !important;
-  font-weight: 600;
-}
-
-/* ── Formula bar ── */
-.formula-bar {
-  background: #fff;
-  border-bottom: 2px solid #e1e4e8;
-  padding: 6px 16px;
+.sidebar-logo {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.04);
-  flex-wrap: wrap;
 }
 
-.fx-label {
-  font-size: 12px;
+.sidebar-logo-icon {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(34,197,94,0.3);
+}
+
+.sidebar-logo-text .title {
+  color: var(--text-primary);
+  font-size: 13px;
   font-weight: 700;
-  color: #888;
-  min-width: 26px;
-  text-align: center;
-  font-style: italic;
-  user-select: none;
+  line-height: 1.2;
+  display: block;
 }
 
-/* ── Glass cards ── */
-.glass-card {
+.sidebar-logo-text .subtitle {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── APP HEADER ─────────────────────────────── */
+.app-header {
+  background: var(--bg-header) !important;
+  border-bottom: 1px solid var(--border);
+  height: 52px !important;
+  line-height: 52px !important;
+  padding: 0 16px !important;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ─── GLASS CARDS ────────────────────────────── */
+.glass-card,
+.ant-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 10px !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04) !important;
-  transition: box-shadow .2s, transform .15s;
-}
-.glass-card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,.1), 0 0 0 1px rgba(0,0,0,.06) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
 
-/* ── Stat cards ── */
-.stat-card {
-  border-radius: 12px !important;
-  transition: transform .2s, box-shadow .2s;
-  cursor: default;
+.glass-card:hover {
+  border-color: #2d3850 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
 }
+
+/* ─── STAT CARDS ─────────────────────────────── */
+.stat-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,.1) !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4) !important;
+  border-color: #2d3850 !important;
 }
 
-/* ── Editable cells ── */
+/* ─── EDITABLE CELLS ─────────────────────────── */
 .editable-cell {
-  padding: 2px 4px;
-  border-radius: 4px;
   cursor: pointer;
-  min-height: 22px;
-  transition: background .15s;
-  border: 1px solid transparent;
+  padding: 4px 6px;
+  border-radius: 5px;
+  min-height: 24px;
+  color: var(--text-primary);
+  transition: background 0.15s;
 }
+
 .editable-cell:hover {
-  background: #e6f7ff;
-  border-color: #91caff;
+  background: rgba(34,197,94,0.08);
+  outline: 1px solid rgba(34,197,94,0.3);
 }
 
-.cell-placeholder {
-  color: #bbb;
-  font-style: italic;
-}
+.cell-placeholder { color: var(--text-muted); }
 
-.editable-input {
-  border-color: #217346 !important;
-  box-shadow: 0 0 0 2px rgba(33,115,70,.15) !important;
-}
-
-/* ── Error row highlight ── */
-.row-error {
-  background: #fff1f0 !important;
-}
-.row-error td {
-  color: #cf1322 !important;
-  font-style: italic;
-}
-
-/* ── Environment row ── */
-.env-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background .15s;
-  flex-wrap: wrap;
-}
-.env-row:last-child {
-  border-bottom: none;
-}
-.env-row:hover {
-  background: #fafafa;
-}
-.env-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #1890ff;
-  font-weight: 500;
-}
-.env-link:hover {
-  color: #096dd9;
-}
-
-/* ── Bottom sheet tabs – Excel style ── */
-.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-tab {
-  border-radius: 0 0 6px 6px !important;
-  padding: 4px 16px !important;
-  font-weight: 500;
-  transition: all .2s;
-}
-.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-tab-active {
-  background: #fff !important;
-  border-top-color: #fff !important;
-  font-weight: 700;
-}
-
-/* ── Table polish ── */
-.ant-table-small .ant-table-tbody > tr > td {
-  padding: 5px 10px !important;
-}
-.ant-table-small .ant-table-thead > tr > th {
-  font-weight: 700 !important;
+.editable-input .ant-input {
+  background: #1e2638 !important;
+  border-color: var(--accent) !important;
+  color: var(--text-primary) !important;
   font-size: 12px !important;
-  text-transform: uppercase;
-  letter-spacing: .3px;
 }
 
-/* ── Month selector in ribbon ── */
-.month-selector .ant-select-selector {
-  background: rgba(255,255,255,.18) !important;
-  border: 1px solid rgba(255,255,255,.25) !important;
-  border-radius: 6px !important;
-  color: #fff !important;
-}
-.month-selector .ant-select-selection-item {
-  color: #fff !important;
-  font-weight: 600;
-  font-size: 12px;
-}
-.month-selector .ant-select-arrow {
-  color: rgba(255,255,255,.7) !important;
+/* ─── STATUS SELECT ──────────────────────────── */
+.status-select .ant-select-selector {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
-/* ── User name input in ribbon ── */
-.user-input .ant-input-affix-wrapper {
-  background: rgba(255,255,255,.18) !important;
-  border: 1px solid rgba(255,255,255,.25) !important;
-  border-radius: 6px !important;
-  color: #fff !important;
-}
-.user-input .ant-input {
-  color: #fff !important;
-  font-size: 12px;
+/* ─── ANT TABLE DARK ─────────────────────────── */
+.ant-table {
   background: transparent !important;
 }
-.user-input .ant-input::placeholder {
-  color: rgba(255,255,255,.5) !important;
+
+.ant-table-thead > tr > th {
+  background: #151c2c !important;
+  color: var(--text-secondary) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border) !important;
+  border-right: 1px solid var(--border-light) !important;
 }
 
-/* ── Status select (borderless, always clickable) ── */
-.status-select .ant-select-selector {
-  padding: 0 4px !important;
-  cursor: pointer !important;
-}
-.status-select:hover .ant-select-selector {
-  background: rgba(0,0,0,.04) !important;
-  border-radius: 4px;
+.ant-table-tbody > tr > td {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  border-right: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+  font-size: 12px;
 }
 
-/* ── Module Save Bar ── */
-.module-save-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  transition: background .3s, border-color .3s;
-}
-.module-save-bar--dirty {
-  background: #fffbe6;
-  border: 1px solid #ffe58f;
-}
-.module-save-bar--clean {
-  background: #f6ffed;
-  border: 1px solid #b7eb8f;
+.ant-table-tbody > tr:hover > td {
+  background: rgba(34,197,94,0.04) !important;
 }
 
-/* ── Home page welcome banner ── */
+.ant-table-tbody > tr.row-error > td {
+  background: rgba(239,68,68,0.06) !important;
+  border-left: 2px solid #ef4444 !important;
+}
+
+.ant-table-wrapper .ant-table-bordered .ant-table-cell {
+  border-color: var(--border-light) !important;
+}
+
+/* ─── MODULE SAVE BAR ────────────────────────── */
+.module-save-bar-dirty {
+  background: rgba(245,158,11,0.08) !important;
+  border: 1px solid rgba(245,158,11,0.25) !important;
+}
+
+.module-save-bar-clean {
+  background: rgba(34,197,94,0.06) !important;
+  border: 1px solid rgba(34,197,94,0.2) !important;
+}
+
+/* ─── HOME BANNER ────────────────────────────── */
 .home-banner {
-  background: linear-gradient(135deg, #217346 0%, #0d6e3c 50%, #1a4731 100%);
-  border-radius: 16px;
-  padding: 24px 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(33,115,70,0.25);
+  background: linear-gradient(135deg, #0f2d1f 0%, #0d1f15 50%, #091711 100%);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
 }
+
 .home-banner::before {
   content: '';
   position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 200px;
-  height: 200px;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.04);
-  pointer-events: none;
-}
-.home-banner::after {
-  content: '';
-  position: absolute;
-  bottom: -40px;
-  right: 80px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.03);
-  pointer-events: none;
+  background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
 }
 
-/* ── Module quick-access cards ── */
-.module-card {
-  cursor: pointer;
-  transition: transform .18s, box-shadow .18s;
-}
-.module-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.12) !important;
-}
-
-/* ── Activity feed row ── */
-.activity-row {
+/* ─── ENV ROW ────────────────────────────────── */
+.env-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 6px 0;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background .15s;
-}
-.activity-row:last-child {
-  border-bottom: none;
-}
-.activity-row:hover {
-  background: #fafafa;
-  border-radius: 6px;
-  padding-left: 4px;
 }
 
-.activity-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #e6f7ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.env-link {
+  color: var(--info) !important;
+  font-size: 12px;
+  text-decoration: none;
 }
 
-/* ── Role badge ── */
-.role-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-.role-badge--admin    { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
-.role-badge--tl       { background: #f0f5ff; color: #1d39c4; border: 1px solid #adc6ff; }
-.role-badge--tester   { background: #e6f4ff; color: #0958d9; border: 1px solid #91caff; }
-.role-badge--viewer   { background: #fafafa; color: #8c8c8c; border: 1px solid #d9d9d9; }
+.env-link:hover { text-decoration: underline; }
 
-/* ── Unsaved dot on tab ── */
-.ant-badge-dot {
-  box-shadow: none !important;
+/* ─── ANT MENU SIDEBAR ───────────────────────── */
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+  background: transparent !important;
 }
 
-/* ── Report section headers ── */
-.report-section-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #555;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: block;
-  margin-bottom: 12px;
+.ant-menu-dark .ant-menu-item {
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+  width: calc(100% - 16px) !important;
+  color: var(--text-secondary) !important;
+  transition: background 0.15s, color 0.15s;
 }
 
-/* ── Smooth scrollbar ── */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #aaa; }
-::-webkit-scrollbar-track { background: transparent; }
-
-/* ══════════════════════════════════════════════════════
-   PRINT STYLES  (used by Report → Print button)
-   ══════════════════════════════════════════════════════ */
-@media print {
-  .ribbon,
-  .formula-bar,
-  .ant-tabs-nav,
-  .ant-float-btn,
-  .ant-layout-footer {
-    display: none !important;
-  }
-
-  body {
-    background: #fff !important;
-  }
-
-  .ant-layout {
-    background: #fff !important;
-  }
-
-  .ant-card {
-    box-shadow: none !important;
-    border: 1px solid #e0e0e0 !important;
-    break-inside: avoid;
-    margin-bottom: 16px !important;
-  }
-
-  .ant-table {
-    font-size: 11px !important;
-  }
-
-  .ant-progress {
-    display: none !important;
-  }
-
-  /* Print header */
-  #root::before {
-    content: "E2E Testing Master Hub — Test Report";
-    display: block;
-    font-size: 18px;
-    font-weight: 700;
-    color: #217346;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #217346;
-  }
+.ant-menu-dark .ant-menu-item:hover {
+  background: rgba(255,255,255,0.05) !important;
+  color: var(--text-primary) !important;
 }
 
-/* ── Responsive tweaks ── */
+.ant-menu-dark .ant-menu-item-selected {
+  background: var(--accent-glow) !important;
+  color: var(--accent) !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected .anticon,
+.ant-menu-dark .ant-menu-item-selected svg {
+  color: var(--accent) !important;
+}
+
+/* ─── ANT CARD HEADER ────────────────────────── */
+.ant-card-head {
+  background: #151c2c !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  min-height: 42px !important;
+}
+
+.ant-card-head-title {
+  color: var(--text-primary) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.ant-card-body { padding: 14px !important; }
+
+/* ─── ANT SELECT / INPUT ─────────────────────── */
+.ant-select-selector {
+  background: #1a2035 !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-select-selector:hover {
+  border-color: var(--accent) !important;
+}
+
+.ant-input {
+  background: #1a2035 !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input::placeholder { color: var(--text-muted) !important; }
+.ant-input:hover { border-color: #2d3850 !important; }
+.ant-input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 2px var(--accent-glow) !important; }
+
+/* ─── ANT SEGMENTED ──────────────────────────── */
+.ant-segmented {
+  background: #1a2035 !important;
+  border: 1px solid var(--border) !important;
+}
+
+.ant-segmented-item-selected {
+  background: var(--accent-glow) !important;
+  color: var(--accent) !important;
+}
+
+/* ─── ANT TAG ────────────────────────────────── */
+.ant-tag { border-radius: 5px !important; font-size: 11px !important; }
+
+/* ─── ANT BUTTON ─────────────────────────────── */
+.ant-btn-default {
+  background: #1a2035 !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-btn-default:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+/* ─── ANT MODAL ──────────────────────────────── */
+.ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.ant-modal-header {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.ant-modal-title { color: var(--text-primary) !important; }
+
+/* ─── ANT ALERT ──────────────────────────────── */
+.ant-alert {
+  background: rgba(59,130,246,0.08) !important;
+  border-color: rgba(59,130,246,0.25) !important;
+  border-radius: 8px !important;
+}
+
+/* ─── ANT POPCONFIRM ─────────────────────────── */
+.ant-popconfirm-inner-content { background: var(--bg-card) !important; }
+
+/* ─── FLOAT BUTTON ───────────────────────────── */
+.ant-float-btn-default .ant-float-btn-body {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* ─── PROGRESS ───────────────────────────────── */
+.ant-progress-inner { background: #1e2638 !important; }
+
+/* ─── ANT PAGINATION ─────────────────────────── */
+.ant-pagination-item {
+  background: #1a2035 !important;
+  border-color: var(--border) !important;
+}
+.ant-pagination-item a { color: var(--text-secondary) !important; }
+.ant-pagination-item-active { border-color: var(--accent) !important; }
+.ant-pagination-item-active a { color: var(--accent) !important; }
+
+/* ─── SAVE PULSE ─────────────────────────────── */
+@keyframes pulse-warning {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(245,158,11,0); }
+}
+.btn-save-all { animation: pulse-warning 2s infinite; }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
 @media (max-width: 768px) {
-  .ribbon {
-    padding: 8px 12px;
-    gap: 8px;
-  }
-
-  .home-banner {
-    padding: 16px 20px;
-    border-radius: 12px;
-  }
-
-  .formula-bar {
-    padding: 6px 10px;
-    gap: 6px;
-  }
+  .app-header { gap: 6px; }
 }
