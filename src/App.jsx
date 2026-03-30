@@ -15,6 +15,7 @@ import { useMonthData } from './hooks/useMonthData.js';
 
 // Components
 import LoginPage        from './components/auth/LoginPage.jsx';
+import ModulePicker     from './components/ModulePicker.jsx';
 import HomePage         from './components/home/HomePage.jsx';
 import DSPSheet         from './components/sheets/DSPSheet.jsx';
 import SSASheet         from './components/sheets/SSASheet.jsx';
@@ -52,6 +53,7 @@ const DARK_THEME = {
 function App() {
   const { user, profile, role: authRole, loading: authLoading, signIn, signOut } = useAuth();
 
+  const [activeModule,  setActiveModule]  = useState(null); // null = picker, 'e2e' = dashboard
   const [activeTab,     setActiveTab]     = useState('home');
   const [searchQuery,   setSearchQuery]   = useState('');
   const [editMode,      setEditMode]      = useState(false);
@@ -131,6 +133,20 @@ function App() {
     return (
       <ConfigProvider theme={DARK_THEME}>
         <LoginPage onSignIn={signIn} />
+      </ConfigProvider>
+    );
+  }
+
+  if (activeModule === null) {
+    return (
+      <ConfigProvider theme={DARK_THEME}>
+        <ModulePicker
+          user={user}
+          profile={profile}
+          role={authRole ?? 'viewer'}
+          onSelect={(mod) => setActiveModule(mod)}
+          onSignOut={() => { signOut(); setActiveModule(null); }}
+        />
       </ConfigProvider>
     );
   }
@@ -252,18 +268,24 @@ function App() {
             display: 'flex', alignItems: 'center', gap: 10,
             minHeight: 60,
           }}>
-            <div style={{
-              width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 14px rgba(34,197,94,0.25)',
-            }}>
-              <FileSpreadsheet size={18} color="#fff" />
-            </div>
+            <Tooltip title="Back to Modules">
+              <div
+                onClick={() => setActiveModule(null)}
+                style={{
+                  width: 34, height: 34, borderRadius: 9, flexShrink: 0,
+                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 0 14px rgba(34,197,94,0.25)',
+                  cursor: 'pointer',
+                }}
+              >
+                <FileSpreadsheet size={18} color="#fff" />
+              </div>
+            </Tooltip>
             {!collapsed && (
-              <div style={{ overflow: 'hidden' }}>
+              <div style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => setActiveModule(null)}>
                 <span style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>E2E Testing</span>
-                <span style={{ color: '#374151', fontSize: 10 }}>Master Hub</span>
+                <span style={{ color: '#4b5568', fontSize: 10 }}>◀ Modules</span>
               </div>
             )}
           </div>
@@ -379,7 +401,7 @@ function App() {
                       }))
                     ] : []),
                     { type: 'divider' },
-                    { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: signOut },
+                    { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
                   ],
                 },
                 children: React.createElement('div', {

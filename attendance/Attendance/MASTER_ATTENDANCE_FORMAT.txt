@@ -1,0 +1,119 @@
+"""
+MASTER ATTENDANCE SHEET FORMAT SPECIFICATION
+=============================================
+
+This document defines the standard format for all month sheets in Master_Attendance.xlsx
+Based on: Attendance January 2026 sheet
+
+STRUCTURE:
+==========
+
+ROW 1: MAIN HEADERS
+-------------------
+Column 1: 'Team Member Names'
+Column 2: 'Lead Name'
+Column 3+: Empty
+
+ROW 2: METADATA + DATE HEADERS
+-------------------------------
+Column 1: 'Latest Update Source: [lead_name]'
+Column 2: Empty
+Column 3: '📍 Location'
+Column 4: '1'
+Column 5: '2'
+Column 6: '3'
+...
+Column (3 + days_in_month): [last_day_number]
+Column (4 + days_in_month): 'Total Present'
+Column (5 + days_in_month): 'Total Leaves'
+Column (6 + days_in_month): 'UnPlanned'
+Column (7 + days_in_month): 'SickLeave'
+
+ROW 3: TIMESTAMP + DAY NAMES
+-----------------------------
+Column 1: 'Last Saved At: [timestamp]'
+Column 2: Empty
+Column 3: Empty
+Column 4: Day name for 1st (e.g., 'Thu')
+Column 5: Day name for 2nd (e.g., 'Fri')
+Column 6: Day name for 3rd (e.g., 'Sat')
+...
+Column (3 + days_in_month): Day name for last day
+
+ROW 4+: DATA ROWS
+-----------------
+Column 1: Team member name (e.g., 'r.venkata.vidadala')
+Column 2: Lead name (e.g., 'navya.balla')
+Column 3: Location (e.g., 'Bengaluru, BDC6F')
+Column 4: Attendance for day 1 (e.g., 'P', 'SL', '', etc.)
+Column 5: Attendance for day 2
+...
+Column (3 + days_in_month): Attendance for last day
+Column (4 + days_in_month): Total Present count
+Column (5 + days_in_month): Total Leaves count
+Column (6 + days_in_month): Unplanned leaves count
+Column (7 + days_in_month): Sick leaves count
+
+COLUMN WIDTHS:
+==============
+Column A (1): 30.0  - Team Member Names
+Column B (2): 25.0  - Lead Name
+Column C (3): 22.0  - Location
+Column D+ (4+): 8.0 - Date columns
+Summary columns: 12.0 - Total Present, Total Leaves, UnPlanned, SickLeave
+
+FREEZE PANES:
+=============
+None (no freeze panes)
+
+MERGED CELLS:
+=============
+None (no merged cells)
+
+CELL STYLING:
+=============
+Attendance cells (data rows, date columns) have colored fills based on status:
+- 'P'  (Present): C8F7C5 (soft mint green)
+- 'SL' (Sick Leave): FFB3B3 (soft red)
+- 'OP' (Optional Holiday): FFE69C (soft gold)
+- 'MH' (Mandatory Holiday): FFF9C4 (soft yellow)
+- 'UP' (Unplanned): FFB3D9 (soft pink)
+- 'CL' (Casual Leave): D4C5F9 (soft lavender)
+- 'T'  (Training): E8D5F5 (soft orchid)
+- etc.
+
+EXAMPLE LAYOUT (January 2026, 31 days):
+========================================
+
+     A                    B              C                D    E    F   ...  AG   AH           AI            AJ         AK
+1  Team Member Names  Lead Name       (empty)         (empty columns continue...)
+2  Latest Update...   (empty)    📍 Location    1    2    3   ...  31   Total Present  Total Leaves  UnPlanned  SickLeave
+3  Last Saved At...   (empty)       (empty)    Thu  Fri  Sat ...  Fri  (empty columns continue...)
+4  r.venkata.vida...  navya.balla  Bengaluru...  P         SL  ...       15            5             2          1
+5  kadari.nethra      navya.balla  Hyderabad...       P         ...       20            3             0          1
+...
+
+VALIDATION CHECKLIST:
+=====================
+✓ Row 1 has 'Team Member Names' in column 1
+✓ Row 1 has 'Lead Name' in column 2
+✓ Row 2 has 'Latest Update Source:' in column 1
+✓ Row 2 has '📍 Location' in column 3
+✓ Row 2 has date numbers starting from column 4
+✓ Row 3 has 'Last Saved At:' in column 1
+✓ Row 3 has day names starting from column 4
+✓ Row 4+ has team member names in column 1
+✓ Row 4+ has lead names in column 2
+✓ Row 4+ has locations in column 3
+✓ Row 4+ has attendance data starting from column 4
+✓ Column widths: A=30, B=25, C=22, D+=8
+✓ No freeze panes
+✓ No merged cells
+
+IMPLEMENTATION:
+===============
+This format is implemented in app.py in the save_attendance_to_master_excel function.
+All new month sheets will automatically follow this format.
+
+Last Updated: March 6, 2026
+"""

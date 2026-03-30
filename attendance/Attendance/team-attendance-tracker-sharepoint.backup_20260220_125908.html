@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Team Attendance & Leave Tracker
+    
+    Data Sources (SharePoint):
+    - Team Details: https://ts.accenture.com/:x:/r/sites/mySPTesting/Shared Documents/General/01 - Deliverables/Leave Tracker- Test(Do Not Delete)/Team Details.xlsx
+    - Locations: https://ts.accenture.com/:x:/r/sites/mySPTesting/Shared Documents/General/01 - Deliverables/Leave Tracker- Test(Do Not Delete)/Locations.xlsx
+    - Holiday List 2026: https://ts.accenture.com/:x:/r/sites/mySPTesting/Shared Documents/General/01 - Deliverables/Leave Tracker- Test(Do Not Delete)/holiday list_ 2026.xlsx
+    
+    To update data:
+    1. Download latest Excel files from SharePoint
+    2. Run: .venv/Scripts/python.exe extract_team_data.py
+    3. Run: .venv/Scripts/python.exe update_html_levels.py
+    4. Run: .venv/Scripts/python.exe generate_holidays.py
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Attendance & Leave Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Calibri, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #dcedc1;
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 50%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 15px;
+            padding: 10px;
+            background: rgba(168, 230, 207, 0.3);
+            border-radius: 12px;
+            border: 2px solid rgba(106, 137, 204, 0.3);
+        }
+
+        .title-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2d3561;
+            text-align: center;
+            margin-bottom: 3px;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #5a5a5a;
+            margin-bottom: 0;
+            font-size: 0.75em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(106, 137, 204, 0.15);
+            border: 2px solid rgba(106, 137, 204, 0.2);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #5a7a9b;
+            margin-bottom: 4px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input {
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        select:hover, input:hover {
+            border-color: #6a89cc;
+            box-shadow: 0 4px 12px rgba(106, 137, 204, 0.25);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #78e08f;
+            box-shadow: 0 0 0 4px rgba(120, 224, 143, 0.25), 0 4px 12px rgba(120, 224, 143, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            display: flex;
+            gap: 8px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4), 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            min-width: 110px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6), 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 2px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card p {
+            font-size: 0.65em;
+            opacity: 0.9;
+        }
+
+        /* Individual stat card colors */
+        .stat-card.total-days {
+            background: #74b9ff;
+            box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4), 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        }
+
+        .stat-card.total-days:hover {
+            box-shadow: 0 8px 25px rgba(116, 185, 255, 0.6), 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .stat-card.working-days {
+            background: #55efc4;
+            box-shadow: 0 4px 15px rgba(85, 239, 196, 0.4), 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        }
+
+        .stat-card.working-days:hover {
+            box-shadow: 0 8px 25px rgba(85, 239, 196, 0.6), 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .stat-card.weekends {
+            background: #ffeaa7;
+            box-shadow: 0 4px 15px rgba(250, 177, 160, 0.4), 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        }
+
+        .stat-card.weekends:hover {
+            box-shadow: 0 8px 25px rgba(250, 177, 160, 0.6), 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 10px;
+            background: #f5f9ff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(106, 137, 204, 0.15);
+            border: 2px solid rgba(106, 137, 204, 0.2);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7em;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: default;
+        }
+
+        .legend-item:hover {
+            background: rgba(106, 137, 204, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .attendance-table-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            max-height: 450px;
+            position: relative;
+            border: 3px solid rgba(106, 137, 204, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(106, 137, 204, 0.2);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: #78c2ad;
+            color: white;
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.75em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            border-right: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        th.member-name {
+            text-align: left;
+            min-width: 160px;
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.15);
+        }
+
+        th.location {
+            text-align: left;
+            min-width: 120px;
+            position: sticky;
+            left: 160px;
+            z-index: 20;
+            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.15);
+            border-right: 3px solid rgba(255, 255, 255, 0.6);
+        }
+
+        td {
+            padding: 6px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 0.85em;
+            transition: background-color 0.2s ease;
+        }
+
+        tr:hover td {
+            background-color: rgba(120, 224, 143, 0.05) !important;
+        }
+
+        td.member-name {
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            background: #f8fbff;
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            min-width: 160px;
+            box-shadow: 3px 0 8px rgba(106, 137, 204, 0.15);
+        }
+
+        td.location {
+            font-weight: 500;
+            color: #555;
+            text-align: left;
+            background: #ffffff;
+            position: sticky;
+            left: 160px;
+            z-index: 15;
+            min-width: 120px;
+            border-left: 2px solid #e0e0e0;
+            box-shadow: 3px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-cell {
+            min-width: 100px;
+        }
+
+        .total-cell {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .attendance-select {
+            width: 100%;
+            min-width: 90px;
+            padding: 6px 3px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.65em;
+            background: white;
+            font-weight: 700;
+            text-align: center;
+            color: #000 !important;
+            line-height: 1.1;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .attendance-select:hover:not(:disabled) {
+            border-color: #6a89cc;
+            box-shadow: 0 2px 8px rgba(106, 137, 204, 0.3);
+        }
+        
+        .attendance-select:focus {
+            outline: none;
+            border-color: #78e08f;
+            box-shadow: 0 0 0 3px rgba(120, 224, 143, 0.2);
+        }
+        
+        .attendance-select:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .attendance-select option {
+            background: white;
+            color: #000;
+            padding: 5px;
+            font-weight: 600;
+        }
+
+        .weekend {
+            background: #d4e5f7 !important;
+        }
+
+        .holiday {
+            background: #ffeeca !important;
+        }
+
+        /* Leave category colors */
+        .status- { background: white; }
+        .status-P { background: #c8f7c5; }  /* Soft mint green for Present */
+        .status-VG { background: #b3ddf2; }  /* Soft sky blue for Vendor/Guest */
+        .status-VR { background: #d4ebf2; }  /* Soft powder blue for VR */
+        .status-C { background: #9ee5db; }  /* Soft turquoise for Comp Off */
+        .status-SL { background: #ffb3b3; }  /* Soft red for Sick Leave */
+        .status-OP { background: #ffe69c; }  /* Soft gold for Other Purpose */
+        .status-MH { background: #fff9c4; }  /* Soft yellow for Mental Health */
+        .status-UP { background: #ffb3d9; }  /* Soft pink for Unpaid */
+        .status-CL { background: #d4c5f9; }  /* Soft lavender for Casual Leave */
+        .status-CG { background: #ffb3d1; }  /* Soft rose for Care Giver */
+        .status-T { background: #e8d5f5; }  /* Soft orchid for Training */
+        .status-AT { background: #c5b3e6; }  /* Soft purple for Admin Time */
+        .status-ML { background: #f0d5f0; }  /* Soft plum for Maternity Leave */
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(168, 230, 207, 0.2);
+            border-radius: 12px;
+        }
+
+        button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #6a89cc;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #5a79bc;
+            box-shadow: 0 8px 25px rgba(106, 137, 204, 0.5);
+        }
+        
+        .btn-success {
+            background: #78e08f;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-success:hover {
+            background: #68d07f;
+            box-shadow: 0 8px 25px rgba(120, 224, 143, 0.6);
+        }
+        
+        .btn-warning {
+            background: #fab1a0;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-warning:hover {
+            background: #f9a190;
+            box-shadow: 0 8px 25px rgba(250, 177, 160, 0.6);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+            font-size: 0.85em;
+        }
+
+        /* Custom Scrollbar Styling */
+        .attendance-table-wrapper::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        .attendance-table-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .attendance-table-wrapper::-webkit-scrollbar-thumb {
+            background: #78c2ad;
+            border-radius: 10px;
+            border: 2px solid #f1f1f1;
+        }
+
+        .attendance-table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #68b29d;
+        }
+
+        .attendance-table-wrapper::-webkit-scrollbar-corner {
+            background: #f1f1f1;
+        }
+
+        @media (max-width: 768px) {
+            .header-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .stats {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            h1, .subtitle {
+                text-align: center;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .controls, .actions, button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-wrapper">
+            <div class="title-section">
+                <h1>� Team Attendance & Leave Tracker</h1>
+                <p class="subtitle">Track daily attendance and manage team leaves efficiently</p>
+            </div>
+            <div class="stats" id="statsContainer" style="display: none;">
+                <div class="stat-card total-days">
+                    <h3 id="totalDays">0</h3>
+                    <p>📅 Total Days</p>
+                </div>
+                <div class="stat-card working-days">
+                    <h3 id="workingDays">0</h3>
+                    <p>💼 Working Days</p>
+                </div>
+                <div class="stat-card weekends">
+                    <h3 id="weekendDays">0</h3>
+                    <p>🏖️ Weekends</p>
+                </div>
+            </div>
+        </div>
+        
+        <noscript>
+            <div style="background:#f8d7da;color:#721c24;padding:20px;border-radius:10px;margin-bottom:20px;text-align:center;">
+                <strong>⚠️ JavaScript is required!</strong><br>
+                Please enable JavaScript in your browser or check SharePoint settings.
+            </div>
+        </noscript>
+        
+        <div class="controls">
+            
+            <div class="control-group">
+                <label for="leadSelect">Select Lead:</label>
+                <select id="leadSelect" onchange="loadTeamMembers()">
+                    <option value="">-- Select Lead --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="levelFilter">Filter by Level:</label>
+                <select id="levelFilter" onchange="filterByLevel()">
+                    <option value="">-- All Levels --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="monthSelect">Select Month:</label>
+                <select id="monthSelect" onchange="generateAttendanceTable(); updateStats();">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="yearSelect">Select Year:</label>
+                <select id="yearSelect" onchange="generateAttendanceTable(); updateStats();">
+                    <option value="2026" selected>2026</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color status-P"></div>
+                <span>P - Present</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-VG"></div>
+                <span>VG - Vacation Granted</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-VR"></div>
+                <span>VR - Vacation Requested</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-C"></div>
+                <span>C - Comp-off</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-SL"></div>
+                <span>SL - Sick Leave</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-OP"></div>
+                <span>OP - Optional Holiday</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-MH"></div>
+                <span>MH - Mandatory Holiday</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-UP"></div>
+                <span>UP - Unplanned</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-CL"></div>
+                <span>CL - Casual Leave</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-CG"></div>
+                <span>CG - COVID Caregiver</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-T"></div>
+                <span>T - Trainings</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-AT"></div>
+                <span>AT - ASE Trainings</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color status-ML"></div>
+                <span>ML - Maternal/Paternal</span>
+            </div>
+        </div>
+
+        <div class="attendance-table-wrapper">
+            <div id="tableContainer" class="no-data">
+                Please select a lead to view attendance tracker
+            </div>
+        </div>
+
+        <div class="actions" id="actionButtons" style="display: none;">
+            <button class="btn-primary" onclick="exportToExcel(); return false;">� Download Excel</button>
+        </div>
+    </div>
+
+    <script>
+        // Team data loaded from Excel file
+        const teamData = {
+                "leads": [
+                                {
+                                                "id": "navya.balla",
+                                                "name": "navya.balla",
+                                                "members": [
+                                                                {
+                                                                                "name": "r.venkata.vidadala",
+                                                                                "location": "Bengaluru, BDC6F",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "kadari.nethra",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "roshini.chinnasamy",
+                                                                                "location": "Chennai, CDC2A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "lokesh.yadagiri",
+                                                                                "location": "Chennai, CDC2A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "guhan.murugan",
+                                                                                "location": "Chennai, CDC2A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "rubha.s.vellingiri",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "neha.a.aggarwal",
+                                                "name": "neha.a.aggarwal",
+                                                "members": [
+                                                                {
+                                                                                "name": "shini.vv",
+                                                                                "location": "Chennai, CDC2A",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "omkar.gandavarapu",
+                                                                                "location": "Chennai,CDC2A",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "navya.balla",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "surbhi.c.suman",
+                                                                                "location": "Noida, DDC4A",
+                                                                                "level": "9"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "shini.vv",
+                                                "name": "shini.vv",
+                                                "members": [
+                                                                {
+                                                                                "name": "bhavani.lakshmanan",
+                                                                                "location": "Chennai, CDC2A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "p.pankaj",
+                                                                                "location": "Gurugram, DDC2A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "ajay.kadian",
+                                                                                "location": "Gurugram, DDC2A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "s.chhotu.ringane",
+                                                                                "location": "Hyderabad, HDC2A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "s.namdev.suryawanshi",
+                                                                                "location": "Mumbai, MDC2B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "m.sheik.fusulee.a",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "pavithra.b.palani",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "jeba.momin",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "sravani.c.dasari",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "sri.padala",
+                                                                                "location": "Bhubaneswar, BBDC1A",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "omkar.gandavarapu",
+                                                "name": "omkar.gandavarapu",
+                                                "members": [
+                                                                {
+                                                                                "name": "a.rasineni",
+                                                                                "location": "Bangalore,BDC6F",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "vishnu.v.modiyala",
+                                                                                "location": "Chennai, CDC2A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "aayushi.g.jain",
+                                                                                "location": "Gurugram, DDC2A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "peddakotla.gayathri",
+                                                                                "location": "Bangalore,BDC6F",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sumanjali.v.bulusu",
+                                                                                "location": "Bengaluru, BDC7A",
+                                                                                "level": "11"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "pramod.kasam",
+                                                "name": "pramod.kasam",
+                                                "members": [
+                                                                {
+                                                                                "name": "neha.a.aggarwal",
+                                                                                "location": "Noida, DDC4A",
+                                                                                "level": "8"
+                                                                },
+                                                                {
+                                                                                "name": "aqil.patnam",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "8"
+                                                                },
+                                                                {
+                                                                                "name": "d.sampathkumar",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "8"
+                                                                },
+                                                                {
+                                                                                "name": "archana.a.nagarajan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "8"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "surbhi.c.suman",
+                                                "name": "surbhi.c.suman",
+                                                "members": [
+                                                                {
+                                                                                "name": "aman.y.singh",
+                                                                                "location": "Gurugram, DDC2A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "saswat.rout",
+                                                                                "location": "Bhubaneswar, BBDC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "prateek.z.gupta",
+                                                                                "location": "Gurugram, DDC2A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "akaram.sindhuja",
+                                                                                "location": "Hyderabad, HDC2A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "a.venkatesh.gadagi",
+                                                                                "location": "Bengaluru, BDC11A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "akshay.pardeshi",
+                                                                                "location": "Mumbai, MDC2B",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "aqil.patnam",
+                                                "name": "aqil.patnam",
+                                                "members": [
+                                                                {
+                                                                                "name": "j.damodaran",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "k.b.selvamani",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "devika.kalaivanan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "archana.a.nagarajan",
+                                                "name": "archana.a.nagarajan",
+                                                "members": [
+                                                                {
+                                                                                "name": "hajara.ayyubkhan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "nandini.baskaran",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "sonal.futane",
+                                                                                "location": "Pune, PDC5A",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "vishnu.ramalingam",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "bachu.mohan",
+                                                "name": "bachu.mohan",
+                                                "members": [
+                                                                {
+                                                                                "name": "srinivasan.selvam",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "7"
+                                                                },
+                                                                {
+                                                                                "name": "pramod.kasam",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "7"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "d.sampathkumar",
+                                                "name": "d.sampathkumar",
+                                                "members": [
+                                                                {
+                                                                                "name": "leena.a.das",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "pirtheebaa.krishnan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "r.kalia.moorthy",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "deepti.prakash",
+                                                                                "location": "Noida, DDC4A",
+                                                                                "level": "9"
+                                                                },
+                                                                {
+                                                                                "name": "himanshu.m.jain",
+                                                                                "location": "Noida, DDC4A",
+                                                                                "level": "9"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "deepti.prakash",
+                                                "name": "deepti.prakash",
+                                                "members": [
+                                                                {
+                                                                                "name": "abir.manna",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "anitha.a.ramesh",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "mary.jacob",
+                                                                                "location": "Bengaluru, BDC6F",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "namrata.g.umardand",
+                                                                                "location": "Pune, PDC2C",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "sadhik.a.shaik",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "saranya.datla",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "m.manisha",
+                                                                                "location": "Bengaluru, BDC7B",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "janardhan.veluri",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "shalini.b.pandey",
+                                                                                "location": "Gurugram, DDC5E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "n.selvakumar",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "bhavana.reddy.alla",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "karnati.aruna.jyothi",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "navya.majji",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "vinayak.l.sangale",
+                                                                                "location": "Navi Mumbai, MDC5C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "gayatri.korikana",
+                                                                                "location": "Hyderabad, HDC2A",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "k.b.selvamani",
+                                                "name": "k.b.selvamani",
+                                                "members": [
+                                                                {
+                                                                                "name": "nivetha.rajesh",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "ifrah.b.khan",
+                                                                                "location": "Navi Mumbai, MDC5C",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "divya.sree.chatla",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "l.vinothinie.p.s",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "anto.aldrin.missier",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "bhavana.pamidi",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "manisa.bid",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "a.poobalarayen.p",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "sai.v.nagannapudi",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "sathya.senthilkumar",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "sohana.khan",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "amresh.l.kumar",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "janakipriya.sengodan",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "nandini.baskaran",
+                                                "name": "nandini.baskaran",
+                                                "members": [
+                                                                {
+                                                                                "name": "a.f.kannan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "vineetha.atmakuri",
+                                                                                "location": "Hyderabad, HDC2A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "madhuri.p.nandam",
+                                                                                "location": "Hyderabad, HDC2A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "debjit.adak",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "pawan.m.kumar.singh",
+                                                                                "location": "Noida, DDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "r.maheen.abu.backer",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "s.af.natarajan",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "devika.kalaivanan",
+                                                "name": "devika.kalaivanan",
+                                                "members": [
+                                                                {
+                                                                                "name": "c.baby.sahithya",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "gowsick.s.b",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "manasa.kumara.swamy",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "m.b.sivasankaran",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "s.gundeboina",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "kristapati.v.reddy",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "vinesh.goud.pabbathi",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "krishna.c.kolluru",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "ankita.bhattacharya",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "osuru.alekhyareddy",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "hajara.ayyubkhan",
+                                                "name": "hajara.ayyubkhan",
+                                                "members": [
+                                                                {
+                                                                                "name": "vignesh.jagathisan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "naveen.arunachalam",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "radha.nachiappan",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "reshma.sundar",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "h.udhayakumar",
+                                                                                "location": "Chennai, CDC2F",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sai.kumar.mandala",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "v.w.chandrasekaran",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "k.tamilzharasu",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "khageswar.nayak",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "prasanna.pandian",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "himanshu.m.jain",
+                                                "name": "himanshu.m.jain",
+                                                "members": [
+                                                                {
+                                                                                "name": "m.ishwar.jaxanni",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "Sangeetha.Pandian",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "v.uma.maheswari",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "r.e.muthusamy",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "anusha.goriparthi",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "s.boya.kumarii",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "shivani.bhikaji.mane",
+                                                                                "location": "Pune, PDC2C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sonia.n.sharma",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "harish.vijiyakumar",
+                                                                                "location": "Hyderabad, HDC2A",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "r.kalia.moorthy",
+                                                "name": "r.kalia.moorthy",
+                                                "members": [
+                                                                {
+                                                                                "name": "komal.balu.darekar",
+                                                                                "location": "Navi Mumbai, MDC5C",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "nalluri.vishnupriya",
+                                                                                "location": "Chennai, CDC2F",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "k.p.palanisamy",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "logapriya.govindaraj",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "s.manmit.vanarase",
+                                                                                "location": "Navi Mumbai, MDC5C",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "sowndarya.sowrirajan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "p.mohandass",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "komal.v.sharma",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "11"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "j.damodaran",
+                                                "name": "j.damodaran",
+                                                "members": [
+                                                                {
+                                                                                "name": "a.nanditha.uddaraju",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "ramya.s.jayasankar",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "m.gouda.hittalamani",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sriram.a.karthikeyan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "monisha.garapati",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sai.priyanka.vasa",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "vinesha.ravi",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "ihsana.p.abdulla",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "jothika.sundaram",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "abhijit.a.nandi",
+                                                                                "location": "Kolkata, KDC1A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "ayush.ad.singh",
+                                                                                "location": "Gurugram, DDC5E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "divya.belli",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "pirtheebaa.krishnan",
+                                                "name": "pirtheebaa.krishnan",
+                                                "members": [
+                                                                {
+                                                                                "name": "nagaratna.naik",
+                                                                                "location": "Bengaluru, BDC6F",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "vaishnavi.rajput",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "p.haribhau.tadke",
+                                                                                "location": "Navi Mumbai, MDC5C",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "sushmeta.rajkumar",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "h.anbalagan.deepa",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "ganga.m.reddy.padala",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "nithish.mode",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "haritha.bomma.reddy",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "pujitha.r.gogireddy",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "suchita.bandanadam",
+                                                                                "location": "Bengaluru, BDC7B",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "nathiya.velu",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "leena.a.das",
+                                                "name": "leena.a.das",
+                                                "members": [
+                                                                {
+                                                                                "name": "h.kouser",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "arun.thangapandian",
+                                                                                "location": "Coimbatore, CODC1A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "swati.bo.sharma",
+                                                                                "location": "Noida, DDC4A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "shivaprasad.malekar",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "shyam.pranav.vs",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "shaik.jainulabdin",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sushilkumar.b.jangid",
+                                                                                "location": "Jaipur, JPDC1A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "lakshmi.e.j",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "jabeen.iqbal",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "santhwana.m.r",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "rose.benedict",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "sonal.futane",
+                                                "name": "sonal.futane",
+                                                "members": [
+                                                                {
+                                                                                "name": "bandi.sunanda",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "reshmi.doddi",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "vadde.bindu",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "mohammad.samreen",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "shaik.yasin",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "hanshika.saday",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "guddeti.srilekha",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "naga.v.pachipulusu",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "r.yuvanitharsana",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                },
+                                {
+                                                "id": "vishnu.ramalingam",
+                                                "name": "vishnu.ramalingam",
+                                                "members": [
+                                                                {
+                                                                                "name": "anand.b.gadad",
+                                                                                "location": "Bengaluru, BDC14A",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "aishwarya.narvankar",
+                                                                                "location": "Navi Mumbai, MDC5C",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "v.b.sivakumar",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "n.g.senthil.kumar",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "10"
+                                                                },
+                                                                {
+                                                                                "name": "n.sargurunathan",
+                                                                                "location": "Chennai, CDC2E",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sai.sneha.l.malapati",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "sairam.pamarthi",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "thanmayee.galeti",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "kalpana.boodidha",
+                                                                                "location": "Hyderabad, HDC3B",
+                                                                                "level": "11"
+                                                                },
+                                                                {
+                                                                                "name": "vadde.veena.sree",
+                                                                                "location": "Hyderabad, HDC3C",
+                                                                                "level": "12"
+                                                                },
+                                                                {
+                                                                                "name": "ritwik.sathishmohan",
+                                                                                "location": "Hyderabad, HDC4A",
+                                                                                "level": "12"
+                                                                }
+                                                ]
+                                }
+                ]
+};
+
+        const leaveCategories = [
+            { code: 'P', name: 'Present' },
+            { code: 'VG', name: 'Vacation Granted' },
+            { code: 'VR', name: 'Vacation Requested' },
+            { code: 'C', name: 'Comp-off' },
+            { code: 'SL', name: 'Sick Leave' },
+            { code: 'OP', name: 'Optional Holiday' },
+            { code: 'MH', name: 'Mandatory Holiday' },
+            { code: 'UP', name: 'Unplanned' },
+            { code: 'CL', name: 'Casual Leave' },
+            { code: 'CG', name: 'COVID Caregiver' },
+            { code: 'T', name: 'Trainings' },
+            { code: 'AT', name: 'ASE Trainings' },
+            { code: 'ML', name: 'Maternal/Paternal' }
+        ];
+
+        // Holiday mapping by location (from Excel files)
+        const holidaysByLocation = {
+    "Jaipur, Rajasthan": [
+        {
+            "date": "2026-01-14",
+            "name": "Makar Sankranti / Uttarayan"
+        },
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-03-03",
+            "name": "Dhulandi / Holi (Second Day)"
+        },
+        {
+            "date": "2026-05-28",
+            "name": "Bakrid (Idul Azha)"
+        },
+        {
+            "date": "2026-08-28",
+            "name": "Raksha Bandhan"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Bangalore, Karnataka": [
+        {
+            "date": "2026-01-15",
+            "name": "Sankranti/ Pongal/ Makar Sankranti "
+        },
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-28",
+            "name": "Bakrid (Idul Azha)"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-21",
+            "name": "Dussehra / Vijay Dasami / / Durga Puja, Dasami / Next day of Vijaya Dasami"
+        },
+        {
+            "date": "2026-11-10",
+            "name": "Balipadyami, Deepavali"
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Chennai, Tamil Nadu": [
+        {
+            "date": "2026-01-15",
+            "name": "Sankranti/ Pongal/ Makar Sankranti "
+        },
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-28",
+            "name": "Bakrid (Idul Azha)"
+        },
+        {
+            "date": "2026-09-14",
+            "name": "Ganesh Chaturthi / Vinayakar Chathurthi"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Coimbatore, Tamil Nadu": [
+        {
+            "date": "2026-01-15",
+            "name": "Sankranti/ Pongal/ Makar Sankranti "
+        },
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-28",
+            "name": "Bakrid (Idul Azha)"
+        },
+        {
+            "date": "2026-09-14",
+            "name": "Ganesh Chaturthi / Vinayakar Chathurthi"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Hyderabad, Telangana": [
+        {
+            "date": "2026-01-15",
+            "name": "Sankranti/ Pongal/ Makar Sankranti "
+        },
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-27",
+            "name": "Bakrid (Idul Azha) / Id-Ud-Zoha/ Eid-Ul-Adha"
+        },
+        {
+            "date": "2026-06-02",
+            "name": "Telangana State Formation Day"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-21",
+            "name": "Dussehra / Vijay Dasami / / Durga Puja, Dasami / Next day of Vijaya Dasami"
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Kolkata, West Bengal": [
+        {
+            "date": "2026-01-23",
+            "name": "Netaji's Birthday"
+        },
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-27",
+            "name": "Bakrid (Idul Azha) / Id-Ud-Zoha/ Eid-Ul-Adha"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-19",
+            "name": "Durga Puja - Ashtami"
+        },
+        {
+            "date": "2026-10-21",
+            "name": "Dussehra / Vijay Dasami / / Durga Puja, Dasami / Next day of Vijaya Dasami"
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Noida, Uttar Pradesh": [
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-03-04",
+            "name": "Holi / Duleti / Dol Purnima "
+        },
+        {
+            "date": "2026-04-14",
+            "name": "Dr. Baba Saheb Ambedkar's Birthday "
+        },
+        {
+            "date": "2026-05-27",
+            "name": "Bakrid (Idul Azha) / Id-Ud-Zoha/ Eid-Ul-Adha"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-11-24",
+            "name": "Kartik Purnima/Guru nanak / Guru Teg Bahadur\u2019s Martyrdom \nDay / Guru Nanak Dev Jayanti"
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Gurugram, Haryana": [
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-03-04",
+            "name": "Holi / Duleti / Dol Purnima "
+        },
+        {
+            "date": "2026-05-27",
+            "name": "Bakrid (Idul Azha) / Id-Ud-Zoha/ Eid-Ul-Adha"
+        },
+        {
+            "date": "2026-08-28",
+            "name": "Raksha Bandhan"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-11-24",
+            "name": "Kartik Purnima/Guru nanak / Guru Teg Bahadur\u2019s Martyrdom \nDay / Guru Nanak Dev Jayanti"
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Mumbai, Maharashtra": [
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-03-03",
+            "name": "Dhulandi / Holi (Second Day)"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-28",
+            "name": "Bakrid (Idul Azha)"
+        },
+        {
+            "date": "2026-09-14",
+            "name": "Ganesh Chaturthi / Vinayakar Chathurthi"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Pune, Maharashtra": [
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-03-03",
+            "name": "Dhulandi / Holi (Second Day)"
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-28",
+            "name": "Bakrid (Idul Azha)"
+        },
+        {
+            "date": "2026-09-14",
+            "name": "Ganesh Chaturthi / Vinayakar Chathurthi"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ],
+    "Bhubaneswar, Odisha": [
+        {
+            "date": "2026-01-26",
+            "name": "Republic Day"
+        },
+        {
+            "date": "2026-03-04",
+            "name": "Holi / Duleti / Dol Purnima "
+        },
+        {
+            "date": "2026-05-01",
+            "name": "May Day"
+        },
+        {
+            "date": "2026-05-27",
+            "name": "Bakrid (Idul Azha) / Id-Ud-Zoha/ Eid-Ul-Adha"
+        },
+        {
+            "date": "2026-07-16",
+            "name": "Rath Yatra"
+        },
+        {
+            "date": "2026-10-02",
+            "name": "Mahatma Gandhi Jayanti"
+        },
+        {
+            "date": "2026-10-20",
+            "name": "Dussehra / Vijay Dasami / Dasara "
+        },
+        {
+            "date": "2026-12-25",
+            "name": "Christmas"
+        }
+    ]
+};
+
+        // Map office locations to city, state format for holiday lookup
+        const locationMapper = {
+            'Bengaluru': 'Bangalore, Karnataka',
+            'Bangalore': 'Bangalore, Karnataka',
+            'Hyderabad': 'Hyderabad, Telangana',
+            'Chennai': 'Chennai, Tamil Nadu',
+            'Coimbatore': 'Coimbatore, Tamil Nadu',
+            'Gurugram': 'Gurugram, Haryana',
+            'Noida': 'Noida, Uttar Pradesh',
+            'Kolkata': 'Kolkata, West Bengal',
+            'Mumbai': 'Mumbai, Maharashtra',
+            'Navi Mumbai': 'Mumbai, Maharashtra',
+            'Pune': 'Pune, Maharashtra',
+            'Jaipur': 'Jaipur, Rajasthan',
+            'Bhubaneswar': 'Bhubaneswar, Odisha'
+        };
+
+        // Helper function to normalize location from office format to city-state format
+        function normalizeLocation(officeLocation) {
+            if (!officeLocation) return null;
+            
+            // Extract city name (part before comma)
+            const city = officeLocation.split(',')[0].trim();
+            
+            // Return mapped location or null
+            return locationMapper[city] || null;
+        }
+
+        // Helper function to check if a date is a holiday for a specific location
+        function isHoliday(location, year, month, day) {
+            if (!location) return null;
+            
+            // Normalize the location to city-state format
+            const normalizedLocation = normalizeLocation(location);
+            if (!normalizedLocation || !holidaysByLocation[normalizedLocation]) return null;
+            
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const holidays = holidaysByLocation[normalizedLocation];
+            const holiday = holidays.find(h => h.date === dateStr);
+            
+            return holiday;
+        }
+
+        let currentTeamMembers = [];
+        let attendanceData = {};
+        let autoSaveTimer = null;
+
+        // Initialize function
+        function init() {
+            console.log('Initializing tracker...');
+            
+            loadLeads();
+            populateLevelDropdown();
+            setCurrentMonth();
+            loadAttendanceFromStorage();
+            
+            console.log('Initialization complete');
+        }
+
+        function loadLeads(filterByLevel = null) {
+            const leadSelect = document.getElementById('leadSelect');
+            
+            if (!leadSelect) {
+                console.error('Lead select element not found!');
+                return;
+            }
+            
+            // Store current selection
+            const currentSelection = leadSelect.value;
+            
+            // Clear existing options except the first "-- Select Lead --"
+            leadSelect.innerHTML = '<option value="">-- Select Lead --</option>';
+            
+            let leadsToShow = teamData.leads;
+            
+            // If a level is selected, filter leads to only show those with members at that level
+            if (filterByLevel) {
+                leadsToShow = teamData.leads.filter(lead => 
+                    lead.members.some(member => member.level === filterByLevel)
+                );
+            }
+            
+            leadsToShow.forEach(lead => {
+                const option = document.createElement('option');
+                option.value = lead.id;
+                option.textContent = lead.name;
+                leadSelect.appendChild(option);
+            });
+            
+            // Restore selection if it still exists in filtered list
+            if (currentSelection && Array.from(leadSelect.options).some(opt => opt.value === currentSelection)) {
+                leadSelect.value = currentSelection;
+            }
+            
+            console.log('Leads loaded successfully:', leadSelect.options.length);
+        }
+
+        function setCurrentMonth() {
+            document.getElementById('monthSelect').value = 0; // January
+            document.getElementById('yearSelect').value = 2026;
+        }
+
+        let allTeamMembers = [];
+
+        function loadTeamMembers() {
+            const leadId = document.getElementById('leadSelect').value;
+            
+            // When lead changes, update level dropdown to show only levels from this lead
+            populateLevelDropdown(leadId);
+            
+            // Reset month to January when lead changes
+            if (leadId) {
+                document.getElementById('monthSelect').value = 0;
+            }
+            
+            // Apply filter (will handle both lead and level filtering)
+            filterByLevel();
+        }
+
+        function populateLevelDropdown(filterByLeadId = null) {
+            const levelFilter = document.getElementById('levelFilter');
+            
+            // Store current selection
+            const currentSelection = levelFilter.value;
+            
+            // Get team members based on whether a lead is selected
+            let membersToCheck = [];
+            
+            if (filterByLeadId) {
+                // If a lead is selected, only get levels from that lead's team
+                const lead = teamData.leads.find(l => l.id === filterByLeadId);
+                if (lead) {
+                    membersToCheck = lead.members;
+                }
+            } else {
+                // Otherwise, get all team members from all leads
+                teamData.leads.forEach(lead => {
+                    membersToCheck.push(...lead.members);
+                });
+            }
+            
+            // Get unique levels from team members
+            const uniqueLevels = [...new Set(membersToCheck.map(member => member.level))]
+                .filter(level => level) // Remove undefined/null
+                .sort((a, b) => parseInt(a) - parseInt(b)); // Sort numerically
+            
+            // Clear and populate dropdown
+            levelFilter.innerHTML = '<option value="">-- All Levels --</option>';
+            
+            uniqueLevels.forEach(level => {
+                const option = document.createElement('option');
+                option.value = level;
+                option.textContent = `Level ${level}`;
+                levelFilter.appendChild(option);
+            });
+            
+            // Restore selection if it still exists in filtered list
+            if (currentSelection && Array.from(levelFilter.options).some(opt => opt.value === currentSelection)) {
+                levelFilter.value = currentSelection;
+            }
+        }
+
+        function filterByLevel() {
+            const selectedLevel = document.getElementById('levelFilter').value;
+            const leadId = document.getElementById('leadSelect').value;
+            
+            // When level changes, update lead dropdown to show only leads with this level
+            loadLeads(selectedLevel);
+            
+            // If neither lead nor level is selected
+            if (!leadId && !selectedLevel) {
+                document.getElementById('tableContainer').innerHTML = 
+                    '<div class="no-data">Please select a lead or level to view attendance tracker</div>';
+                document.getElementById('statsContainer').style.display = 'none';
+                document.getElementById('actionButtons').style.display = 'none';
+                return;
+            }
+            
+            let filteredMembers = [];
+            
+            // Case 1: Both lead AND level are selected
+            if (leadId && selectedLevel) {
+                const lead = teamData.leads.find(l => l.id === leadId);
+                filteredMembers = lead.members.filter(member => member.level === selectedLevel);
+            }
+            // Case 2: Only lead is selected (no level filter)
+            else if (leadId && !selectedLevel) {
+                const lead = teamData.leads.find(l => l.id === leadId);
+                filteredMembers = lead.members;
+            }
+            // Case 3: Only level is selected (no lead filter - show across all leads)
+            else if (!leadId && selectedLevel) {
+                teamData.leads.forEach(lead => {
+                    const membersAtLevel = lead.members.filter(member => member.level === selectedLevel);
+                    filteredMembers.push(...membersAtLevel);
+                });
+            }
+            
+            allTeamMembers = filteredMembers;
+            currentTeamMembers = filteredMembers;
+
+            generateAttendanceTable();
+            updateStats();
+        }
+
+        function generateAttendanceTable() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            if (currentTeamMembers.length === 0) {
+                document.getElementById('tableContainer').innerHTML = '<div class="no-data">Please select a lead or level to view attendance tracker</div>';
+                document.getElementById('statsContainer').style.display = 'none';
+                document.getElementById('actionButtons').style.display = 'none';
+                return;
+            }
+
+            let html = '<table>';
+            html += '<tr><th class="member-name">👤 Team Member</th><th class="location">📍 Location</th>';
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+                const isWeekend = (dayOfWeek === 'Sat' || dayOfWeek === 'Sun');
+                html += `<th class="day-cell">${day}<br>${dayOfWeek}${isWeekend ? ' 🏖️' : ''}</th>`;
+            }
+            html += '<th class="total-cell">📊 Total</th></tr>';
+
+            currentTeamMembers.forEach((member, memberIndex) => {
+                const memberName = typeof member === 'string' ? member : member.name;
+                const memberLocation = typeof member === 'object' ? member.location : '';
+                
+                html += `<tr>`;
+                html += `<td class="member-name">${memberName}</td>`;
+                html += `<td class="location">${memberLocation}</td>`;
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month, day);
+                    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    const isWeekend = (dayOfWeek === 'Sat' || dayOfWeek === 'Sun');
+                    
+                    // Check if date is a holiday
+                    const holiday = isHoliday(memberLocation, year, month, day);
+                    
+                    let value = getAttendanceValue(member, year, month, day);
+                    let isDisabled = false;
+                    
+                    if (!value) {
+                        if (isWeekend) {
+                            value = ''; // Keep empty, just disable
+                            isDisabled = true;
+                        } else if (holiday) {
+                            value = 'MH'; // Mark as Mandatory Holiday
+                        } else {
+                            value = ''; // Leave empty for user to select
+                        }
+                    } else {
+                        // If saved value exists and it's a weekend, keep it disabled
+                        if (isWeekend) {
+                            isDisabled = true;
+                        }
+                    }
+                    
+                    let title = '';
+                    if (holiday) {
+                        title = `title="${holiday.name}"`;
+                    }
+                    
+                    const disabledAttr = isDisabled ? 'disabled' : '';
+                    
+                    html += `<td class="day-cell">`;
+                    html += `<select class="attendance-select status-${value}" id="cell_${memberIndex}_${day}" 
+                             onchange="updateCellColor(this); calculateTotal(${memberIndex}); saveToLocalStorage();" ${title} ${disabledAttr}>`;
+                    
+                    // Add empty option as first option
+                    const emptySelected = value === '' ? 'selected' : '';
+                    html += `<option value="" ${emptySelected}>-- Select --</option>`;
+                    
+                    leaveCategories.forEach(cat => {
+                        const selected = cat.code === value ? 'selected' : '';
+                        html += `<option value="${cat.code}" ${selected}>${cat.code} - ${cat.name}</option>`;
+                    });
+                    
+                    html += '</select></td>';
+                }
+                
+                html += `<td class="total-cell" id="total_${memberIndex}">0</td>`;
+                html += '</tr>';
+            });
+
+            html += '</table>';
+            document.getElementById('tableContainer').innerHTML = html;
+            document.getElementById('statsContainer').style.display = 'flex';
+            document.getElementById('actionButtons').style.display = 'flex';
+
+            // Calculate totals for all members
+            currentTeamMembers.forEach((member, index) => {
+                calculateTotal(index);
+            });
+            
+            // Update stats (total days, weekends, working days)
+            updateStats();
+        }
+
+        function updateStats() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let workingDays = 0;
+            let weekendDays = 0;
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayOfWeek = date.getDay();
+                
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    weekendDays++;
+                } else {
+                    workingDays++;
+                }
+            }
+            
+            document.getElementById('totalDays').textContent = daysInMonth;
+            document.getElementById('workingDays').textContent = workingDays;
+            document.getElementById('weekendDays').textContent = weekendDays;
+        }
+
+        function saveToLocalStorage() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            currentTeamMembers.forEach((member, memberIndex) => {
+                const memberName = typeof member === 'string' ? member : member.name;
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const cell = document.getElementById(`cell_${memberIndex}_${day}`);
+                    if (cell) {
+                        const key = `${year}-${month}-${day}-${memberName}`;
+                        attendanceData[key] = cell.value;
+                    }
+                }
+            });
+
+            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+            localStorage.setItem('lastModified', new Date().toISOString());
+            localStorage.setItem('lastModifiedBy', navigator.userAgent);
+        }
+        
+        function saveToSharedFile() {
+            // Prepare data
+            const dataToExport = {
+                lastUpdated: new Date().toISOString(),
+                attendanceData: attendanceData
+            };
+            
+            const jsonString = JSON.stringify(dataToExport, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Attendance_Data_2026.json';
+            
+            // Silently trigger download
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function autoSyncSharedFile() {
+            // This would need a server or shared network drive with proper permissions
+            // For now, just remind users to load manually
+            const lastSync = localStorage.getItem('lastSyncTime');
+            const now = Date.now();
+            
+            if (!lastSync || (now - parseInt(lastSync)) > 300000) { // 5 minutes
+                localStorage.setItem('lastSyncTime', now.toString());
+            }
+        }
+        
+        function updateCellColor(selectElement) {
+            // Remove all existing status classes
+            selectElement.className = selectElement.className.replace(/\bstatus-\S+/g, '').trim();
+            
+            // Add the new status class based on selected value
+            const selectedValue = selectElement.value;
+            if (selectedValue) {
+                selectElement.classList.add(`status-${selectedValue}`);
+            }
+        }
+        
+        function calculateTotal(memberIndex) {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let presentCount = 0;
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.getElementById(`cell_${memberIndex}_${day}`);
+                if (cell && (cell.value === 'P' || cell.value === 'C')) {
+                    presentCount++;
+                }
+            }
+            
+            const totalCell = document.getElementById(`total_${memberIndex}`);
+            if (totalCell) {
+                totalCell.textContent = presentCount;
+            }
+        }
+
+        function getAttendanceValue(member, year, month, day) {
+            const memberName = typeof member === 'string' ? member : member.name;
+            const key = `${year}-${month}-${day}-${memberName}`;
+            return attendanceData[key] || '';
+        }
+
+        function saveAttendance() {
+            const leadId = document.getElementById('leadSelect').value;
+            if (!leadId) {
+                alert('Please select a lead first');
+                return;
+            }
+            
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            attendanceData = {};
+
+            currentTeamMembers.forEach((member, memberIndex) => {
+                const memberName = typeof member === 'string' ? member : member.name;
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const cell = document.getElementById(`cell_${memberIndex}_${day}`);
+                    if (cell) {
+                        const key = `${year}-${month}-${day}-${memberName}`;
+                        attendanceData[key] = cell.value;
+                    }
+                }
+            });
+
+            // Save to localStorage
+            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+            
+            // Export to Excel file
+            exportToExcel();
+        }
+        
+        function exportToJSON() {
+            // Prepare attendance data for export
+            const exportData = {
+                version: '1.0',
+                lastUpdated: new Date().toISOString(),
+                lastModifiedBy: localStorage.getItem('lastModifiedBy') || 'Unknown',
+                attendanceData: attendanceData,
+                metadata: {
+                    totalRecords: Object.keys(attendanceData).length,
+                    exportDate: new Date().toISOString()
+                }
+            };
+            
+            const jsonString = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Attendance_Data.json';
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert('✅ JSON file exported successfully!\n\nNext step: Upload this file to SharePoint folder:\nhttps://ts.accenture.com/:f:/r/sites/mySPTesting/Shared%20Documents/General/01%20-%20Deliverables/Leave%20Tracker-%20Test(Do%20Not%20Delete)');
+        }
+        
+        function loadFromSharePoint() {
+            // Create file input to load JSON from SharePoint
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const jsonData = JSON.parse(e.target.result);
+                        
+                        // Validate JSON structure
+                        if (!jsonData.attendanceData) {
+                            throw new Error('Invalid JSON format: missing attendanceData');
+                        }
+                        
+                        // Merge imported data with existing data
+                        Object.assign(attendanceData, jsonData.attendanceData);
+                        
+                        // Save to localStorage
+                        localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                        
+                        // Refresh the table
+                        generateAttendanceTable();
+                        
+                        alert(`✅ Data loaded successfully!\n\nRecords imported: ${Object.keys(jsonData.attendanceData).length}\nLast updated: ${jsonData.lastUpdated || 'Unknown'}`);
+                    } catch (error) {
+                        alert('❌ Error loading JSON file: ' + error.message);
+                        console.error('Error parsing JSON:', error);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function exportToExcel() {
+            const leadId = document.getElementById('leadSelect').value;
+            const lead = teamData.leads.find(l => l.id === leadId);
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const monthName = new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long' });
+
+            // Create Excel-compatible HTML table
+            let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+            html += '<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+            html += `<x:Name>Attendance ${monthName} ${year}</x:Name>`;
+            html += '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>';
+            html += '<body><table border="1">';
+            
+            // Title row
+            html += `<tr><td colspan="${daysInMonth + 3}" style="text-align:center;font-weight:bold;font-size:14pt;">`;
+            html += `Team Attendance - ${lead.name} - ${monthName} ${year}</td></tr>`;
+            
+            // Header row
+            html += '<tr style="background-color:#667eea;color:white;font-weight:bold;">';
+            html += '<td>👤 Team Member</td><td>📍 Location</td>';
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+                html += `<td>${day}<br>${dayOfWeek}</td>`;
+            }
+            html += '<td>📊 Total Present</td></tr>';
+
+            // Data rows
+            currentTeamMembers.forEach((member, memberIndex) => {
+                const memberName = typeof member === 'string' ? member : member.name;
+                const memberLocation = typeof member === 'object' ? member.location : '';
+                html += '<tr>';
+                html += `<td>${memberName}</td><td>${memberLocation}</td>`;
+                let presentCount = 0;
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const cell = document.getElementById(`cell_${memberIndex}_${day}`);
+                    const value = cell ? cell.value : 'P';
+                    
+                    // Color coding based on status
+                    let bgColor = '';
+                    switch(value) {
+                        case 'P': bgColor = '#d4edda'; break;
+                        case 'W': bgColor = '#c3e6cb'; break;
+                        case 'VG': bgColor = '#cce5ff'; break;
+                        case 'VR': bgColor = '#e7f3ff'; break;
+                        case 'C': bgColor = '#d1ecf1'; break;
+                        case 'SL': bgColor = '#f8d7da'; break;
+                        case 'OP': bgColor = '#fff3cd'; break;
+                        case 'MH': bgColor = '#ffeaa7'; break;
+                        case 'UP': bgColor = '#fdd'; break;
+                        case 'CL': bgColor = '#e2e3e5'; break;
+                        case 'CG': bgColor = '#fce4ec'; break;
+                        case 'T': bgColor = '#e1bee7'; break;
+                        case 'AT': bgColor = '#d1c4e9'; break;
+                        case 'ML': bgColor = '#f3e5f5'; break;
+                    }
+                    
+                    html += `<td style="background-color:${bgColor};text-align:center;">${value}</td>`;
+                    if (value === 'P' || value === 'C') presentCount++;
+                }
+                
+                html += `<td style="font-weight:bold;background-color:#f8f9fa;">${presentCount}</td></tr>`;
+            });
+
+            html += '</table></body></html>';
+
+            // Create blob and download
+            const blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Attendance_${lead.name}_${monthName}_${year}.xls`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert('✅ Attendance saved successfully!\n\nFile downloaded: Attendance_' + lead.name + '_' + monthName + '_' + year + '.xls\n\nPlease save it to: C:\\Users\\leena.a.das\\Leave Tracker');
+        }
+
+        function loadAttendanceFromStorage() {
+            const saved = localStorage.getItem('attendanceData');
+            if (saved) {
+                try {
+                    attendanceData = JSON.parse(saved);
+                    console.log('Loaded attendance data from localStorage');
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                    attendanceData = {};
+                }
+            }
+        }
+
+        function startAutoSync() {
+            // Placeholder for future auto-sync functionality
+            // Currently just using localStorage
+        }
+
+        function exportData() {
+            const leadId = document.getElementById('leadSelect').value;
+            const lead = teamData.leads.find(l => l.id === leadId);
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const monthName = new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long' });
+
+            let csv = `Team Attendance - ${lead.name} - ${monthName} ${year}\n\n`;
+            csv += 'Team Member,';
+            
+            // Headers
+            for (let day = 1; day <= daysInMonth; day++) {
+                csv += `${day},`;
+            }
+            csv += 'Total Present\n';
+
+            // Data rows
+            currentTeamMembers.forEach((member, memberIndex) => {
+                const memberName = typeof member === 'string' ? member : member.name;
+                const memberLocation = typeof member === 'object' ? member.location : '';
+                csv += `${memberName} (${memberLocation}),`;
+                let presentCount = 0;
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const cell = document.getElementById(`cell_${memberIndex}_${day}`);
+                    const value = cell ? cell.value : 'P';
+                    csv += `${value},`;
+                    if (value === 'P' || value === 'W') presentCount++;
+                }
+                
+                csv += `${presentCount}\n`;
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `attendance_${lead.name}_${monthName}_${year}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            init();
+        });
+        
+        // Fallback if DOMContentLoaded already fired
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(init, 100);
+        }
+    </script>
+</body>
+</html>
