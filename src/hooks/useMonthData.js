@@ -62,13 +62,18 @@ export function useMonthData(monthKey, user) {
           // No data for this month — seed with INIT defaults
           const def = getDefaultData();
           const now = new Date().toISOString();
+          const stampSsa = (rows, mk) =>
+            rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, ...r }) => ({
+              ...r, month_key: mk, last_edited_by: '', last_edited_at: null,
+              deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
+            }));
           const stamp = (rows, mk) =>
             rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: mk, last_edited_by: '', last_edited_at: null }));
 
           await Promise.all([
             upsertRows('dsp_manual', stamp(def.dspManual, monthKey)),
             upsertRows('dsp_auto',   stamp(def.dspAuto,   monthKey)),
-            upsertRows('ssa_data',   stamp(def.ssaData,   monthKey)),
+            upsertRows('ssa_data',   stampSsa(def.ssaData,   monthKey)),
             upsertRows('team_data',  stamp(def.teamData,  monthKey)),
           ]);
 
@@ -87,6 +92,11 @@ export function useMonthData(monthKey, user) {
             ...r,
             lastEditedBy: r.last_edited_by ?? '',
             lastEditedAt: r.last_edited_at ?? '',
+            // SSA snake_case → camelCase
+            ...(r.deal_id  !== undefined ? { dealId:  r.deal_id  } : {}),
+            ...(r.deal_id2 !== undefined ? { dealId2: r.deal_id2 } : {}),
+            ...(r.deal_id3 !== undefined ? { dealId3: r.deal_id3 } : {}),
+            ...(r.deal_id4 !== undefined ? { dealId4: r.deal_id4 } : {}),
           }));
 
         const ndm = normalize(dm);
@@ -156,7 +166,10 @@ export function useMonthData(monthKey, user) {
       if (moduleKey === 'ssa') {
         const logs = diffRows(snapshotRef.current.ssaData, ssaData, 'SSA', changedBy, monthKey);
         const toDb = (rows) =>
-          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
+          rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, ...r }) => ({
+            ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null,
+            deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
+          }));
         await Promise.all([
           upsertRows('ssa_data', toDb(ssaData)),
           insertActivityLogs(logs),
