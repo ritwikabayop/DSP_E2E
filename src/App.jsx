@@ -296,31 +296,7 @@ function App() {
                 />
               </div>
             )}
-            {!collapsed && (
-              <div style={{ marginBottom: 8 }}>
-                <Tag style={{
-                  background: roleConfig.bg, color: roleConfig.color,
-                  border: '1px solid ' + roleConfig.border,
-                  fontSize: 10, padding: '1px 6px', marginBottom: 4, display: 'inline-block',
-                }}>
-                  {React.createElement(RoleIcon, { size: 9, style: { marginRight: 3, verticalAlign: 'middle' } })}
-                  {roleConfig.label}
-                </Tag>
-                <Text style={{ color: '#374151', fontSize: 10, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={displayName}>
-                  {displayName}
-                </Text>
-              </div>
-            )}
-            <Tooltip title={collapsed ? 'Sign out' : ''} placement="right">
-              <Button
-                size="small" type="text" danger
-                icon={React.createElement(LogOut, { size: 13 })}
-                onClick={signOut}
-                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: 6 }}
-              >
-                {!collapsed && 'Sign out'}
-              </Button>
-            </Tooltip>
+
           </div>
         </Sider>
 
@@ -369,6 +345,30 @@ function App() {
                 <Button size="small" icon={React.createElement(Copy, { size: 12 })} onClick={handleCopy}>
                   Copy
                 </Button>
+              </Tooltip>
+
+              {/* Divider */}
+              <div style={{ width: 1, height: 20, background: '#1e2332', margin: '0 4px' }} />
+
+              {/* Profile pill */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: '#1a2035', border: '1px solid #1e2332' }}>
+                <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #22c55e, #16a34a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  {React.createElement(RoleIcon, { size: 11, color: '#fff' })}
+                </div>
+                <div style={{ lineHeight: 1.2, maxWidth: 160 }}>
+                  <div style={{ color: '#e2e8f0', fontSize: 11, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={displayName}>{displayName}</div>
+                  <div style={{ color: roleConfig.color, fontSize: 10, fontWeight: 700 }}>{roleConfig.label}</div>
+                </div>
+              </div>
+
+              {/* Logout */}
+              <Tooltip title="Sign out">
+                <Button
+                  size="small" danger type="text"
+                  icon={React.createElement(LogOut, { size: 13 })}
+                  onClick={signOut}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                />
               </Tooltip>
 
               {anyDirty && (
