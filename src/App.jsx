@@ -6,7 +6,7 @@ import {
 import {
   Home, Monitor, Shield, Users, FileText, Activity,
   FileSpreadsheet, Calendar, Search, Copy, Save, Download,
-  PenTool, Eye, AlertTriangle, LogOut,
+  PenTool, Eye, AlertTriangle, LogOut, UserCog,
 } from 'lucide-react';
 
 // Auth + data hooks
@@ -21,6 +21,7 @@ import SSASheet         from './components/sheets/SSASheet.jsx';
 import TeamSheet        from './components/sheets/TeamSheet.jsx';
 import ReportSheet      from './components/sheets/ReportSheet.jsx';
 import ActivityLogSheet from './components/sheets/ActivityLogSheet.jsx';
+import UsersSheet       from './components/sheets/UsersSheet.jsx';
 
 // Utils
 import { MONTH_OPTIONS, ROLES, currentMonthKey } from './utils/constants.js';
@@ -174,7 +175,8 @@ function App() {
       ),
     },
     { key: 'report', icon: React.createElement(FileText,  { size: 15 }), label: 'Report' },
-  ].concat(canSeeLogs ? [{ key: 'logs', icon: React.createElement(Activity, { size: 15 }), label: 'Logs' }] : []);
+  ].concat(canSeeLogs ? [{ key: 'logs', icon: React.createElement(Activity, { size: 15 }), label: 'Logs' }] : [])
+   .concat(role === 'admin' ? [{ key: 'users', icon: React.createElement(UserCog, { size: 15 }), label: 'Users' }] : []);
 
   const renderSheet = () => {
     switch (activeTab) {
@@ -221,6 +223,8 @@ function App() {
         );
       case 'logs':
         return React.createElement(ActivityLogSheet, { currentUser: currentUser, role: role });
+      case 'users':
+        return React.createElement(UsersSheet, { currentUserId: user.id });
       default:
         return null;
     }
@@ -270,34 +274,6 @@ function App() {
             style={{ background: 'transparent', border: 'none', marginTop: 6 }}
           />
 
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            borderTop: '1px solid #1e2332',
-            padding: collapsed ? '10px 8px' : '10px 12px',
-            background: '#0f1117',
-          }}>
-            {role !== 'viewer' && (
-              <div style={{ marginBottom: 8 }}>
-                <Segmented
-                  size="small"
-                  value={editMode ? 'edit' : 'view'}
-                  onChange={function(v) { setEditMode(v === 'edit'); }}
-                  options={collapsed
-                    ? [
-                        { value: 'view', label: React.createElement(Eye,    { size: 11 }) },
-                        { value: 'edit', label: React.createElement(PenTool, { size: 11 }) },
-                      ]
-                    : [
-                        { value: 'view', label: React.createElement(Space, { size: 3 }, React.createElement(Eye, { size: 11 }), ' View') },
-                        { value: 'edit', label: React.createElement(Space, { size: 3 }, React.createElement(PenTool, { size: 11 }), ' Edit') },
-                      ]
-                  }
-                  style={{ width: '100%' }}
-                />
-              </div>
-            )}
-
-          </div>
         </Sider>
 
         <Layout style={{ background: '#0d0f18' }}>
@@ -341,6 +317,36 @@ function App() {
             )}
 
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+
+              {/* Edit / View toggle */}
+              {role !== 'viewer' && (
+                <Segmented
+                  size="small"
+                  value={editMode ? 'edit' : 'view'}
+                  onChange={function(v) { setEditMode(v === 'edit'); }}
+                  options={[
+                    { value: 'view', label: React.createElement(Space, { size: 3 }, React.createElement(Eye, { size: 11 }), 'View') },
+                    { value: 'edit', label: React.createElement(Space, { size: 3 }, React.createElement(PenTool, { size: 11 }), 'Edit') },
+                  ]}
+                />
+              )}
+
+              {/* Save button — always visible for non-viewers */}
+              {role !== 'viewer' && (
+                <Tooltip title={anyDirty ? 'Save all unsaved changes' : 'No unsaved changes'}>
+                  <Button
+                    size="small"
+                    icon={React.createElement(Save, { size: 12 })}
+                    onClick={saveAllModules}
+                    disabled={!anyDirty}
+                    type={anyDirty ? 'primary' : 'default'}
+                    style={anyDirty ? { background: '#22c55e', borderColor: '#22c55e', color: '#fff', fontWeight: 600 } : {}}
+                  >
+                    Save
+                  </Button>
+                </Tooltip>
+              )}
+
               <Tooltip title="Copy current sheet as TSV (Excel-ready)">
                 <Button size="small" icon={React.createElement(Copy, { size: 12 })} onClick={handleCopy}>
                   Copy
@@ -371,17 +377,7 @@ function App() {
                 />
               </Tooltip>
 
-              {anyDirty && (
-                <Button
-                  size="small"
-                  icon={React.createElement(Save, { size: 12 })}
-                  onClick={saveAllModules}
-                  className="btn-save-all"
-                  style={{ background: '#d97706', borderColor: '#d97706', color: '#fff', fontWeight: 600 }}
-                >
-                  Save All
-                </Button>
-              )}
+
 
               <Tooltip title="Export month data as JSON">
                 <Button size="small" icon={React.createElement(Download, { size: 12 })} onClick={handleExportJSON}>

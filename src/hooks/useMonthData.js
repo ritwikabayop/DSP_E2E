@@ -63,7 +63,7 @@ export function useMonthData(monthKey, user) {
           const def = getDefaultData();
           const now = new Date().toISOString();
           const stamp = (rows, mk) =>
-            rows.map((r) => ({ ...r, month_key: mk, last_edited_by: '', last_edited_at: '' }));
+            rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: mk, last_edited_by: '', last_edited_at: null }));
 
           await Promise.all([
             upsertRows('dsp_manual', stamp(def.dspManual, monthKey)),
@@ -143,7 +143,7 @@ export function useMonthData(monthKey, user) {
         const logsDa = diffRows(snapshotRef.current.dspAuto,   dspAuto,   'DSP Automation', changedBy, monthKey);
 
         const toDb = (rows) =>
-          rows.map((r) => ({ ...r, month_key: monthKey, last_edited_by: r.lastEditedBy, last_edited_at: r.lastEditedAt }));
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
 
         await Promise.all([
           upsertRows('dsp_manual', toDb(dspManual)),
@@ -156,7 +156,7 @@ export function useMonthData(monthKey, user) {
       if (moduleKey === 'ssa') {
         const logs = diffRows(snapshotRef.current.ssaData, ssaData, 'SSA', changedBy, monthKey);
         const toDb = (rows) =>
-          rows.map((r) => ({ ...r, month_key: monthKey, last_edited_by: r.lastEditedBy, last_edited_at: r.lastEditedAt }));
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
         await Promise.all([
           upsertRows('ssa_data', toDb(ssaData)),
           insertActivityLogs(logs),
@@ -167,7 +167,7 @@ export function useMonthData(monthKey, user) {
       if (moduleKey === 'team') {
         const logs = diffRows(snapshotRef.current.teamData, teamData, 'Team', changedBy, monthKey);
         const toDb = (rows) =>
-          rows.map((r) => ({ ...r, month_key: monthKey, last_edited_by: r.lastEditedBy, last_edited_at: r.lastEditedAt }));
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
         await Promise.all([
           upsertRows('team_data', toDb(teamData)),
           insertActivityLogs(logs),
