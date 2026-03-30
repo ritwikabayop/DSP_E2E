@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Layout, Menu, Space, Badge, ConfigProvider, FloatButton, Modal, Spin,
-  Typography, Tag, Button, Tooltip, Segmented, Select, Input, theme as antTheme,
+  Typography, Tag, Button, Tooltip, Segmented, Select, Input, theme as antTheme, Dropdown,
 } from 'antd';
 import {
   Home, Monitor, Shield, Users, FileText, Activity,
@@ -50,13 +50,14 @@ const DARK_THEME = {
 };
 
 function App() {
-  const { user, profile, role, loading: authLoading, signIn, signOut } = useAuth();
+  const { user, profile, role: authRole, loading: authLoading, signIn, signOut } = useAuth();
 
   const [activeTab,     setActiveTab]     = useState('home');
   const [searchQuery,   setSearchQuery]   = useState('');
   const [editMode,      setEditMode]      = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey());
   const [collapsed,     setCollapsed]     = useState(false);
+  const [viewAsRole,    setViewAsRole]    = useState(null); // admin preview override
 
   const {
     dspManual, setDspManual,
@@ -70,8 +71,8 @@ function App() {
   } = useMonthData(selectedMonth, user);
 
   useEffect(() => {
-    if (role === 'viewer') setEditMode(false);
-  }, [role]);
+    if (authRole === 'viewer') setEditMode(false);
+  }, [authRole]);
 
   const handleMonthChange = (newMonth) => {
     if (Object.values(dirtyModules).some(Boolean)) {
@@ -135,6 +136,8 @@ function App() {
   }
 
   const currentUser = user.email;
+  const actualRole  = authRole ?? 'viewer';
+  const role        = viewAsRole ?? actualRole;
   const anyDirty    = Object.values(dirtyModules).some(Boolean);
   const canSeeLogs  = role === 'admin' || role === 'tl';
   const roleConfig  = ROLES[role] || ROLES.viewer;
@@ -224,7 +227,8 @@ function App() {
       case 'logs':
         return React.createElement(ActivityLogSheet, { currentUser: currentUser, role: role });
       case 'users':
-        return React.createElement(UsersSheet, { currentUserId: user.id });
+        if (role !== 'admin') return null;
+        return React.createElement(UsersSheet, { currentUserId: user.id, role });
       default:
         return null;
     }
@@ -356,26 +360,40 @@ function App() {
               {/* Divider */}
               <div style={{ width: 1, height: 20, background: '#1e2332', margin: '0 4px' }} />
 
-              {/* Profile pill */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: '#1a2035', border: '1px solid #1e2332' }}>
-                <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #22c55e, #16a34a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {React.createElement(RoleIcon, { size: 11, color: '#fff' })}
-                </div>
-                <div style={{ lineHeight: 1.2, maxWidth: 160 }}>
-                  <div style={{ color: '#e2e8f0', fontSize: 11, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={displayName}>{displayName}</div>
-                  <div style={{ color: roleConfig.color, fontSize: 10, fontWeight: 700 }}>{roleConfig.label}</div>
-                </div>
-              </div>
-
-              {/* Logout */}
-              <Tooltip title="Sign out">
-                <Button
-                  size="small" danger type="text"
-                  icon={React.createElement(LogOut, { size: 13 })}
-                  onClick={signOut}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                />
-              </Tooltip>
+              {/* Profile dropdown */}
+              {React.createElement(Dropdown, {
+                trigger: ['click'],
+                menu: {
+                  items: [
+                    { type: 'group', label: displayName },
+                    { type: 'divider' },
+                    ...(actualRole === 'admin' ? [
+                      { type: 'group', label: 'Preview as role' },
+                      ...['admin','tl','tester','viewer'].map((r) => ({
+                        key: 'preview-' + r,
+                        label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6 } },
+                          ROLES[r].label,
+                          viewAsRole === r ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Active') : null
+                        ),
+                        onClick: () => { setViewAsRole(r === actualRole && viewAsRole === null ? null : r === viewAsRole ? null : r); setEditMode(false); setActiveTab('home'); },
+                      }))
+                    ] : []),
+                    { type: 'divider' },
+                    { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: signOut },
+                  ],
+                },
+                children: React.createElement('div', {
+                  style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: '#1a2035', border: '1px solid #1e2332', cursor: 'pointer' }
+                },
+                  React.createElement('div', { style: { width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #22c55e, #16a34a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
+                    React.createElement(RoleIcon, { size: 11, color: '#fff' })
+                  ),
+                  React.createElement('div', { style: { lineHeight: 1.2, maxWidth: 160 } },
+                    React.createElement('div', { style: { color: '#e2e8f0', fontSize: 11, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, title: displayName }, displayName),
+                    React.createElement('div', { style: { color: roleConfig.color, fontSize: 10, fontWeight: 700 } }, roleConfig.label)
+                  )
+                )
+              })}
 
 
 
@@ -388,6 +406,12 @@ function App() {
           </Header>
 
           <Content style={{ background: '#0d0f18', overflow: 'auto' }}>
+            {viewAsRole && (
+              <div style={{ background: '#92400e', color: '#fef3c7', padding: '6px 16px', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span>Previewing as <strong>{ROLES[viewAsRole].label}</strong> — changes are disabled in preview mode</span>
+                <Button size="small" onClick={() => { setViewAsRole(null); setEditMode(false); }} style={{ fontSize: 11 }}>Exit Preview</Button>
+              </div>
+            )}
             {renderSheet()}
           </Content>
         </Layout>

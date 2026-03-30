@@ -23,7 +23,8 @@ const roleTag = (r) => {
   return <Tag color={cfg.color}>{cfg.label}</Tag>;
 };
 
-export default function UsersSheet({ currentUserId }) {
+export default function UsersSheet({ currentUserId, role }) {
+  if (role !== 'admin') return null;
   const [users,   setUsers]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving,  setSaving]  = useState(null); // userId being saved
