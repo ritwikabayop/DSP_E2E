@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/e2e-dashboard/',
+  base: '/DSP_E2E/',
   plugins: [react()],
 })
