@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Tag, Tooltip } from 'antd';
 import {
   FileSpreadsheet, Calendar, LogOut, ArrowRight, ExternalLink,
-  Monitor, Shield, Users, FileText, Activity,
+  Monitor, Shield, Users, FileText, Activity, Video, BookOpen,
 } from 'lucide-react';
 import { ROLES } from '../utils/constants.js';
 
@@ -44,6 +44,25 @@ const modules = [
     action: 'Open Tracker',
     ActionIcon: ExternalLink,
     external: true,
+    externalUrl: import.meta.env.BASE_URL + 'attendance/',
+  },
+  {
+    key: 'kt',
+    label: 'KT Sessions',
+    description: 'DSP and SSA knowledge transfer sessions. Browse session recordings and materials.',
+    icon: Video,
+    color: '#6366f1',
+    bg: 'rgba(99,102,241,0.08)',
+    border: 'rgba(99,102,241,0.25)',
+    hoverBorder: '#6366f1',
+    chips: [
+      { icon: Monitor,  label: 'DSP KT' },
+      { icon: Shield,   label: 'SSA KT' },
+      { icon: BookOpen, label: 'General' },
+    ],
+    action: 'View Sessions',
+    ActionIcon: ArrowRight,
+    external: false,
   },
 ];
 
@@ -56,7 +75,7 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
 
   const handleClick = (mod) => {
     if (mod.external) {
-      window.open(import.meta.env.BASE_URL + 'attendance/', '_blank', 'noopener,noreferrer');
+      window.open(mod.externalUrl, '_blank', 'noopener,noreferrer');
     } else {
       onSelect(mod.key);
     }

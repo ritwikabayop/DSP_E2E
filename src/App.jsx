@@ -16,6 +16,7 @@ import { useMonthData } from './hooks/useMonthData.js';
 // Components
 import LoginPage        from './components/auth/LoginPage.jsx';
 import ModulePicker     from './components/ModulePicker.jsx';
+import KTSessionsPage   from './components/KTSessionsPage.jsx';
 import HomePage         from './components/home/HomePage.jsx';
 import DSPSheet         from './components/sheets/DSPSheet.jsx';
 import SSASheet         from './components/sheets/SSASheet.jsx';
@@ -147,6 +148,14 @@ function App() {
           onSelect={(mod) => setActiveModule(mod)}
           onSignOut={() => { signOut(); setActiveModule(null); }}
         />
+      </ConfigProvider>
+    );
+  }
+
+  if (activeModule === 'kt') {
+    return (
+      <ConfigProvider theme={DARK_THEME}>
+        <KTSessionsPage onBack={() => setActiveModule(null)} />
       </ConfigProvider>
     );
   }
