@@ -56,7 +56,7 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
 
   const handleClick = (mod) => {
     if (mod.external) {
-      window.open('/attendance/', '_blank', 'noopener,noreferrer');
+      window.open(import.meta.env.BASE_URL + 'attendance/', '_blank', 'noopener,noreferrer');
     } else {
       onSelect(mod.key);
     }
