@@ -208,19 +208,32 @@ export default function HomePage({
       <Card
         title={<Space><Globe size={14} /> Environment URLs &amp; Deal IDs</Space>}
         size="small" className="glass-card" style={{ marginTop: 16 }}
-        styles={{ header: { background: '#f0f7ff', borderBottom: '2px solid #91caff' } }}
+        styles={{ header: { background: 'rgba(59,130,246,0.08)', borderBottom: '1px solid rgba(59,130,246,0.2)' } }}
       >
-        <Row gutter={16}>
+        <Row gutter={[16, 12]}>
           {Object.entries(INIT_ENV_CONFIG).map(([env, cfg]) => (
             <Col xs={24} sm={12} key={env}>
-              <div className="env-row">
-                {envTag(env)}
-                <a href={cfg.url} target="_blank" rel="noreferrer" className="env-link">
-                  {cfg.url} <ExternalLink size={11} />
-                </a>
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
-                  <Badge color="#1890ff" text={<Text style={{ fontSize: 11 }}>Manual: <Text copyable strong>{cfg.dealManual}</Text></Text>} />
-                  <Badge color="#52c41a" text={<Text style={{ fontSize: 11 }}>Auto: <Text copyable strong>{cfg.dealAuto}</Text></Text>} />
+              <div style={{
+                background: '#151c2c', border: '1px solid #1e2332', borderRadius: 8,
+                padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 6,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {envTag(env)}
+                  <a
+                    href={cfg.url} target="_blank" rel="noreferrer"
+                    style={{ color: '#60a5fa', fontSize: 12, wordBreak: 'break-all', flex: 1, display: 'flex', alignItems: 'center', gap: 4 }}
+                  >
+                    {cfg.url}
+                    <ExternalLink size={11} style={{ flexShrink: 0 }} />
+                  </a>
+                </div>
+                <div style={{ display: 'flex', gap: 16, paddingLeft: 4 }}>
+                  <Text style={{ fontSize: 11, color: '#8892a4' }}>
+                    Manual: <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealManual}</Text>
+                  </Text>
+                  <Text style={{ fontSize: 11, color: '#8892a4' }}>
+                    Auto: <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealAuto}</Text>
+                  </Text>
                 </div>
               </div>
             </Col>
