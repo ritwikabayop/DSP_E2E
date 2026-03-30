@@ -1,8 +1,9 @@
-import { Row, Col, Card, Typography, Table, Tag, Space, Badge, Progress } from 'antd';
+import { Row, Col, Card, Typography, Table, Tag, Space, Badge, Progress, Input, Button } from 'antd';
 import {
   Monitor, Shield, Users, FileText, User, Calendar, Globe,
-  Activity, CheckCircle, Clock, XCircle, ArrowUpRight, ExternalLink,
+  Activity, CheckCircle, Clock, XCircle, ArrowUpRight, ExternalLink, Pencil, Check, X,
 } from 'lucide-react';
+import { useState } from 'react';
 import StatCard from '../shared/StatCard.jsx';
 import { ROLES, MONTH_OPTIONS, INIT_ENV_CONFIG } from '../../utils/constants.js';
 import { statusColor, isHighPriority, envTag, fmtDate } from '../../utils/helpers.jsx';
@@ -18,6 +19,23 @@ export default function HomePage({
   const monthLabel   = MONTH_OPTIONS.find((m) => m.value === selectedMonth)?.label || selectedMonth;
   const roleConfig   = ROLES[role] ?? ROLES.viewer;
   const RoleIcon     = roleConfig.icon;
+  const canEditEnv   = role === 'admin' || role === 'tl';
+
+  const [envConfig, setEnvConfig] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('myisp_env_config')) || INIT_ENV_CONFIG; }
+    catch { return INIT_ENV_CONFIG; }
+  });
+  const [editingEnv, setEditingEnv] = useState(null);
+  const [editBuf,    setEditBuf]    = useState({});
+
+  const startEdit  = (env) => { setEditingEnv(env); setEditBuf({ ...envConfig[env] }); };
+  const cancelEdit = ()    => { setEditingEnv(null); setEditBuf({}); };
+  const saveEdit   = (env) => {
+    const updated = { ...envConfig, [env]: { ...editBuf } };
+    setEnvConfig(updated);
+    localStorage.setItem('myisp_env_config', JSON.stringify(updated));
+    setEditingEnv(null); setEditBuf({});
+  };
 
   const stats = {
     total:      allRows.length,
@@ -211,28 +229,57 @@ export default function HomePage({
         styles={{ header: { background: 'rgba(59,130,246,0.08)', borderBottom: '1px solid rgba(59,130,246,0.2)' } }}
       >
         <Row gutter={[16, 12]}>
-          {Object.entries(INIT_ENV_CONFIG).map(([env, cfg]) => (
+          {Object.entries(envConfig).map(([env, cfg]) => (
             <Col xs={24} sm={12} key={env}>
               <div style={{
-                background: '#151c2c', border: '1px solid #1e2332', borderRadius: 8,
-                padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 6,
+                background: '#151c2c',
+                border: `1px solid ${editingEnv === env ? '#3b82f6' : '#1e2332'}`,
+                borderRadius: 8, padding: '10px 14px',
+                display: 'flex', flexDirection: 'column', gap: 8,
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {envTag(env)}
-                  <a
-                    href={cfg.url} target="_blank" rel="noreferrer"
-                    style={{ color: '#60a5fa', fontSize: 12, wordBreak: 'break-all', flex: 1, display: 'flex', alignItems: 'center', gap: 4 }}
-                  >
-                    {cfg.url}
-                    <ExternalLink size={11} style={{ flexShrink: 0 }} />
-                  </a>
+                  {editingEnv === env ? (
+                    <Input size="small" value={editBuf.url}
+                      onChange={(e) => setEditBuf((b) => ({ ...b, url: e.target.value }))}
+                      style={{ flex: 1, fontSize: 12 }} placeholder="https://..." />
+                  ) : (
+                    <a href={cfg.url} target="_blank" rel="noreferrer"
+                      style={{ color: '#60a5fa', fontSize: 12, wordBreak: 'break-all', flex: 1, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      {cfg.url}<ExternalLink size={11} style={{ flexShrink: 0 }} />
+                    </a>
+                  )}
+                  {canEditEnv && editingEnv !== env && (
+                    <Button type="text" size="small" icon={<Pencil size={12} />}
+                      onClick={() => startEdit(env)} style={{ color: '#4b5568', flexShrink: 0 }} />
+                  )}
+                  {canEditEnv && editingEnv === env && (
+                    <Space size={4}>
+                      <Button type="text" size="small" icon={<Check size={12} />}
+                        onClick={() => saveEdit(env)} style={{ color: '#22c55e' }} />
+                      <Button type="text" size="small" icon={<X size={12} />}
+                        onClick={cancelEdit} style={{ color: '#f87171' }} />
+                    </Space>
+                  )}
                 </div>
-                <div style={{ display: 'flex', gap: 16, paddingLeft: 4 }}>
-                  <Text style={{ fontSize: 11, color: '#8892a4' }}>
-                    Manual: <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealManual}</Text>
+                <div style={{ display: 'flex', gap: 12, paddingLeft: 4, flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 11, color: '#8892a4' }}>Manual:&nbsp;
+                    {editingEnv === env ? (
+                      <Input size="small" value={editBuf.dealManual}
+                        onChange={(e) => setEditBuf((b) => ({ ...b, dealManual: e.target.value }))}
+                        style={{ width: 110, fontSize: 11 }} />
+                    ) : (
+                      <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealManual}</Text>
+                    )}
                   </Text>
-                  <Text style={{ fontSize: 11, color: '#8892a4' }}>
-                    Auto: <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealAuto}</Text>
+                  <Text style={{ fontSize: 11, color: '#8892a4' }}>Auto:&nbsp;
+                    {editingEnv === env ? (
+                      <Input size="small" value={editBuf.dealAuto}
+                        onChange={(e) => setEditBuf((b) => ({ ...b, dealAuto: e.target.value }))}
+                        style={{ width: 110, fontSize: 11 }} />
+                    ) : (
+                      <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealAuto}</Text>
+                    )}
                   </Text>
                 </div>
               </div>
