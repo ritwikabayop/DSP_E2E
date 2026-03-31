@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   Layout, Menu, Space, Badge, ConfigProvider, FloatButton, Modal, Spin,
-  Typography, Tag, Button, Tooltip, Segmented, Select, Input, theme as antTheme, Dropdown,
+  Typography, Tag, Button, Tooltip, Segmented, Select, Input, theme as antTheme, Dropdown, Form,
 } from 'antd';
 import {
   Home, Monitor, Shield, Users, FileText, Activity,
   LayoutDashboard, Calendar, Search, Copy, Save, Download,
-  PenTool, Eye, AlertTriangle, LogOut, UserCog,
+  PenTool, Eye, AlertTriangle, LogOut, UserCog, Lock,
 } from 'lucide-react';
 
 // Auth + data hooks
@@ -52,7 +52,7 @@ const DARK_THEME = {
 };
 
 function App() {
-  const { user, profile, role: authRole, loading: authLoading, signIn, signOut } = useAuth();
+  const { user, profile, role: authRole, loading: authLoading, signIn, signOut, needsPasswordReset, updatePassword } = useAuth();
 
   const [activeModule,  setActiveModule]  = useState(null); // null = picker, 'e2e' = dashboard
   const [activeTab,     setActiveTab]     = useState('home');
@@ -135,6 +135,49 @@ function App() {
     return (
       <ConfigProvider theme={DARK_THEME}>
         <LoginPage onSignIn={signIn} />
+      </ConfigProvider>
+    );
+  }
+
+  // User clicked a password-reset link — show set-password modal before anything else
+  if (needsPasswordReset) {
+    return (
+      <ConfigProvider theme={DARK_THEME}>
+        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0f18' }}>
+          <div style={{ width: 400, background: '#1a1f2e', borderRadius: 12, padding: '32px 28px', border: '1px solid #252d42' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Lock size={18} color="#22c55e" />
+              </div>
+              <div>
+                <Text strong style={{ color: '#e2e8f0', display: 'block', fontSize: 15 }}>Set New Password</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>Choose a password to secure your account</Text>
+              </div>
+            </div>
+            <Form layout="vertical" requiredMark={false}
+              onFinish={async ({ password }) => {
+                const { error } = await updatePassword(password);
+                if (error) Modal.error({ title: 'Error', content: error.message });
+              }}
+            >
+              <Form.Item name="password" label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>New Password</Text>}
+                rules={[{ required: true, message: 'Enter a password' }, { min: 8, message: 'At least 8 characters' }]}>
+                <Input.Password size="large" prefix={<Lock size={14} color="#4b5568" style={{ marginRight: 4 }} />} placeholder="Minimum 8 characters" style={{ borderRadius: 9, height: 44 }} />
+              </Form.Item>
+              <Form.Item name="confirm" label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Confirm Password</Text>}
+                dependencies={['password']}
+                rules={[{ required: true, message: 'Please confirm your password' },
+                  ({ getFieldValue }) => ({ validator(_, v) { return !v || getFieldValue('password') === v ? Promise.resolve() : Promise.reject('Passwords do not match'); } })
+                ]}>
+                <Input.Password size="large" prefix={<Lock size={14} color="#4b5568" style={{ marginRight: 4 }} />} placeholder="Re-enter password" style={{ borderRadius: 9, height: 44 }} />
+              </Form.Item>
+              <Button type="primary" htmlType="submit" size="large"
+                style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', fontWeight: 700, fontSize: 15 }}>
+                Save Password & Continue
+              </Button>
+            </Form>
+          </div>
+        </div>
       </ConfigProvider>
     );
   }

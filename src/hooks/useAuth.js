@@ -14,9 +14,10 @@ import { getUserProfile, createUserProfile } from '../services/api.js';
  *   signOut()
  */
 export function useAuth() {
-  const [user, setUser]       = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser]                         = useState(null);
+  const [profile, setProfile]                   = useState(null);
+  const [loading, setLoading]                   = useState(true);
+  const [needsPasswordReset, setNeedsPasswordReset] = useState(false);
 
   const loadProfile = async (authUser) => {
     if (!authUser) { setProfile(null); return; }
@@ -43,11 +44,19 @@ export function useAuth() {
       loadProfile(u).finally(() => setLoading(false));
     });
 
-    // Listen for auth state changes (login / logout / token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Listen for auth state changes (login / logout / token refresh / password recovery)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const u = session?.user ?? null;
       setUser(u);
       loadProfile(u);
+      // PASSWORD_RECOVERY = user clicked a reset link
+      // SIGNED_IN with type=signup = new user clicked activation link for the first time
+      if (event === 'PASSWORD_RECOVERY') {
+        setNeedsPasswordReset(true);
+      } else if (event === 'SIGNED_IN') {
+        const hashType = new URLSearchParams(window.location.hash.substring(1)).get('type');
+        if (hashType === 'signup') setNeedsPasswordReset(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -62,12 +71,20 @@ export function useAuth() {
     await supabase.auth.signOut();
   };
 
+  const updatePassword = async (newPassword) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (!error) setNeedsPasswordReset(false);
+    return { error };
+  };
+
   return {
     user,
     profile,
     role: profile?.role ?? 'viewer',
     loading,
+    needsPasswordReset,
     signIn,
     signOut,
+    updatePassword,
   };
 }

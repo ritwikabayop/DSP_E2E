@@ -1,12 +1,18 @@
 import { useState } from 'react';
-import { Form, Input, Button, Typography, Alert, Space } from 'antd';
-import { LayoutDashboard, Mail, Lock, LogIn, ShieldCheck, FileSpreadsheet } from 'lucide-react';
+import { Form, Input, Button, Typography, Alert, Space, Result } from 'antd';
+import { LayoutDashboard, Mail, Lock, LogIn, ShieldCheck, FileSpreadsheet, KeyRound } from 'lucide-react';
+import { supabase } from '../../services/supabase.js';
 
 const { Title, Text } = Typography;
 
 export default function LoginPage({ onSignIn }) {
-  const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState('');
+  const [loading,      setLoading]      = useState(false);
+  const [error,        setError]        = useState('');
+  const [forgotMode,   setForgotMode]   = useState(false);
+  const [resetEmail,   setResetEmail]   = useState('');
+  const [resetSent,    setResetSent]    = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError,   setResetError]   = useState('');
 
   const handleFinish = async ({ email, password }) => {
     setError('');
@@ -14,6 +20,18 @@ export default function LoginPage({ onSignIn }) {
     const { error: err } = await onSignIn(email, password);
     if (err) setError(err.message || 'Login failed.');
     setLoading(false);
+  };
+
+  const handleForgot = async () => {
+    if (!resetEmail.trim()) { setResetError('Please enter your email.'); return; }
+    setResetError('');
+    setResetLoading(true);
+    const { error: err } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
+      redirectTo: window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/'),
+    });
+    setResetLoading(false);
+    if (err) { setResetError(err.message); return; }
+    setResetSent(true);
   };
 
   return (
@@ -48,25 +66,85 @@ export default function LoginPage({ onSignIn }) {
 
       {/* Right login panel */}
       <div style={{ width: 460, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 48px', background: '#0d0f18' }}>
-        <div style={{ marginBottom: 32 }}>
-          <Title level={2} style={{ color: '#e2e8f0', margin: '0 0 6px', fontSize: 26 }}>Sign in</Title>
-          <Text style={{ color: '#64748b', fontSize: 13 }}>Enter your credentials to access the dashboard</Text>
-        </div>
-        {error && <Alert message={error} type='error' showIcon closable onClose={() => setError('')} style={{ marginBottom: 20, borderRadius: 8 }} />}
-        <Form layout='vertical' onFinish={handleFinish} requiredMark={false}>
-          <Form.Item label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Email address</Text>} name='email' rules={[{ required: true, message: 'Please enter your email' }, { type: 'email', message: 'Enter a valid email' }]}>
-            <Input size='large' prefix={<Mail size={15} color='#4b5568' style={{ marginRight: 4 }} />} placeholder='you@example.com' autoComplete='email' style={{ borderRadius: 9, height: 44 }} />
-          </Form.Item>
-          <Form.Item label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Password</Text>} name='password' rules={[{ required: true, message: 'Please enter your password' }]} style={{ marginBottom: 28 }}>
-            <Input.Password size='large' prefix={<Lock size={15} color='#4b5568' style={{ marginRight: 4 }} />} placeholder='Enter your password' autoComplete='current-password' style={{ borderRadius: 9, height: 44 }} />
-          </Form.Item>
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Button type='primary' htmlType='submit' size='large' loading={loading} icon={<LogIn size={16} />} style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', fontWeight: 700, fontSize: 15, boxShadow: '0 4px 14px rgba(34,197,94,0.3)' }}>
-            {loading ? 'Signing in...' : 'Sign in'}
-            </Button>
-          </Form.Item>
-        </Form>
-        <Text style={{ color: '#374151', fontSize: 11, textAlign: 'center', marginTop: 28, display: 'block' }}>Contact your admin to create or reset your account.</Text>
+
+        {forgotMode ? (
+          /* ── Forgot password panel ── */
+          resetSent ? (
+            <Result
+              icon={<Mail size={48} color="#22c55e" />}
+              title={<span style={{ color: '#e2e8f0' }}>Check your email</span>}
+              subTitle={<span style={{ color: '#64748b' }}>We sent a password reset link to <strong style={{ color: '#e2e8f0' }}>{resetEmail}</strong>. Click the link to set your new password.</span>}
+              extra={
+                <Button onClick={() => { setForgotMode(false); setResetSent(false); setResetEmail(''); }} style={{ borderRadius: 9 }}>
+                  Back to Sign in
+                </Button>
+              }
+            />
+          ) : (
+            <>
+              <div style={{ marginBottom: 28 }}>
+                <Title level={2} style={{ color: '#e2e8f0', margin: '0 0 6px', fontSize: 26 }}>Reset password</Title>
+                <Text style={{ color: '#64748b', fontSize: 13 }}>Enter your email and we'll send a reset link</Text>
+              </div>
+              {resetError && <Alert message={resetError} type="error" showIcon closable onClose={() => setResetError('')} style={{ marginBottom: 20, borderRadius: 8 }} />}
+              <div style={{ marginBottom: 16 }}>
+                <Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>Email address</Text>
+                <Input
+                  size="large"
+                  prefix={<Mail size={15} color="#4b5568" style={{ marginRight: 4 }} />}
+                  placeholder="you@accenture.com"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  onPressEnter={handleForgot}
+                  style={{ borderRadius: 9, height: 44 }}
+                />
+              </div>
+              <Button type="primary" size="large" loading={resetLoading} icon={<KeyRound size={16} />} onClick={handleForgot}
+                style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', fontWeight: 700, fontSize: 15, boxShadow: '0 4px 14px rgba(34,197,94,0.3)', marginBottom: 20 }}>
+                {resetLoading ? 'Sending…' : 'Send Reset Link'}
+              </Button>
+              <Button type="link" onClick={() => { setForgotMode(false); setResetError(''); }} style={{ color: '#64748b', fontSize: 13, padding: 0 }}>
+                ← Back to Sign in
+              </Button>
+            </>
+          )
+        ) : (
+          /* ── Normal sign-in panel ── */
+          <>
+            <div style={{ marginBottom: 32 }}>
+              <Title level={2} style={{ color: '#e2e8f0', margin: '0 0 6px', fontSize: 26 }}>Sign in</Title>
+              <Text style={{ color: '#64748b', fontSize: 13 }}>Enter your credentials to access the dashboard</Text>
+            </div>
+            {error && <Alert message={error} type='error' showIcon closable onClose={() => setError('')} style={{ marginBottom: 20, borderRadius: 8 }} />}
+            <Form layout='vertical' onFinish={handleFinish} requiredMark={false}>
+              <Form.Item label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Email address</Text>} name='email' rules={[{ required: true, message: 'Please enter your email' }, { type: 'email', message: 'Enter a valid email' }]}>
+                <Input size='large' prefix={<Mail size={15} color='#4b5568' style={{ marginRight: 4 }} />} placeholder='you@example.com' autoComplete='email' style={{ borderRadius: 9, height: 44 }} />
+              </Form.Item>
+              <Form.Item
+                label={
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                    <Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Password</Text>
+                    <Button type="link" size="small" onClick={() => { setForgotMode(true); setError(''); }}
+                      style={{ color: '#22c55e', fontSize: 11, padding: 0, height: 'auto', lineHeight: 1 }}>
+                      Forgot password?
+                    </Button>
+                  </div>
+                }
+                name='password'
+                rules={[{ required: true, message: 'Please enter your password' }]}
+                style={{ marginBottom: 28 }}
+              >
+                <Input.Password size='large' prefix={<Lock size={15} color='#4b5568' style={{ marginRight: 4 }} />} placeholder='Enter your password' autoComplete='current-password' style={{ borderRadius: 9, height: 44 }} />
+              </Form.Item>
+              <Form.Item style={{ marginBottom: 0 }}>
+                <Button type='primary' htmlType='submit' size='large' loading={loading} icon={<LogIn size={16} />} style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', fontWeight: 700, fontSize: 15, boxShadow: '0 4px 14px rgba(34,197,94,0.3)' }}>
+                {loading ? 'Signing in...' : 'Sign in'}
+                </Button>
+              </Form.Item>
+            </Form>
+            <Text style={{ color: '#374151', fontSize: 11, textAlign: 'center', marginTop: 28, display: 'block' }}>Contact your admin to create or reset your account.</Text>
+          </>
+        )}
       </div>
     </div>
   );
