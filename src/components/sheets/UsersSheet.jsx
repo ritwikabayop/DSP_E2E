@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Statistic } from 'antd';
-import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users } from 'lucide-react';
+import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Statistic, Result } from 'antd';
+import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users, Copy, CheckCheck } from 'lucide-react';
 import { listUserProfiles, updateUserRole, inviteUser } from '../../services/api.js';
 
 const { Text } = Typography;
@@ -20,13 +20,15 @@ const roleTag = (r) => {
   return <Tag color={m.tagColor} icon={<Icon size={10} />} style={{ fontSize: 11 }}>{m.label}</Tag>;
 };
 
-export default function UsersSheet({ currentUserId, role }) {
+export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
   const [users,      setUsers]      = useState([]);
   const [loading,    setLoading]    = useState(true);
   const [saving,     setSaving]     = useState(null);
-  const [inviteOpen, setInviteOpen] = useState(false);
-  const [inviting,   setInviting]   = useState(false);
-  const [search,     setSearch]     = useState('');
+  const [inviteOpen,   setInviteOpen]   = useState(false);
+  const [inviting,     setInviting]     = useState(false);
+  const [inviteResult, setInviteResult] = useState(null); // { email, existing }
+  const [copied,       setCopied]       = useState(false);
+  const [search,       setSearch]       = useState('');
   const [form] = Form.useForm();
 
   const canEdit = role === 'admin';
@@ -57,16 +59,30 @@ export default function UsersSheet({ currentUserId, role }) {
   const handleInvite = async (values) => {
     setInviting(true);
     try {
-      await inviteUser(values.email.trim().toLowerCase(), values.role, values.displayName?.trim() || '');
-      message.success(`Invitation sent to ${values.email}`);
+      const result = await inviteUser(values.email.trim().toLowerCase(), values.role, values.displayName?.trim() || '', currentUserEmail || '');
       form.resetFields();
-      setInviteOpen(false);
+      setInviteResult({ email: values.email.trim().toLowerCase(), existing: !!result?.existing });
       load();
     } catch (e) {
       message.error('Invite failed: ' + e.message);
     } finally {
       setInviting(false);
     }
+  };
+
+  const handleCopyLink = () => {
+    const link = window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/');
+    navigator.clipboard.writeText(link).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  const closeInviteModal = () => {
+    setInviteOpen(false);
+    setInviteResult(null);
+    setCopied(false);
+    form.resetFields();
   };
 
   if (role !== 'admin' && role !== 'tl') {
@@ -98,6 +114,12 @@ export default function UsersSheet({ currentUserId, role }) {
           </div>
         </Space>
       ),
+    },
+    {
+      title: 'Invited By', dataIndex: 'invited_by', key: 'invited_by', width: 200,
+      render: (v) => v
+        ? <Tag icon={<User size={10} />} color="blue" style={{ fontSize: 11, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }} title={v}>{v}</Tag>
+        : <Text type="secondary" style={{ fontSize: 11 }}>—</Text>,
     },
     {
       title: 'Current Role', dataIndex: 'role', key: 'role', width: 150,
@@ -206,43 +228,78 @@ export default function UsersSheet({ currentUserId, role }) {
 
       {/* Invite modal */}
       <Modal
-        title={<Space><UserPlus size={15} /> Invite New User</Space>}
+        title={inviteResult ? null : <Space><UserPlus size={15} /> Invite New User</Space>}
         open={inviteOpen}
-        onCancel={() => { setInviteOpen(false); form.resetFields(); }}
+        onCancel={closeInviteModal}
         footer={null}
-        width={420}
+        width={440}
       >
-        <Form form={form} layout="vertical" onFinish={handleInvite} style={{ marginTop: 8 }}>
-          <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Enter a valid email' }]}>
-            <Input placeholder="user@accenture.com" size="middle" />
-          </Form.Item>
-          <Form.Item name="displayName" label="Display Name">
-            <Input placeholder="e.g. Santhwana M R" size="middle" />
-          </Form.Item>
-          <Form.Item name="role" label="Role" initialValue="tester" rules={[{ required: true }]}>
-            <Select size="middle"
-              options={ROLE_OPTIONS.map((o) => ({
-                ...o,
-                label: (
-                  <Space size={4}>
-                    {(() => { const M = ROLE_META[o.value]; const I = M.icon; return <I size={11} color={M.color} />; })()}
-                    <span>{o.label}</span>
-                    <Text type="secondary" style={{ fontSize: 11 }}>— {ROLE_META[o.value].desc}</Text>
-                  </Space>
-                ),
-              }))}
+        {inviteResult ? (
+          /* ── Success screen with copy link ── */
+          <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
+            <Result
+              status="success"
+              title={inviteResult.existing ? 'Role Updated' : 'Invite Sent!'}
+              subTitle={
+                inviteResult.existing
+                  ? `${inviteResult.email}'s role has been updated. Share the link below so they can log in.`
+                  : `An activation email was sent to ${inviteResult.email}. You can also share the link directly.`
+              }
+              style={{ paddingBottom: 12 }}
             />
-          </Form.Item>
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-              <Button onClick={() => { setInviteOpen(false); form.resetFields(); }}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={inviting}
-                style={{ background: '#217346', borderColor: '#217346' }}>
-                Send Invite
+            <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '12px 16px', marginBottom: 16, textAlign: 'left' }}>
+              <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 6 }}>Dashboard login link to share via Teams / email:</Text>
+              <Text code style={{ fontSize: 12, wordBreak: 'break-all' }}>
+                {window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/')}
+              </Text>
+            </div>
+            <Space>
+              <Button
+                icon={copied ? <CheckCheck size={13} /> : <Copy size={13} />}
+                onClick={handleCopyLink}
+                style={copied ? { borderColor: '#49aa19', color: '#49aa19' } : {}}
+              >
+                {copied ? 'Copied!' : 'Copy Link'}
+              </Button>
+              <Button type="primary" onClick={closeInviteModal} style={{ background: '#217346', borderColor: '#217346' }}>
+                Done
               </Button>
             </Space>
-          </Form.Item>
-        </Form>
+          </div>
+        ) : (
+          /* ── Invite form ── */
+          <Form form={form} layout="vertical" onFinish={handleInvite} style={{ marginTop: 8 }}>
+            <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Enter a valid email' }]}>
+              <Input placeholder="user@accenture.com" size="middle" />
+            </Form.Item>
+            <Form.Item name="displayName" label="Display Name">
+              <Input placeholder="e.g. Santhwana M R" size="middle" />
+            </Form.Item>
+            <Form.Item name="role" label="Role" initialValue="tester" rules={[{ required: true }]}>
+              <Select size="middle"
+                options={ROLE_OPTIONS.map((o) => ({
+                  ...o,
+                  label: (
+                    <Space size={4}>
+                      {(() => { const M = ROLE_META[o.value]; const I = M.icon; return <I size={11} color={M.color} />; })()}
+                      <span>{o.label}</span>
+                      <Text type="secondary" style={{ fontSize: 11 }}>— {ROLE_META[o.value].desc}</Text>
+                    </Space>
+                  ),
+                }))}
+              />
+            </Form.Item>
+            <Form.Item style={{ marginBottom: 0 }}>
+              <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+                <Button onClick={closeInviteModal}>Cancel</Button>
+                <Button type="primary" htmlType="submit" loading={inviting}
+                  style={{ background: '#217346', borderColor: '#217346' }}>
+                  Send Invite
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
     </div>
   );

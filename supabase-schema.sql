@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   display_name TEXT NOT NULL DEFAULT '',
   role         TEXT NOT NULL DEFAULT 'viewer'
                    CHECK (role IN ('admin', 'tl', 'tester', 'viewer')),
+  invited_by   TEXT NOT NULL DEFAULT '',
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
