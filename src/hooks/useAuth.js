@@ -17,7 +17,11 @@ export function useAuth() {
   const [user, setUser]                         = useState(null);
   const [profile, setProfile]                   = useState(null);
   const [loading, setLoading]                   = useState(true);
-  const [needsPasswordReset, setNeedsPasswordReset] = useState(false);
+  // Detect activation/reset links immediately — hash contains type=signup or type=recovery
+  const [needsPasswordReset, setNeedsPasswordReset] = useState(() => {
+    const p = new URLSearchParams(window.location.hash.substring(1));
+    return p.get('type') === 'signup' || p.get('type') === 'recovery';
+  });
 
   const loadProfile = async (authUser) => {
     if (!authUser) { setProfile(null); return; }
@@ -49,13 +53,9 @@ export function useAuth() {
       const u = session?.user ?? null;
       setUser(u);
       loadProfile(u);
-      // PASSWORD_RECOVERY = user clicked a reset link
-      // SIGNED_IN with type=signup = new user clicked activation link for the first time
+      // Fallback: also catch PASSWORD_RECOVERY event in case hash was already cleared
       if (event === 'PASSWORD_RECOVERY') {
         setNeedsPasswordReset(true);
-      } else if (event === 'SIGNED_IN') {
-        const hashType = new URLSearchParams(window.location.hash.substring(1)).get('type');
-        if (hashType === 'signup') setNeedsPasswordReset(true);
       }
     });
 
