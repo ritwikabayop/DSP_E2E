@@ -24,10 +24,11 @@ const roleTag = (r) => {
 };
 
 export default function UsersSheet({ currentUserId, role }) {
-  if (role !== 'admin') return null;
   const [users,   setUsers]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving,  setSaving]  = useState(null); // userId being saved
+
+  const canEdit = role === 'admin';
 
   useEffect(() => {
     listUserProfiles()
@@ -75,7 +76,7 @@ export default function UsersSheet({ currentUserId, role }) {
     },
     {
       title: 'Change Role', key: 'change', width: 160,
-      render: (_, rec) => (
+      render: (_, rec) => !canEdit ? roleTag(rec.role) : (
         <Select
           size="small"
           value={rec.role}
@@ -96,12 +97,15 @@ export default function UsersSheet({ currentUserId, role }) {
 
   return (
     <div style={{ padding: 20 }}>
+      {(role !== 'admin' && role !== 'tl') ? (
+        <Card><Text type="secondary">Access restricted.</Text></Card>
+      ) : (
       <Card
         title={
           <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Crown size={16} color="#cf1322" />
             <span>User Management</span>
-            <Tag color="red" style={{ marginLeft: 4, fontSize: 10 }}>Admin Only</Tag>
+            <Tag color={canEdit ? 'red' : 'blue'} style={{ marginLeft: 4, fontSize: 10 }}>{canEdit ? 'Admin Only' : 'View Only'}</Tag>
           </span>
         }
         styles={{ header: { borderBottom: '1px solid #252d42' } }}
@@ -118,6 +122,7 @@ export default function UsersSheet({ currentUserId, role }) {
           />
         )}
       </Card>
+      )}
     </div>
   );
 }

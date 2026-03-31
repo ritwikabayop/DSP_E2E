@@ -407,18 +407,58 @@ function App() {
                 menu: {
                   items: [
                     { type: 'group', label: displayName },
-                    { type: 'divider' },
-                    ...(actualRole === 'admin' ? [
-                      { type: 'group', label: 'Preview as role' },
-                      ...['admin','tl','tester','viewer'].map((r) => ({
-                        key: 'preview-' + r,
-                        label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6 } },
-                          ROLES[r].label,
-                          viewAsRole === r ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Active') : null
+                    {
+                      key: 'role-info',
+                      label: React.createElement('div', { style: { padding: '4px 0', pointerEvents: 'none' } },
+                        React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
+                        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 } },
+                          React.createElement(RoleIcon, { size: 13, color: roleConfig.color }),
+                          React.createElement('span', { style: { color: roleConfig.color, fontWeight: 700, fontSize: 12 } }, roleConfig.label),
+                          viewAsRole && React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Previewing')
                         ),
-                        onClick: () => { setViewAsRole(r === actualRole && viewAsRole === null ? null : r === viewAsRole ? null : r); setEditMode(false); setActiveTab('home'); },
-                      }))
-                    ] : []),
+                        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 3 } },
+                          ...[
+                            ['Edit data',    roleConfig.canEdit],
+                            ['Delete rows',  roleConfig.canDelete],
+                            ['Add rows',     roleConfig.canAddRow],
+                            ['Own rows only',roleConfig.onlyOwnRows],
+                          ].map(([perm, allowed]) =>
+                            React.createElement('div', { key: perm, style: { display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 } },
+                              React.createElement('span', { style: { color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1 } }, allowed ? '✓' : '✗'),
+                              React.createElement('span', { style: { color: allowed ? '#e2e8f0' : '#6b7280' } }, perm)
+                            )
+                          )
+                        )
+                      ),
+                    },
+                    { type: 'divider' },
+                    { type: 'group', label: 'Switch Role View' },
+                    ...['admin','tl','tester','viewer'].map((r) => {
+                      const rc = ROLES[r];
+                      const RIcon = rc.icon;
+                      const isCurrentActual = r === actualRole && !viewAsRole;
+                      const isActive = viewAsRole === r || isCurrentActual;
+                      return {
+                        key: 'preview-' + r,
+                        label: React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 } },
+                          React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 } },
+                            React.createElement(RIcon, { size: 12 }),
+                            rc.label
+                          ),
+                          isCurrentActual
+                            ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Current')
+                            : isActive
+                              ? React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Active')
+                              : null
+                        ),
+                        onClick: () => {
+                          if (isCurrentActual) return; // already on own role
+                          if (viewAsRole === r) { setViewAsRole(null); setEditMode(actualRole === 'admin' || actualRole === 'tl'); }
+                          else { setViewAsRole(r); setEditMode(false); }
+                          setActiveTab('home');
+                        },
+                      };
+                    }),
                     { type: 'divider' },
                     { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
                   ],
