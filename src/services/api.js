@@ -150,21 +150,36 @@ export const updateUserRole = async (userId, role) => {
  * The user receives a confirmation email to set their password.
  */
 export const inviteUser = async (email, role, displayName = '') => {
+  // Save admin session — signUp replaces it if email confirmation is disabled
+  const { data: { session: adminSession } } = await supabase.auth.getSession();
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password: crypto.randomUUID(),
     options: {
       emailRedirectTo: window.location.origin + '/DSP_E2E/',
-      data: { display_name: displayName },
+      data: { display_name: displayName, role },
     },
   });
   if (error) throw error;
+
+  // If signUp created a new session (email confirmation off), restore admin session
+  if (data.session && adminSession) {
+    await supabase.auth.setSession({
+      access_token:  adminSession.access_token,
+      refresh_token: adminSession.refresh_token,
+    });
+  }
+
   const userId = data.user?.id;
   if (!userId) throw new Error('User creation failed — account may already exist.');
+
+  // Upsert profile under restored admin session
   const { error: profileError } = await supabase.from('user_profiles').upsert(
     { id: userId, email, display_name: displayName, role },
     { onConflict: 'id' }
   );
   if (profileError) throw profileError;
+
   return data.user;
 };

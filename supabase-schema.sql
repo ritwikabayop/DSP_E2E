@@ -24,12 +24,18 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Auto-populate display_name from auth.users on insert
+-- Auto-populate display_name and role from auth.users on insert
+-- Role is read from user_meta_data so admin invites pre-assign the correct role.
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
 BEGIN
   INSERT INTO public.user_profiles (id, email, display_name, role)
-  VALUES (NEW.id, NEW.email, COALESCE(NEW.raw_user_meta_data->>'display_name', ''), 'viewer')
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'display_name', ''),
+    COALESCE(NEW.raw_user_meta_data->>'role', 'viewer')
+  )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
