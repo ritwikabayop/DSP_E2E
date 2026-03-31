@@ -52,25 +52,25 @@ export const INIT_ENV_CONFIG = {
    INITIAL DATA
    ══════════════════════════════════════════════════════ */
 export const INIT_DSP_MANUAL = [
-  { key: 1,  tester: 'kalpana@example.com',    module: 'DSP', env: 'PT',  sg: 'SI',   deal: 12486005, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 2,  tester: 'swati@example.com',       module: 'DSP', env: 'UAT', sg: 'SI',   deal: 12481592, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 3,  tester: 'harshitha@example.com',   module: 'DSP', env: 'PT',  sg: 'AMS',  deal: 12486005, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 4,  tester: 'nayak@example.com',       module: 'DSP', env: 'UAT', sg: 'AMS',  deal: 12481592, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 5,  tester: 'reshma@example.com',      module: 'DSP', env: 'PT',  sg: 'BPMS', deal: 12486005, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 6,  tester: 'sushmetha@example.com',   module: 'DSP', env: 'UAT', sg: 'BPMS', deal: 12481592, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 7,  tester: 'saikumar@example.com',    module: 'DSP', env: 'PT',  sg: 'IMS',  deal: 12486005, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 8,  tester: 'naveena@example.com',     module: 'DSP', env: 'UAT', sg: 'IMS',  deal: 12481592, status: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 1,  tester: 'kalpana@example.com',    module: 'DSP', env: 'PT',  sg: 'SI',   deal: 12486005, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 2,  tester: 'swati@example.com',       module: 'DSP', env: 'UAT', sg: 'SI',   deal: 12481592, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 3,  tester: 'harshitha@example.com',   module: 'DSP', env: 'PT',  sg: 'AMS',  deal: 12486005, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 4,  tester: 'nayak@example.com',       module: 'DSP', env: 'UAT', sg: 'AMS',  deal: 12481592, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 5,  tester: 'reshma@example.com',      module: 'DSP', env: 'PT',  sg: 'BPMS', deal: 12486005, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 6,  tester: 'sushmetha@example.com',   module: 'DSP', env: 'UAT', sg: 'BPMS', deal: 12481592, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 7,  tester: 'saikumar@example.com',    module: 'DSP', env: 'PT',  sg: 'IMS',  deal: 12486005, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 8,  tester: 'naveena@example.com',     module: 'DSP', env: 'UAT', sg: 'IMS',  deal: 12481592, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
 ];
 
 export const INIT_DSP_AUTO = [
-  { key: 9,  tester: 'haritha@example.com',     module: 'DSP', env: 'PT',  sg: 'SI',   deal: 12486006, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 10, tester: 'prasanna@example.com',    module: 'DSP', env: 'UAT', sg: 'SI',   deal: 12481593, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 11, tester: 'pratik@example.com',      module: 'DSP', env: 'PT',  sg: 'AMS',  deal: 12486006, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 12, tester: 'haripriya@example.com',   module: 'DSP', env: 'UAT', sg: 'AMS',  deal: 12481593, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 13, tester: 'varadha@example.com',     module: 'DSP', env: 'PT',  sg: 'BPMS', deal: 12486006, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 14, tester: 'narmatha@example.com',    module: 'DSP', env: 'UAT', sg: 'BPMS', deal: 12481593, status: 'In progress', lastEditedBy: '', lastEditedAt: '' },
-  { key: 15, tester: 'saikumar@example.com',    module: 'DSP', env: 'PT',  sg: 'IMS',  deal: 12486006, status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 16, tester: 'naveena@example.com',     module: 'DSP', env: 'UAT', sg: 'IMS',  deal: 12481593, status: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 9,  tester: 'haritha@example.com',     module: 'DSP', env: 'PT',  sg: 'SI',   deal: 12486006, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 10, tester: 'prasanna@example.com',    module: 'DSP', env: 'UAT', sg: 'SI',   deal: 12481593, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 11, tester: 'pratik@example.com',      module: 'DSP', env: 'PT',  sg: 'AMS',  deal: 12486006, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 12, tester: 'haripriya@example.com',   module: 'DSP', env: 'UAT', sg: 'AMS',  deal: 12481593, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 13, tester: 'varadha@example.com',     module: 'DSP', env: 'PT',  sg: 'BPMS', deal: 12486006, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 14, tester: 'narmatha@example.com',    module: 'DSP', env: 'UAT', sg: 'BPMS', deal: 12481593, status: 'In progress', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 15, tester: 'saikumar@example.com',    module: 'DSP', env: 'PT',  sg: 'IMS',  deal: 12486006, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 16, tester: 'naveena@example.com',     module: 'DSP', env: 'UAT', sg: 'IMS',  deal: 12481593, status: '', comments: '', lastEditedBy: '', lastEditedAt: '' },
 ];
 
 export const INIT_UPLOAD_OWNERS = [
