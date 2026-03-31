@@ -53,14 +53,14 @@ export default function DSPSheet({
   const makeCols = (setter) => {
     const cols = [
       {
-        title: 'Tester', dataIndex: 'tester', key: 'tester', width: 150,
+        title: 'Tester', dataIndex: 'tester', key: 'tester', width: 160,
         render: (v, rec) =>
           editMode && canEditRow(rec)
             ? <EditableCell value={v} record={rec} dataIndex="tester" onSave={handleSave(setter)} />
             : <Text strong style={{ fontSize: 12 }}>{v}</Text>,
       },
       {
-        title: 'SG', dataIndex: 'sg', key: 'sg', width: 75,
+        title: 'SG', dataIndex: 'sg', key: 'sg', width: 80,
         filters: ['SI','AMS','BPMS','IMS'].map((s) => ({ text: s, value: s })),
         onFilter: (value, record) => record.sg === value,
         render: (v, rec) =>
@@ -70,14 +70,14 @@ export default function DSPSheet({
             : <Tag>{v}</Tag>,
       },
       {
-        title: 'Deal ID', dataIndex: 'deal', key: 'deal', width: 100,
+        title: 'Deal ID', dataIndex: 'deal', key: 'deal', width: 110,
         render: (v, rec) =>
           editMode && canEditRow(rec) && !roleConfig.onlyOwnRows
             ? <EditableCell value={v} record={rec} dataIndex="deal" onSave={handleSave(setter)} />
             : <Text copyable={{ text: String(v) }} style={{ fontFamily: 'monospace', fontSize: 11 }}>{v}</Text>,
       },
       {
-        title: 'Status', dataIndex: 'status', key: 'status', width: 185,
+        title: 'Status', dataIndex: 'status', key: 'status', width: 180,
         render: (v, rec) => (
           <StatusSelect value={v} record={rec} onSave={handleSave(setter)} readOnly={!editMode || !canEditRow(rec)} />
         ),
@@ -95,7 +95,7 @@ export default function DSPSheet({
         render: (v) => v ? <Tag icon={<User size={10} />} color="blue" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }} title={v}>{v}</Tag> : <Text type="secondary">—</Text>,
       },
       {
-        title: 'Last Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 130,
+        title: 'Last Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 110,
         render: (v) => v ? <Text type="secondary" style={{ fontSize: 11 }}>{fmtDate(v)}</Text> : <Text type="secondary">—</Text>,
       },
     ];
@@ -130,25 +130,29 @@ export default function DSPSheet({
         )}
       >
         <Row gutter={[16, 16]}>
-          <Col xs={24} xl={12}>
+          <Col xs={24} lg={12}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="green" style={{ fontWeight: 700, fontSize: 12 }}>PT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{ptData.length} row{ptData.length !== 1 ? 's' : ''}</Text>
             </div>
             <Table
               dataSource={ptData} columns={cols}
-              pagination={false} size="small" bordered scroll={{ x: 980 }}
+              pagination={false} size="small" bordered
+              scroll={{ x: 950 }}
+              style={{ tableLayout: 'fixed' }}
               rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
             />
           </Col>
-          <Col xs={24} xl={12}>
+          <Col xs={24} lg={12}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="orange" style={{ fontWeight: 700, fontSize: 12 }}>UAT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{uatData.length} row{uatData.length !== 1 ? 's' : ''}</Text>
             </div>
             <Table
               dataSource={uatData} columns={cols}
-              pagination={false} size="small" bordered scroll={{ x: 980 }}
+              pagination={false} size="small" bordered
+              scroll={{ x: 950 }}
+              style={{ tableLayout: 'fixed' }}
               rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
             />
           </Col>
