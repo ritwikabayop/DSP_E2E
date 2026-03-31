@@ -6,7 +6,7 @@ import {
 import { useState } from 'react';
 import StatCard from '../shared/StatCard.jsx';
 import { ROLES, MONTH_OPTIONS, INIT_ENV_CONFIG } from '../../utils/constants.js';
-import { statusColor, isHighPriority, envTag, fmtDate } from '../../utils/helpers.jsx';
+import { statusColor, isHighPriority, envTag } from '../../utils/helpers.jsx';
 
 const { Title, Text } = Typography;
 
@@ -66,11 +66,6 @@ export default function HomePage({
   const myTasks = currentUser
     ? allDsp.filter((r) => r.tester && r.tester.toLowerCase() === currentUser.toLowerCase())
     : [];
-
-  const recentActivity = [...allDsp, ...ssaData]
-    .filter((r) => r.lastEditedAt)
-    .sort((a, b) => new Date(b.lastEditedAt) - new Date(a.lastEditedAt))
-    .slice(0, 6);
 
   return (
     <div style={{ padding: 24 }}>
@@ -183,7 +178,7 @@ export default function HomePage({
         {/* Right column */}
         <Col xs={24} lg={10}>
           <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12, color: '#4b5568', letterSpacing: 0.8, textTransform: 'uppercase' }}>DSP Coverage by SG</Text>
-          <Card size="small" className="glass-card" style={{ marginBottom: 16 }}>
+          <Card size="small" className="glass-card">
             {['SI', 'AMS', 'BPMS', 'IMS'].map((sg) => {
               const rows = allDsp.filter((r) => r.sg === sg);
               const done = rows.filter((r) => /pass|complete|done/i.test(r.status || '')).length;
@@ -198,26 +193,6 @@ export default function HomePage({
                 </div>
               );
             })}
-          </Card>
-
-          <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12, color: '#4b5568', letterSpacing: 0.8, textTransform: 'uppercase' }}>Recent Activity</Text>
-          <Card size="small" className="glass-card">
-            {recentActivity.length === 0 ? (
-              <Text type="secondary" style={{ fontSize: 12 }}>No recent edits recorded.</Text>
-            ) : recentActivity.map((r, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: i < recentActivity.length - 1 ? '1px solid #1e2332' : 'none' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <User size={12} color="#3b82f6" />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <Text strong style={{ fontSize: 11, display: 'block' }}>{r.lastEditedBy || 'Unknown'}</Text>
-                  <Text type="secondary" style={{ fontSize: 11, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {r.tester} · {r.module || r.sg} → <Tag color={statusColor(r.status)} style={{ fontSize: 10, padding: '0 4px' }}>{r.status || 'Not Started'}</Tag>
-                  </Text>
-                </div>
-                <Text type="secondary" style={{ fontSize: 10, flexShrink: 0 }}>{fmtDate(r.lastEditedAt)}</Text>
-              </div>
-            ))}
           </Card>
         </Col>
       </Row>

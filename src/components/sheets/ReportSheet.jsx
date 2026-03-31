@@ -74,14 +74,14 @@ export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, sel
     { title: 'Total',       dataIndex: 'total',      key: 'total',      width: 70,  render: (v) => <Tag color="blue">{v}</Tag> },
     { title: 'Completed',   dataIndex: 'completed',  key: 'completed',  width: 100, render: (v) => <Tag color="success">{v}</Tag> },
     { title: 'In Progress', dataIndex: 'inProgress', key: 'inProgress', width: 100, render: (v) => <Tag color="processing">{v}</Tag> },
-    { title: 'Blocked',     dataIndex: 'failed',     key: 'failed',     width: 90,  render: (v) => v ? <Tag color="error">{v}</Tag> : <Text type="secondary">0</Text> },
-    { title: 'Not Started', dataIndex: 'notStarted', key: 'notStarted', width: 110, render: (v) => <Text type="secondary">{v}</Text> },
+    { title: 'Blocked',     dataIndex: 'failed',     key: 'failed',     width: 90,  render: (v) => <Tag color={v ? 'error' : 'default'}>{v}</Tag> },
+    { title: 'Not Started', dataIndex: 'notStarted', key: 'notStarted', width: 110, render: (v) => <Tag color="default">{v}</Tag> },
     { title: 'Progress',    dataIndex: 'pct',        key: 'pct',        width: 180, render: (v) => <Progress percent={v} size="small" strokeColor={v === 100 ? '#52c41a' : '#217346'} /> },
   ];
 
   const testerColumns = [
     { title: 'Tester',        dataIndex: 'tester',    key: 'tester',    render: (v) => <Space><User size={12} /><Text strong>{v}</Text></Space> },
-    { title: 'Total',         dataIndex: 'total',     key: 'total',     width: 70 },
+    { title: 'Total',         dataIndex: 'total',     key: 'total',     width: 70,  render: (v) => <Tag color="blue">{v}</Tag> },
     { title: 'Completed',     dataIndex: 'completed', key: 'completed', width: 100, render: (v) => <Tag color="success">{v}</Tag> },
     { title: 'In Progress',   dataIndex: 'inProgress',key: 'inProgress',width: 100, render: (v) => <Tag color={v ? 'processing' : 'default'}>{v}</Tag> },
     { title: 'Blocked',       dataIndex: 'blocked',   key: 'blocked',   width: 90,  render: (v) => <Tag color={v ? 'error' : 'default'}>{v}</Tag> },
@@ -96,7 +96,7 @@ export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, sel
 
   const sgColumns = [
     { title: 'SG',        dataIndex: 'sg',        key: 'sg',        render: (v) => <Tag style={{ fontWeight: 700 }}>{v}</Tag> },
-    { title: 'Total',     dataIndex: 'total',     key: 'total',     width: 70 },
+    { title: 'Total',     dataIndex: 'total',     key: 'total',     width: 70,  render: (v) => <Tag color="blue">{v}</Tag> },
     { title: 'Completed', dataIndex: 'completed', key: 'completed', width: 100, render: (v) => <Tag color="success">{v}</Tag> },
     { title: 'Progress',  dataIndex: 'pct',       key: 'pct',       width: 200, render: (v) => <Progress percent={v} size="small" strokeColor="#217346" /> },
   ];

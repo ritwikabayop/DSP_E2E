@@ -3,7 +3,7 @@ import { Card, Table, Tag, Space, Select, Button, Typography, DatePicker, Row, C
 import { Activity, RefreshCw, User, ArrowRight } from 'lucide-react';
 import { useActivityLog } from '../../hooks/useActivityLog.js';
 import { MONTH_OPTIONS } from '../../utils/constants.js';
-import { fmtDate } from '../../utils/helpers.jsx';
+import { fmtDate, statusColor } from '../../utils/helpers.jsx';
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -16,8 +16,13 @@ const MODULE_OPTIONS = [
   { value: 'Team',           label: 'Team' },
 ];
 
-export default function ActivityLogSheet({ selectedMonth }) {
+export default function ActivityLogSheet({ selectedMonth, dspManual = [], dspAuto = [], ssaData = [] }) {
   const { logs, loading, filters, setFilters, fetchLogs } = useActivityLog();
+
+  const recentActivity = [...dspManual, ...dspAuto, ...ssaData]
+    .filter((r) => r.lastEditedAt)
+    .sort((a, b) => new Date(b.lastEditedAt) - new Date(a.lastEditedAt))
+    .slice(0, 10);
 
   // Initial fetch on mount / month change
   useEffect(() => {
@@ -81,6 +86,30 @@ export default function ActivityLogSheet({ selectedMonth }) {
 
   return (
     <div style={{ padding: 20 }}>
+      {/* Recent Activity */}
+      <Card
+        title={<Space><Activity size={14} /> Recent Activity</Space>}
+        size="small" className="glass-card" style={{ marginBottom: 16 }}
+        styles={{ header: { background: 'linear-gradient(90deg,#f9f0ff,#efdbff)', borderBottom: '2px solid #b37feb' } }}
+      >
+        {recentActivity.length === 0 ? (
+          <Text type="secondary" style={{ fontSize: 12 }}>No recent edits recorded.</Text>
+        ) : recentActivity.map((r, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: i < recentActivity.length - 1 ? '1px solid #1e2332' : 'none' }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <User size={12} color="#3b82f6" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Text strong style={{ fontSize: 11, display: 'block' }}>{r.lastEditedBy || 'Unknown'}</Text>
+              <Text type="secondary" style={{ fontSize: 11, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {r.tester} &middot; {r.module || r.sg} &rarr; <Tag color={statusColor(r.status)} style={{ fontSize: 10, padding: '0 4px' }}>{r.status || 'Not Started'}</Tag>
+              </Text>
+            </div>
+            <Text type="secondary" style={{ fontSize: 10, flexShrink: 0 }}>{fmtDate(r.lastEditedAt)}</Text>
+          </div>
+        ))}
+      </Card>
+
       {/* Filter bar */}
       <Card
         size="small" className="glass-card" style={{ marginBottom: 16 }}

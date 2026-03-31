@@ -250,7 +250,7 @@ function App() {
           />
         );
       case 'logs':
-        return React.createElement(ActivityLogSheet, { currentUser: currentUser, role: role });
+        return React.createElement(ActivityLogSheet, { currentUser, role, dspManual, dspAuto, ssaData, selectedMonth });
       case 'users':
         if (role !== 'admin' && role !== 'tl') return null;
         return React.createElement(UsersSheet, { currentUserId: user.id, role });
