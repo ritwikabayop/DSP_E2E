@@ -94,14 +94,15 @@ export default function DSPSheet({
             : <Text copyable={{ text: String(v) }} style={{ fontFamily: 'monospace' }}>{v}</Text>,
       },
       {
-        title: 'Status', dataIndex: 'status', key: 'status', width: 170,
+        title: 'Status', dataIndex: 'status', key: 'status', width: 195,
         render: (v, rec) => (
           <StatusSelect value={v} record={rec} onSave={handleSave(setter)} readOnly={!editMode || !canEditRow(rec)} />
         ),
       },
       {
-        title: 'Last Edited By', dataIndex: 'lastEditedBy', key: 'lastEditedBy', width: 150,
-        render: (v) => v ? <Tag icon={<User size={10} />} color="blue">{v}</Tag> : <Text type="secondary">—</Text>,
+        title: 'Last Edited By', dataIndex: 'lastEditedBy', key: 'lastEditedBy', width: 170,
+        ellipsis: { showTitle: true },
+        render: (v) => v ? <Tag icon={<User size={10} />} color="blue" style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }} title={v}>{v}</Tag> : <Text type="secondary">—</Text>,
       },
       {
         title: 'Last Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 140,
@@ -139,7 +140,7 @@ export default function DSPSheet({
         <Table
           dataSource={filterData(dspManual, searchQuery)}
           columns={makeCols(setDspManual)}
-          pagination={false} size="small" bordered scroll={{ x: 1100 }}
+          pagination={false} size="small" bordered scroll={{ x: 1200 }}
           rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
         />
       </Card>
@@ -157,7 +158,7 @@ export default function DSPSheet({
         <Table
           dataSource={filterData(dspAuto, searchQuery)}
           columns={makeCols(setDspAuto)}
-          pagination={false} size="small" bordered scroll={{ x: 1100 }}
+          pagination={false} size="small" bordered scroll={{ x: 1200 }}
           rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
         />
       </Card>

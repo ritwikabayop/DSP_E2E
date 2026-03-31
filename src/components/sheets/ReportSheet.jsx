@@ -83,8 +83,8 @@ export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, sel
     { title: 'Tester',        dataIndex: 'tester',    key: 'tester',    render: (v) => <Space><User size={12} /><Text strong>{v}</Text></Space> },
     { title: 'Total',         dataIndex: 'total',     key: 'total',     width: 70 },
     { title: 'Completed',     dataIndex: 'completed', key: 'completed', width: 100, render: (v) => <Tag color="success">{v}</Tag> },
-    { title: 'In Progress',   dataIndex: 'inProgress',key: 'inProgress',width: 100, render: (v) => v ? <Tag color="processing">{v}</Tag> : <Text type="secondary">0</Text> },
-    { title: 'Blocked',       dataIndex: 'blocked',   key: 'blocked',   width: 90,  render: (v) => v ? <Tag color="error">{v}</Tag> : <Text type="secondary">0</Text> },
+    { title: 'In Progress',   dataIndex: 'inProgress',key: 'inProgress',width: 100, render: (v) => <Tag color={v ? 'processing' : 'default'}>{v}</Tag> },
+    { title: 'Blocked',       dataIndex: 'blocked',   key: 'blocked',   width: 90,  render: (v) => <Tag color={v ? 'error' : 'default'}>{v}</Tag> },
     {
       title: 'Completion %', key: 'pct', width: 150,
       render: (_, r) => {

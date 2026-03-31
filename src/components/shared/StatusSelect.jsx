@@ -28,12 +28,12 @@ export default function StatusSelect({ value, record, onSave, readOnly }) {
       value={value || ''}
       onChange={(v) => onSave(record.key, 'status', v)}
       options={STATUS_OPTIONS}
-      style={{ width: '100%', minWidth: 150 }}
+      style={{ width: '100%', minWidth: 165 }}
       popupMatchSelectWidth={false}
       variant="borderless"
       className="status-select"
       labelRender={({ label }) => (
-        <Tag color={color} icon={icon} style={tagStyle}>
+        <Tag color={color} icon={icon} style={{ ...tagStyle, whiteSpace: 'nowrap' }}>
           {label || 'Not Started'}
         </Tag>
       )}
