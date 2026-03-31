@@ -172,21 +172,23 @@ CREATE POLICY "users can read own profile"
   ON user_profiles FOR SELECT
   USING (id = auth.uid());
 
--- Admin can read all profiles
-CREATE POLICY "admin can read all profiles"
+-- Admin and tl can read all profiles
+CREATE POLICY "admin_tl can read all profiles"
   ON user_profiles FOR SELECT
-  USING (get_my_role() = 'admin');
+  USING (get_my_role() IN ('admin', 'tl'));
 
--- Admin can update any profile (e.g. change roles)
-CREATE POLICY "admin can update profiles"
+-- Admin and tl can update any profile (e.g. change roles)
+CREATE POLICY "admin_tl can update profiles"
   ON user_profiles FOR UPDATE
-  USING (get_my_role() = 'admin');
+  USING (get_my_role() IN ('admin', 'tl'));
 
--- The trigger (SECURITY DEFINER) handles INSERT on signup.
--- Admin can also insert profiles manually.
-CREATE POLICY "admin can insert profiles"
+-- Own profile insert (signup trigger) OR admin/tl manual insert
+CREATE POLICY "allow profile insert"
   ON user_profiles FOR INSERT
-  WITH CHECK (get_my_role() = 'admin');
+  WITH CHECK (
+    id = auth.uid()
+    OR get_my_role() IN ('admin', 'tl')
+  );
 
 
 -- ──────────────────────────────────────────────────────────
