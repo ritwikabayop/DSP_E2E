@@ -74,7 +74,8 @@ function App() {
   } = useMonthData(selectedMonth, user);
 
   useEffect(() => {
-    if (authRole === 'viewer') setEditMode(false);
+    if (authRole === 'viewer' || authRole === 'tester') setEditMode(false);
+    else if (authRole === 'admin' || authRole === 'tl') setEditMode(true);
   }, [authRole]);
 
   const handleMonthChange = (newMonth) => {
@@ -354,7 +355,16 @@ function App() {
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
 
               {/* Edit / View toggle */}
-              {role !== 'viewer' && (
+              {(role === 'admin' || role === 'tl') && (
+                <Segmented
+                  size="small"
+                  value="edit"
+                  options={[
+                    { value: 'edit', label: React.createElement(Space, { size: 3 }, React.createElement(PenTool, { size: 11 }), 'Edit') },
+                  ]}
+                />
+              )}
+              {role === 'tester' && (
                 <Segmented
                   size="small"
                   value={editMode ? 'edit' : 'view'}
