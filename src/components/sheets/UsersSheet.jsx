@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Table, Select, Tag, Typography, Card, message, Spin } from 'antd';
-import { Crown, UserCheck, User, Eye } from 'lucide-react';
-import { listUserProfiles, updateUserRole } from '../../services/api.js';
+import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space } from 'antd';
+import { Crown, UserCheck, User, Eye, UserPlus } from 'lucide-react';
+import { listUserProfiles, updateUserRole, inviteUser } from '../../services/api.js';
 
 const { Text } = Typography;
 
@@ -24,9 +24,12 @@ const roleTag = (r) => {
 };
 
 export default function UsersSheet({ currentUserId, role }) {
-  const [users,   setUsers]   = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [saving,  setSaving]  = useState(null); // userId being saved
+  const [users,      setUsers]      = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [saving,     setSaving]     = useState(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviting,   setInviting]   = useState(false);
+  const [form] = Form.useForm();
 
   const canEdit = role === 'admin';
 
@@ -49,6 +52,22 @@ export default function UsersSheet({ currentUserId, role }) {
       message.error('Failed to update role: ' + e.message);
     } finally {
       setSaving(null);
+    }
+  };
+
+  const handleInvite = async (values) => {
+    setInviting(true);
+    try {
+      await inviteUser(values.email.trim().toLowerCase(), values.role, values.displayName?.trim() || '');
+      message.success(`Invitation sent to ${values.email}. They will receive a confirmation email.`);
+      form.resetFields();
+      setInviteOpen(false);
+      // Refresh list
+      listUserProfiles().then(setUsers).catch(() => {});
+    } catch (e) {
+      message.error('Invite failed: ' + e.message);
+    } finally {
+      setInviting(false);
     }
   };
 
@@ -109,6 +128,13 @@ export default function UsersSheet({ currentUserId, role }) {
           </span>
         }
         styles={{ header: { borderBottom: '1px solid #252d42' } }}
+        extra={canEdit && (
+          <Button type="primary" size="small" icon={<UserPlus size={13} />}
+            onClick={() => setInviteOpen(true)}
+            style={{ background: '#217346', borderColor: '#217346' }}>
+            Add User
+          </Button>
+        )}
       >
         {loading ? (
           <div style={{ textAlign: 'center', padding: 40 }}><Spin /></div>
@@ -123,6 +149,35 @@ export default function UsersSheet({ currentUserId, role }) {
         )}
       </Card>
       )}
+
+      <Modal
+        title={<Space><UserPlus size={15} /> Invite New User</Space>}
+        open={inviteOpen}
+        onCancel={() => { setInviteOpen(false); form.resetFields(); }}
+        footer={null}
+        width={420}
+      >
+        <Form form={form} layout="vertical" onFinish={handleInvite} style={{ marginTop: 8 }}>
+          <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Enter a valid email' }]}>
+            <Input placeholder="user@accenture.com" size="middle" />
+          </Form.Item>
+          <Form.Item name="displayName" label="Display Name">
+            <Input placeholder="e.g. Santhwana M R" size="middle" />
+          </Form.Item>
+          <Form.Item name="role" label="Role" initialValue="tester" rules={[{ required: true }]}>
+            <Select options={ROLE_OPTIONS} size="middle" />
+          </Form.Item>
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+              <Button onClick={() => { setInviteOpen(false); form.resetFields(); }}>Cancel</Button>
+              <Button type="primary" htmlType="submit" loading={inviting}
+                style={{ background: '#217346', borderColor: '#217346' }}>
+                Send Invite
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

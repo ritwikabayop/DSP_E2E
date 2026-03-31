@@ -143,3 +143,28 @@ export const updateUserRole = async (userId, role) => {
     .eq('id', userId);
   if (error) throw error;
 };
+
+/**
+ * Admin: invite a new user by email.
+ * Creates a Supabase auth account and pre-assigns their role profile.
+ * The user receives a confirmation email to set their password.
+ */
+export const inviteUser = async (email, role, displayName = '') => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password: crypto.randomUUID(),
+    options: {
+      emailRedirectTo: window.location.origin + '/DSP_E2E/',
+      data: { display_name: displayName },
+    },
+  });
+  if (error) throw error;
+  const userId = data.user?.id;
+  if (!userId) throw new Error('User creation failed — account may already exist.');
+  const { error: profileError } = await supabase.from('user_profiles').upsert(
+    { id: userId, email, display_name: displayName, role },
+    { onConflict: 'id' }
+  );
+  if (profileError) throw profileError;
+  return data.user;
+};
