@@ -153,7 +153,7 @@ export function useMonthData(monthKey, user) {
         const logsDa = diffRows(snapshotRef.current.dspAuto,   dspAuto,   'DSP Automation', changedBy, monthKey);
 
         const toDb = (rows) =>
-          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
 
         await Promise.all([
           upsertRows('dsp_manual', toDb(dspManual)),
@@ -167,7 +167,7 @@ export function useMonthData(monthKey, user) {
         const logs = diffRows(snapshotRef.current.ssaData, ssaData, 'SSA', changedBy, monthKey);
         const toDb = (rows) =>
           rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, ...r }) => ({
-            ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null,
+            ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null,
             deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
           }));
         await Promise.all([
@@ -180,7 +180,7 @@ export function useMonthData(monthKey, user) {
       if (moduleKey === 'team') {
         const logs = diffRows(snapshotRef.current.teamData, teamData, 'Team', changedBy, monthKey);
         const toDb = (rows) =>
-          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
         await Promise.all([
           upsertRows('team_data', toDb(teamData)),
           insertActivityLogs(logs),

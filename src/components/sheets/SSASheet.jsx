@@ -36,7 +36,7 @@ export default function SSASheet({
     setSsaData((prev) => [
       ...prev,
       {
-        key: nextKey(ssaData), tester: currentUser || '', module: '', dealId: '',
+        key: nextKey(ssaData), tester: '', module: '', dealId: '',
         dealId2: '', dealId3: '', dealId4: '', status: '',
         lastEditedBy: currentUser || 'Unknown', lastEditedAt: new Date().toISOString(),
       },

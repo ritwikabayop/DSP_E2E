@@ -37,7 +37,7 @@ export default function DSPSheet({
 
   const addRow = (setter, data, label, env) => {
     const row = {
-      key: nextKey(data), tester: currentUser || '', module: 'DSP',
+      key: nextKey(data), tester: '', module: 'DSP',
       env, sg: 'SI', deal: '', status: '', comments: '',
       lastEditedBy: currentUser || 'Unknown', lastEditedAt: new Date().toISOString(),
     };
