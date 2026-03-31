@@ -83,7 +83,7 @@ export default function DSPSheet({
         ),
       },
       {
-        title: 'Comments', dataIndex: 'comments', key: 'comments',
+        title: 'Comments', dataIndex: 'comments', key: 'comments', width: 160,
         render: (v, rec) =>
           editMode && canEditRow(rec)
             ? <EditableCell value={v || ''} record={rec} dataIndex="comments" onSave={handleSave(setter)} />
@@ -129,26 +129,26 @@ export default function DSPSheet({
           </Space>
         )}
       >
-        <Row gutter={[12, 16]}>
-          <Col xs={24} xxl={12}>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} xl={12}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="green" style={{ fontWeight: 700, fontSize: 12 }}>PT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{ptData.length} row{ptData.length !== 1 ? 's' : ''}</Text>
             </div>
             <Table
               dataSource={ptData} columns={cols}
-              pagination={false} size="small" bordered scroll={{ x: 820 }}
+              pagination={false} size="small" bordered scroll={{ x: 980 }}
               rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
             />
           </Col>
-          <Col xs={24} xxl={12}>
+          <Col xs={24} xl={12}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="orange" style={{ fontWeight: 700, fontSize: 12 }}>UAT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{uatData.length} row{uatData.length !== 1 ? 's' : ''}</Text>
             </div>
             <Table
               dataSource={uatData} columns={cols}
-              pagination={false} size="small" bordered scroll={{ x: 820 }}
+              pagination={false} size="small" bordered scroll={{ x: 980 }}
               rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
             />
           </Col>
