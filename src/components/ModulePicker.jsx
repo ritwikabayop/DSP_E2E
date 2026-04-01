@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
   Monitor, Shield, Users, FileText, Activity, Video, BookOpen, User,
 } from 'lucide-react';
-import { ROLES } from '../utils/constants.js';
+import { ROLES, ROLE_HIERARCHY } from '../utils/constants.js';
 
 const modules = [
   {
@@ -74,9 +74,22 @@ const modules = [
 export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut }) {
   const [hovered, setHovered] = React.useState(null);
 
-  const displayName  = profile?.display_name || user?.email || '';
-  const roleConfig   = ROLES[role] ?? ROLES.viewer;
-  const _actualRole  = actualRole ?? role;
+  const displayName    = profile?.display_name || user?.email || '';
+  const roleConfig     = ROLES[role] ?? ROLES.viewer;
+  const _actualRole    = actualRole ?? role;
+  const actualHierarchy = ROLE_HIERARCHY[_actualRole] ?? 0;
+
+  // Only show modules the current role can access
+  const visibleModules = modules.filter((mod) => {
+    if (mod.key === 'attendance') return roleConfig.canViewAttendance;
+    if (mod.key === 'kt')         return roleConfig.canViewKT;
+    return true; // e2e always visible
+  });
+
+  // Role switch: only show roles at or below the user's actual hierarchy level
+  const switchableRoles = Object.keys(ROLES).filter(
+    (r) => (ROLE_HIERARCHY[r] ?? 0) <= actualHierarchy
+  );
 
   // Build profile dropdown menu — mirrors the main dashboard dropdown
   const profileMenuItems = [
@@ -92,10 +105,15 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {[
-              ['Edit data',     roleConfig.canEdit],
-              ['Delete rows',   roleConfig.canDelete],
-              ['Add rows',      roleConfig.canAddRow],
-              ['Own rows only', roleConfig.onlyOwnRows],
+              ['Edit data',       roleConfig.canEdit],
+              ['Delete rows',     roleConfig.canDelete],
+              ['Add rows',        roleConfig.canAddRow],
+              ['Add team member', roleConfig.canAddTeamMember],
+              ['View reports',    roleConfig.canViewReport],
+              ['Download reports',roleConfig.canDownloadReport],
+              ['View logs',       roleConfig.canViewLogs],
+              ['Manage users',    roleConfig.canManageUsers],
+              ['Own rows only',   roleConfig.onlyOwnRows],
             ].map(([perm, allowed]) => (
               <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
                 <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1 }}>{allowed ? '✓' : '✗'}</span>
@@ -108,7 +126,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
     },
     { type: 'divider' },
     { type: 'group', label: 'Switch Role View' },
-    ...Object.keys(ROLES).map((r) => {
+    ...switchableRoles.map((r) => {
       const rc = ROLES[r];
       const isCurrentActual = r === _actualRole && !viewAsRole;
       const isActive = viewAsRole === r || isCurrentActual;
@@ -244,7 +262,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
           maxWidth: 860,
           width: '100%',
         }}>
-          {modules.map((mod) => {
+          {visibleModules.map((mod) => {
             const Icon       = mod.icon;
             const ActionIcon = mod.ActionIcon;
             const isHovered  = hovered === mod.key;

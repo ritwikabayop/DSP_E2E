@@ -26,7 +26,7 @@ import ActivityLogSheet from './components/sheets/ActivityLogSheet.jsx';
 import UsersSheet       from './components/sheets/UsersSheet.jsx';
 
 // Utils
-import { MONTH_OPTIONS, ROLES, currentMonthKey } from './utils/constants.js';
+import { MONTH_OPTIONS, ROLES, ROLE_HIERARCHY, currentMonthKey } from './utils/constants.js';
 import { toTSV, filterData }                     from './utils/helpers.jsx';
 
 import './App.css';
@@ -273,7 +273,6 @@ function App() {
   const actualRole  = authRole ?? 'viewer';
   const role        = viewAsRole ?? actualRole;
   const anyDirty    = Object.values(dirtyModules).some(Boolean);
-  const canSeeLogs  = role === 'admin' || role === 'tl';
   const roleConfig  = ROLES[role] || ROLES.viewer;
   const RoleIcon    = roleConfig.icon;
   const displayName = profile && profile.display_name ? profile.display_name : user.email;
@@ -311,9 +310,9 @@ function App() {
         React.createElement(DotDirty, { dirty: dirtyModules.team })
       ),
     },
-    { key: 'report', icon: React.createElement(FileText,  { size: 15 }), label: 'Report' },
-  ].concat(canSeeLogs ? [{ key: 'logs', icon: React.createElement(Activity, { size: 15 }), label: 'Logs' }] : [])
-   .concat(role === 'admin' || role === 'tl' ? [{ key: 'users', icon: React.createElement(UserCog, { size: 15 }), label: 'Users' }] : []);
+  ].concat(roleConfig.canViewReport ? [{ key: 'report', icon: React.createElement(FileText,  { size: 15 }), label: 'Report' }] : [])
+   .concat(roleConfig.canViewLogs    ? [{ key: 'logs',   icon: React.createElement(Activity,  { size: 15 }), label: 'Logs'   }] : [])
+   .concat(roleConfig.canManageUsers ? [{ key: 'users',  icon: React.createElement(UserCog,   { size: 15 }), label: 'Users'  }] : []);
 
   const renderSheet = () => {
     switch (activeTab) {
@@ -352,16 +351,18 @@ function App() {
           />
         );
       case 'report':
+        if (!roleConfig.canViewReport) return null;
         return (
           <ReportSheet
             dspManual={dspManual} dspAuto={dspAuto} ssaData={ssaData} teamData={teamData}
-            selectedMonth={selectedMonth}
+            selectedMonth={selectedMonth} role={role}
           />
         );
       case 'logs':
+        if (!roleConfig.canViewLogs) return null;
         return React.createElement(ActivityLogSheet, { currentUser, role, dspManual, dspAuto, ssaData, selectedMonth });
       case 'users':
-        if (role !== 'admin' && role !== 'tl') return null;
+        if (!roleConfig.canManageUsers) return null;
         return React.createElement(UsersSheet, { currentUserId: user.id, role, currentUserEmail: currentUser });
       default:
         return null;

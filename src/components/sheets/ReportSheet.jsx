@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Card, Table, Tag, Space, Row, Col, Select, Button, Typography, Progress, Statistic } from 'antd';
 import { BarChart3, TrendingUp, Users, FileText, User, Download, Printer } from 'lucide-react';
-import { MONTH_OPTIONS }              from '../../utils/constants.js';
+import { MONTH_OPTIONS, ROLES }              from '../../utils/constants.js';
 import { isHighPriority, statusColor } from '../../utils/helpers.jsx';
 
 const { Title, Text } = Typography;
 
-export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, selectedMonth }) {
+export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, selectedMonth, role }) {
   const [filterEnv, setFilterEnv] = useState('all');
-  const monthLabel = MONTH_OPTIONS.find((m) => m.value === selectedMonth)?.label || selectedMonth;
+  const monthLabel       = MONTH_OPTIONS.find((m) => m.value === selectedMonth)?.label || selectedMonth;
+  const canDownload      = (ROLES[role] ?? ROLES.viewer).canDownloadReport;
 
   const applyEnvFilter = (data) => filterEnv === 'all' ? data : data.filter((r) => r.env === filterEnv);
 
@@ -116,17 +117,17 @@ export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, sel
         <Space>
           <Select value={filterEnv} onChange={setFilterEnv} size="small" style={{ width: 110 }}
             options={[{ value: 'all', label: 'All Envs' }, { value: 'PT', label: 'PT Only' }, { value: 'UAT', label: 'UAT Only' }]} />
-          <Button size="small" icon={<Download size={13} />} onClick={() => exportCSV(moduleBreakdown, `module-report-${selectedMonth}.csv`)}>
+          <Button size="small" icon={<Download size={13} />} onClick={() => exportCSV(moduleBreakdown, `module-report-${selectedMonth}.csv`)} disabled={!canDownload}>
             Module CSV
           </Button>
-          <Button size="small" icon={<Download size={13} />} onClick={() => exportCSV(testerBreakdown, `tester-report-${selectedMonth}.csv`)}>
+          <Button size="small" icon={<Download size={13} />} onClick={() => exportCSV(testerBreakdown, `tester-report-${selectedMonth}.csv`)} disabled={!canDownload}>
             Tester CSV
           </Button>
-          <Button type="primary" size="small" icon={<FileText size={13} />} onClick={exportFullReport}
-            style={{ background: '#217346', borderColor: '#217346' }}>
+          <Button type="primary" size="small" icon={<FileText size={13} />} onClick={exportFullReport} disabled={!canDownload}
+            style={{ background: canDownload ? '#217346' : undefined, borderColor: canDownload ? '#217346' : undefined }}>
             Full Export
           </Button>
-          <Button size="small" icon={<Printer size={13} />} onClick={() => window.print()}>Print</Button>
+          <Button size="small" icon={<Printer size={13} />} onClick={() => window.print()} disabled={!canDownload}>Print</Button>
         </Space>
       </div>
 
