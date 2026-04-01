@@ -134,8 +134,6 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
   ];
 
   const handleClick = (mod) => {
-    // Attendance card uses role buttons — card-level click is suppressed
-    if (mod.roleButtons) return;
     if (mod.external) {
       window.open(mod.externalUrl, '_blank', 'noopener,noreferrer');
     } else {
