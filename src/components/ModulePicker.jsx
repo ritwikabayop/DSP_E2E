@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Tag, Tooltip } from 'antd';
 import {
   LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
-  Monitor, Shield, Users, FileText, Activity, Video, BookOpen,
+  Monitor, Shield, Users, FileText, Activity, Video, BookOpen, User,
 } from 'lucide-react';
 import { ROLES } from '../utils/constants.js';
 
@@ -76,7 +76,6 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
 
   const displayName = profile?.display_name || user?.email || '';
   const roleConfig  = ROLES[role] ?? ROLES.viewer;
-  const RoleIcon    = roleConfig.icon;
 
   const handleClick = (mod) => {
     // Attendance card uses role buttons — card-level click is suppressed
@@ -116,41 +115,51 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
         </div>
         <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>MyISP</span>
 
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* User pill */}
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Profile card */}
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 7,
-            padding: '4px 10px', borderRadius: 8,
-            background: '#1a2035', border: '1px solid #1e2332',
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '6px 14px 6px 8px', borderRadius: 12,
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
           }}>
+            {/* Avatar */}
             <div style={{
-              width: 22, height: 22, borderRadius: '50%',
+              width: 34, height: 34, borderRadius: '50%', flexShrink: 0,
               background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 0 12px rgba(34,197,94,0.35)',
             }}>
-              <RoleIcon size={11} color="#fff" />
+              <User size={16} color="#fff" />
             </div>
-            <span style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 600, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {displayName}
-            </span>
-            <Tag
-              style={{
-                margin: 0, fontSize: 10, padding: '0 6px', lineHeight: '18px',
+            {/* Name + role */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <span style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 600, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
+                {displayName}
+              </span>
+              <span style={{
+                display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
+                padding: '0 7px', borderRadius: 6,
                 color: roleConfig.color,
-                background: 'rgba(255,255,255,0.05)',
-                border: `1px solid ${roleConfig.color}44`,
-              }}
-            >
-              {roleConfig.label}
-            </Tag>
+                background: `${roleConfig.color}1a`,
+                border: `1px solid ${roleConfig.color}40`,
+                letterSpacing: 0.3,
+              }}>
+                {roleConfig.label}
+              </span>
+            </div>
           </div>
 
+          {/* Sign out */}
           <Tooltip title="Sign out">
             <Button
               size="small"
-              icon={<LogOut size={12} />}
+              icon={<LogOut size={13} />}
               onClick={onSignOut}
-              style={{ color: '#f87171', borderColor: '#f871711a', background: 'transparent' }}
+              style={{
+                height: 34, borderRadius: 10, paddingInline: 14,
+                color: '#f87171', borderColor: 'rgba(248,113,113,0.2)',
+                background: 'rgba(248,113,113,0.06)', fontWeight: 600, fontSize: 12,
+              }}
             >
               Sign out
             </Button>
