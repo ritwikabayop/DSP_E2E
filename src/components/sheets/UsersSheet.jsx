@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Statistic, Result, Divider } from 'antd';
+import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Divider } from 'antd';
 import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users, Copy, CheckCheck } from 'lucide-react';
 import { listUserProfiles, updateUserRole, inviteUser } from '../../services/api.js';
 
@@ -16,7 +16,7 @@ const ROLE_META = {
 const ROLE_PERMISSIONS = {
   admin:  [['Edit rows', true], ['Delete rows', true], ['Add rows (DSP/SSA)', true], ['Add team members', true], ['View reports', true], ['Download reports', true], ['View activity logs', true], ['Manage users', true], ['View attendance', true]],
   tl:     [['Edit rows', true], ['Delete rows', true], ['Add rows (DSP/SSA)', true], ['Add team members', true], ['View reports', true], ['Download reports', true], ['View activity logs', true], ['Manage users', true], ['View attendance', true]],
-  tester: [['Edit rows', true], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['Add team members', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Manage users', false], ['Own rows only', true]],
+  tester: [['Edit rows', true], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['Add team members', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Manage users', false], ['KT Sessions', true], ['Own rows only', true]],
   viewer: [['Edit rows', false], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Read-only access', true]],
 };
 
@@ -71,7 +71,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
     try {
       const result = await inviteUser(values.email.trim().toLowerCase(), values.role, values.displayName?.trim() || '', currentUserEmail || '');
       form.resetFields();
-      setInviteResult({ email: values.email.trim().toLowerCase(), existing: !!result?.existing });
+      setInviteResult({ email: values.email.trim().toLowerCase(), existing: !!result?.existing, role: values.role });
       load();
     } catch (e) {
       message.error('Invite failed: ' + e.message);
@@ -247,36 +247,72 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
         width={440}
       >
         {inviteResult ? (
-          /* ── Success screen with copy link ── */
-          <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
-            <Result
-              status="success"
-              title={inviteResult.existing ? 'Role Updated' : 'Invite Sent!'}
-              subTitle={
-                inviteResult.existing
-                  ? `${inviteResult.email}'s role has been updated. Share the link below so they can log in.`
-                  : `An activation email was sent to ${inviteResult.email}. You can also share the link directly.`
-              }
-              style={{ paddingBottom: 12 }}
-            />
-            <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '12px 16px', marginBottom: 16, textAlign: 'left' }}>
-              <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 6 }}>Dashboard login link to share via Teams / email:</Text>
-              <Text code style={{ fontSize: 12, wordBreak: 'break-all' }}>
-                {window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/')}
-              </Text>
-            </div>
-            <Space>
-              <Button
-                icon={copied ? <CheckCheck size={13} /> : <Copy size={13} />}
-                onClick={handleCopyLink}
-                style={copied ? { borderColor: '#49aa19', color: '#49aa19' } : {}}
-              >
-                {copied ? 'Copied!' : 'Copy Link'}
-              </Button>
-              <Button type="primary" onClick={closeInviteModal} style={{ background: '#217346', borderColor: '#217346' }}>
-                Done
-              </Button>
-            </Space>
+          /* ── Success screen with role summary ── */
+          <div style={{ padding: '8px 0 16px' }}>
+            {(() => {
+              const m     = ROLE_META[inviteResult.role] ?? ROLE_META.viewer;
+              const Icon  = m.icon;
+              const perms = ROLE_PERMISSIONS[inviteResult.role] ?? [];
+              return (
+                <>
+                  {/* Header */}
+                  <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                    <div style={{ width: 52, height: 52, borderRadius: '50%', background: `${m.color}20`, border: `2px solid ${m.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                      <Icon size={22} color={m.color} />
+                    </div>
+                    <Text strong style={{ color: '#e2e8f0', fontSize: 16, display: 'block' }}>
+                      {inviteResult.existing ? 'Role Updated!' : 'Invite Sent!'}
+                    </Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>
+                      {inviteResult.existing
+                        ? `${inviteResult.email} has been reassigned to`
+                        : `${inviteResult.email} will join as`}
+                    </Text>
+                    <div style={{ marginTop: 6 }}>
+                      <Tag color={m.tagColor} icon={<Icon size={11} />} style={{ fontSize: 13, padding: '3px 12px' }}>
+                        {m.label}
+                      </Tag>
+                    </div>
+                  </div>
+
+                  {/* Permission summary for assigned role */}
+                  <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
+                    <Text strong style={{ fontSize: 11, color: m.color, display: 'block', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.6 }}>
+                      What {inviteResult.email.split('@')[0]} can do
+                    </Text>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
+                      {perms.map(([perm, allowed]) => (
+                        <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
+                          <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
+                          <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Copy link */}
+                  <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                    <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 6 }}>Share login link via Teams / email:</Text>
+                    <Text code style={{ fontSize: 11, wordBreak: 'break-all' }}>
+                      {window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/')}
+                    </Text>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                    <Button
+                      icon={copied ? <CheckCheck size={13} /> : <Copy size={13} />}
+                      onClick={handleCopyLink}
+                      style={copied ? { borderColor: '#49aa19', color: '#49aa19' } : {}}
+                    >
+                      {copied ? 'Copied!' : 'Copy Link'}
+                    </Button>
+                    <Button type="primary" onClick={closeInviteModal} style={{ background: '#217346', borderColor: '#217346' }}>
+                      Done
+                    </Button>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         ) : (
           /* ── Invite form ── */

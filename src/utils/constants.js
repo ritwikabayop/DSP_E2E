@@ -26,7 +26,7 @@ export const ROLES = {
     label: 'Support', color: '#0958d9', bg: '#e6f4ff', border: '#91caff', icon: User,
     canEdit: true,  canDelete: false, canAddRow: false, onlyOwnRows: true,
     canAddTeamMember: false, canViewReport: false, canDownloadReport: false,
-    canViewLogs: false, canManageUsers: false, canViewAttendance: false, canViewKT: false,
+    canViewLogs: false, canManageUsers: false, canViewAttendance: false, canViewKT: true,
   },
   // Viewer — read only; can access KT Sessions
   viewer: {
