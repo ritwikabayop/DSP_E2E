@@ -541,34 +541,37 @@ function App() {
                       ),
                     },
                     { type: 'divider' },
-                    { type: 'group', label: 'Switch Role View' },
-                    ...['admin','tl','tester','viewer'].map((r) => {
-                      const rc = ROLES[r];
-                      const RIcon = rc.icon;
-                      const isCurrentActual = r === actualRole && !viewAsRole;
-                      const isActive = viewAsRole === r || isCurrentActual;
-                      return {
-                        key: 'preview-' + r,
-                        label: React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 } },
-                          React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 } },
-                            React.createElement(RIcon, { size: 12 }),
-                            rc.label
+                    // Switch Role View — only shown to admin (preview mode)
+                    ...(actualRole === 'admin' ? [
+                      { type: 'group', label: 'Switch Role View' },
+                      ...['admin','tl','tester','viewer'].map((r) => {
+                        const rc = ROLES[r];
+                        const RIcon = rc.icon;
+                        const isCurrentActual = r === actualRole && !viewAsRole;
+                        const isActive = viewAsRole === r || isCurrentActual;
+                        return {
+                          key: 'preview-' + r,
+                          label: React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 } },
+                            React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 } },
+                              React.createElement(RIcon, { size: 12 }),
+                              rc.label
+                            ),
+                            isCurrentActual
+                              ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Current')
+                              : isActive
+                                ? React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Active')
+                                : null
                           ),
-                          isCurrentActual
-                            ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Current')
-                            : isActive
-                              ? React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Active')
-                              : null
-                        ),
-                        onClick: () => {
-                          if (isCurrentActual) return; // already on own role
-                          if (viewAsRole === r) { setViewAsRole(null); setEditMode(actualRole === 'admin' || actualRole === 'tl'); }
-                          else { setViewAsRole(r); setEditMode(false); }
-                          setActiveTab('home');
-                        },
-                      };
-                    }),
-                    { type: 'divider' },
+                          onClick: () => {
+                            if (isCurrentActual) return;
+                            if (viewAsRole === r) { setViewAsRole(null); setEditMode(actualRole === 'admin' || actualRole === 'tl'); }
+                            else { setViewAsRole(r); setEditMode(false); }
+                            setActiveTab('home');
+                          },
+                        };
+                      }),
+                      { type: 'divider' },
+                    ] : []),
                     { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
                   ],
                 },

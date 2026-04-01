@@ -124,29 +124,32 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         </div>
       ),
     },
-    { type: 'divider' },
-    { type: 'group', label: 'Switch Role View' },
-    ...switchableRoles.map((r) => {
-      const rc = ROLES[r];
-      const isCurrentActual = r === _actualRole && !viewAsRole;
-      const isActive = viewAsRole === r || isCurrentActual;
-      return {
-        key: 'preview-' + r,
-        label: (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 }}>
-              {rc.label}
-            </span>
-            {isCurrentActual
-              ? <Tag color="green" style={{ margin: 0, fontSize: 10 }}>Current</Tag>
-              : isActive
-                ? <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Active</Tag>
-                : null}
-          </div>
-        ),
-        onClick: () => onRoleSwitch && onRoleSwitch(isCurrentActual ? null : r),
-      };
-    }),
+    // Switch Role View — only shown to admin (for preview purposes only)
+    ...(_actualRole === 'admin' ? [
+      { type: 'divider' },
+      { type: 'group', label: 'Switch Role View' },
+      ...switchableRoles.map((r) => {
+        const rc = ROLES[r];
+        const isCurrentActual = r === _actualRole && !viewAsRole;
+        const isActive = viewAsRole === r || isCurrentActual;
+        return {
+          key: 'preview-' + r,
+          label: (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 }}>
+                {rc.label}
+              </span>
+              {isCurrentActual
+                ? <Tag color="green" style={{ margin: 0, fontSize: 10 }}>Current</Tag>
+                : isActive
+                  ? <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Active</Tag>
+                  : null}
+            </div>
+          ),
+          onClick: () => onRoleSwitch && onRoleSwitch(isCurrentActual ? null : r),
+        };
+      }),
+    ] : []),
     { type: 'divider' },
     { key: 'signout', label: <span style={{ color: '#f87171' }}>Sign out</span>, onClick: onSignOut },
   ];

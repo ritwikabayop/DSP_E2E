@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Statistic, Result } from 'antd';
+import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Statistic, Result, Divider } from 'antd';
 import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users, Copy, CheckCheck } from 'lucide-react';
 import { listUserProfiles, updateUserRole, inviteUser } from '../../services/api.js';
 
@@ -8,8 +8,16 @@ const { Text } = Typography;
 const ROLE_META = {
   admin:  { color: '#cf1322', bg: '#fff1f0', border: '#ffa39e', tagColor: 'red',     icon: Crown,      label: 'Operation User', desc: 'Full access — edit, delete, add rows, manage users' },
   tl:     { color: '#1d39c4', bg: '#f0f5ff', border: '#adc6ff', tagColor: 'blue',    icon: UserCheck,  label: 'Super User',     desc: 'Edit & add rows, view logs, read-only users page' },
-  tester: { color: '#0958d9', bg: '#e6f4ff', border: '#91caff', tagColor: 'cyan',    icon: User,       label: 'Support SA',     desc: 'Edit own rows only' },
+  tester: { color: '#0958d9', bg: '#e6f4ff', border: '#91caff', tagColor: 'cyan',    icon: User,       label: 'Support',        desc: 'Edit own rows only' },
   viewer: { color: '#8c8c8c', bg: '#fafafa', border: '#d9d9d9', tagColor: 'default', icon: Eye,        label: 'Viewer',         desc: 'Read-only access' },
+};
+
+// Permission breakdown shown per role in the invite form
+const ROLE_PERMISSIONS = {
+  admin:  [['Edit rows', true], ['Delete rows', true], ['Add rows (DSP/SSA)', true], ['Add team members', true], ['View reports', true], ['Download reports', true], ['View activity logs', true], ['Manage users', true], ['View attendance', true]],
+  tl:     [['Edit rows', true], ['Delete rows', true], ['Add rows (DSP/SSA)', true], ['Add team members', true], ['View reports', true], ['Download reports', true], ['View activity logs', true], ['Manage users', true], ['View attendance', true]],
+  tester: [['Edit rows', true], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['Add team members', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Manage users', false], ['Own rows only', true]],
+  viewer: [['Edit rows', false], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Read-only access', true]],
 };
 
 const ROLE_OPTIONS = Object.entries(ROLE_META).map(([value, m]) => ({ value, label: m.label }));
@@ -29,6 +37,8 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
   const [inviteResult, setInviteResult] = useState(null); // { email, existing }
   const [copied,       setCopied]       = useState(false);
   const [search,       setSearch]       = useState('');
+  const [inviteEmail,  setInviteEmail]  = useState('');
+  const [inviteRole,   setInviteRole]   = useState('tester');
   const [form] = Form.useForm();
 
   const canEdit = role === 'admin';
@@ -82,6 +92,8 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
     setInviteOpen(false);
     setInviteResult(null);
     setCopied(false);
+    setInviteEmail('');
+    setInviteRole('tester');
     form.resetFields();
   };
 
@@ -270,13 +282,46 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
           /* ── Invite form ── */
           <Form form={form} layout="vertical" onFinish={handleInvite} style={{ marginTop: 8 }}>
             <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Enter a valid email' }]}>
-              <Input placeholder="user@accenture.com" size="middle" />
+              <Input
+                placeholder="user@accenture.com"
+                size="middle"
+                onChange={(e) => setInviteEmail(e.target.value.trim().toLowerCase())}
+              />
             </Form.Item>
+
+            {/* Live email lookup — show existing user's current role */}
+            {(() => {
+              const match = inviteEmail && users.find((u) => u.email?.toLowerCase() === inviteEmail);
+              if (!match) return null;
+              const m = ROLE_META[match.role] ?? ROLE_META.viewer;
+              const Icon = m.icon;
+              return (
+                <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '10px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Avatar size={28} style={{ background: m.color, flexShrink: 0, fontSize: 12 }}>
+                    {(match.display_name || match.email || '?')[0].toUpperCase()}
+                  </Avatar>
+                  <div style={{ flex: 1 }}>
+                    <Text strong style={{ fontSize: 12, color: '#e2e8f0', display: 'block' }}>
+                      {match.display_name || match.email}
+                      <Tag color="orange" style={{ marginLeft: 6, fontSize: 10 }}>Existing User</Tag>
+                    </Text>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                      <Text type="secondary" style={{ fontSize: 11 }}>Current role:</Text>
+                      <Tag color={m.tagColor} icon={<Icon size={10} />} style={{ fontSize: 11 }}>{m.label}</Tag>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
             <Form.Item name="displayName" label="Display Name">
               <Input placeholder="e.g. Santhwana M R" size="middle" />
             </Form.Item>
-            <Form.Item name="role" label="Role" initialValue="tester" rules={[{ required: true }]}>
-              <Select size="middle"
+
+            <Form.Item name="role" label="Assign Role" initialValue="tester" rules={[{ required: true }]}>
+              <Select
+                size="middle"
+                onChange={(val) => setInviteRole(val)}
                 options={ROLE_OPTIONS.map((o) => ({
                   ...o,
                   label: (
@@ -289,12 +334,36 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                 }))}
               />
             </Form.Item>
+
+            {/* Permission preview for the selected role */}
+            {inviteRole && (() => {
+              const m    = ROLE_META[inviteRole] ?? ROLE_META.viewer;
+              const Icon = m.icon;
+              const perms = ROLE_PERMISSIONS[inviteRole] ?? [];
+              return (
+                <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <Icon size={13} color={m.color} />
+                    <Text strong style={{ fontSize: 12, color: m.color }}>{m.label} — Permissions</Text>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px' }}>
+                    {perms.map(([perm, allowed]) => (
+                      <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
+                        <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
+                        <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
             <Form.Item style={{ marginBottom: 0 }}>
               <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
                 <Button onClick={closeInviteModal}>Cancel</Button>
                 <Button type="primary" htmlType="submit" loading={inviting}
                   style={{ background: '#217346', borderColor: '#217346' }}>
-                  Send Invite
+                  {users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Update Role' : 'Send Invite'}
                 </Button>
               </Space>
             </Form.Item>
