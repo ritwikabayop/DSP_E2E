@@ -45,6 +45,11 @@ const modules = [
     ActionIcon: ExternalLink,
     external: true,
     externalUrl: import.meta.env.BASE_URL + 'attendance/',
+    // Role buttons — each opens the tracker pre-selecting that role on the PIN screen
+    roleButtons: [
+      { role: 'admin',    label: 'Admin',     accent: '#a78bfa', bg: 'rgba(124,58,237,0.15)', border: 'rgba(124,58,237,0.35)' },
+      { role: 'operator', label: 'Operation', accent: '#4ade80', bg: 'rgba(34,197,94,0.12)',  border: 'rgba(34,197,94,0.30)' },
+    ],
   },
   {
     key: 'kt',
@@ -74,6 +79,8 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
   const RoleIcon    = roleConfig.icon;
 
   const handleClick = (mod) => {
+    // Attendance card uses role buttons — card-level click is suppressed
+    if (mod.roleButtons) return;
     if (mod.external) {
       window.open(mod.externalUrl, '_blank', 'noopener,noreferrer');
     } else {
