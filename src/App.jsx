@@ -247,7 +247,13 @@ function App() {
         <ModulePicker
           user={user}
           profile={profile}
-          role={authRole ?? 'viewer'}
+          role={(viewAsRole ?? authRole) ?? 'viewer'}
+          actualRole={authRole ?? 'viewer'}
+          viewAsRole={viewAsRole}
+          onRoleSwitch={(r) => {
+            if (r === null) { setViewAsRole(null); setEditMode(authRole === 'admin' || authRole === 'tl'); }
+            else { setViewAsRole(r); setEditMode(false); }
+          }}
           onSelect={(mod) => setActiveModule(mod)}
           onSignOut={() => { signOut(); setActiveModule(null); }}
         />

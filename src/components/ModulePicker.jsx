@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Tag, Tooltip } from 'antd';
+import { Button, Tag, Tooltip, Dropdown } from 'antd';
 import {
   LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
   Monitor, Shield, Users, FileText, Activity, Video, BookOpen, User,
@@ -71,11 +71,67 @@ const modules = [
   },
 ];
 
-export default function ModulePicker({ user, profile, role, onSelect, onSignOut }) {
+export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut }) {
   const [hovered, setHovered] = React.useState(null);
 
-  const displayName = profile?.display_name || user?.email || '';
-  const roleConfig  = ROLES[role] ?? ROLES.viewer;
+  const displayName  = profile?.display_name || user?.email || '';
+  const roleConfig   = ROLES[role] ?? ROLES.viewer;
+  const _actualRole  = actualRole ?? role;
+
+  // Build profile dropdown menu — mirrors the main dashboard dropdown
+  const profileMenuItems = [
+    { type: 'group', label: displayName },
+    {
+      key: 'role-info',
+      label: (
+        <div style={{ padding: '4px 0', pointerEvents: 'none' }}>
+          <div style={{ fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 }}>Your Role</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <span style={{ color: roleConfig.color, fontWeight: 700, fontSize: 12 }}>⬤ {roleConfig.label}</span>
+            {viewAsRole && <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Previewing</Tag>}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {[
+              ['Edit data',     roleConfig.canEdit],
+              ['Delete rows',   roleConfig.canDelete],
+              ['Add rows',      roleConfig.canAddRow],
+              ['Own rows only', roleConfig.onlyOwnRows],
+            ].map(([perm, allowed]) => (
+              <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
+                <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1 }}>{allowed ? '✓' : '✗'}</span>
+                <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    { type: 'divider' },
+    { type: 'group', label: 'Switch Role View' },
+    ...Object.keys(ROLES).map((r) => {
+      const rc = ROLES[r];
+      const isCurrentActual = r === _actualRole && !viewAsRole;
+      const isActive = viewAsRole === r || isCurrentActual;
+      return {
+        key: 'preview-' + r,
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 }}>
+              {rc.label}
+            </span>
+            {isCurrentActual
+              ? <Tag color="green" style={{ margin: 0, fontSize: 10 }}>Current</Tag>
+              : isActive
+                ? <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Active</Tag>
+                : null}
+          </div>
+        ),
+        onClick: () => onRoleSwitch && onRoleSwitch(isCurrentActual ? null : r),
+      };
+    }),
+    { type: 'divider' },
+    { key: 'signout', label: <span style={{ color: '#f87171' }}>Sign out</span>, onClick: onSignOut },
+  ];
 
   const handleClick = (mod) => {
     // Attendance card uses role buttons — card-level click is suppressed
@@ -116,54 +172,49 @@ export default function ModulePicker({ user, profile, role, onSelect, onSignOut 
         <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>MyISP</span>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Profile card */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            padding: '6px 14px 6px 8px', borderRadius: 12,
-            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-          }}>
-            {/* Avatar */}
-            <div style={{
-              width: 34, height: 34, borderRadius: '50%', flexShrink: 0,
-              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 12px rgba(34,197,94,0.35)',
-            }}>
-              <User size={16} color="#fff" />
-            </div>
-            {/* Name + role */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <span style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 600, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
-                {displayName}
-              </span>
-              <span style={{
-                display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
-                padding: '0 7px', borderRadius: 6,
-                color: roleConfig.color,
-                background: `${roleConfig.color}1a`,
-                border: `1px solid ${roleConfig.color}40`,
-                letterSpacing: 0.3,
-              }}>
-                {roleConfig.label}
-              </span>
-            </div>
-          </div>
-
-          {/* Sign out */}
-          <Tooltip title="Sign out">
-            <Button
-              size="small"
-              icon={<LogOut size={13} />}
-              onClick={onSignOut}
+          {/* Profile dropdown — click to switch role / sign out */}
+          <Dropdown
+            trigger={['click']}
+            menu={{ items: profileMenuItems }}
+          >
+            <div
               style={{
-                height: 34, borderRadius: 10, paddingInline: 14,
-                color: '#f87171', borderColor: 'rgba(248,113,113,0.2)',
-                background: 'rgba(248,113,113,0.06)', fontWeight: 600, fontSize: 12,
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                transition: 'background 0.15s',
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+              aria-label="Profile and role options"
             >
-              Sign out
-            </Button>
-          </Tooltip>
+              {/* Avatar */}
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 0 12px rgba(34,197,94,0.35)',
+              }}>
+                <User size={15} color="#fff" />
+              </div>
+              {/* Name + role */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <span style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 600, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
+                  {displayName}
+                </span>
+                <span style={{
+                  display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
+                  padding: '0 7px', borderRadius: 6,
+                  color: roleConfig.color,
+                  background: `${roleConfig.color}1a`,
+                  border: `1px solid ${roleConfig.color}40`,
+                  letterSpacing: 0.3,
+                }}>
+                  {roleConfig.label}{viewAsRole && ' (preview)'}
+                </span>
+              </div>
+            </div>
+          </Dropdown>
         </div>
       </div>
 
