@@ -13,6 +13,7 @@ export const ROLES = {
     canEdit: true,  canDelete: true,  canAddRow: true,  onlyOwnRows: false,
     canAddTeamMember: true,  canViewReport: true, canDownloadReport: true,
     canViewLogs: true, canManageUsers: true, canViewAttendance: true, canViewKT: true,
+    canViewRolesAccess: true, canViewMyIsp: true,
   },
   // Super User — same as Operation User
   tl: {
@@ -20,6 +21,7 @@ export const ROLES = {
     canEdit: true,  canDelete: true,  canAddRow: true,  onlyOwnRows: false,
     canAddTeamMember: true,  canViewReport: true, canDownloadReport: true,
     canViewLogs: true, canManageUsers: true, canViewAttendance: true, canViewKT: true,
+    canViewRolesAccess: true, canViewMyIsp: true,
   },
   // Support — can only edit own rows, view team list; no reports/logs/attendance
   tester: {
@@ -27,6 +29,7 @@ export const ROLES = {
     canEdit: true,  canDelete: false, canAddRow: false, onlyOwnRows: true,
     canAddTeamMember: false, canViewReport: false, canDownloadReport: false,
     canViewLogs: false, canManageUsers: false, canViewAttendance: false, canViewKT: true,
+    canViewRolesAccess: false, canViewMyIsp: false,
   },
   // Viewer — read only; can access KT Sessions
   viewer: {
@@ -34,6 +37,7 @@ export const ROLES = {
     canEdit: false, canDelete: false, canAddRow: false, onlyOwnRows: false,
     canAddTeamMember: false, canViewReport: false, canDownloadReport: false,
     canViewLogs: false, canManageUsers: false, canViewAttendance: false, canViewKT: true,
+    canViewRolesAccess: false, canViewMyIsp: false,
   },
 };
 

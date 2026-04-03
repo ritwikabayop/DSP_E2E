@@ -7,6 +7,7 @@ import {
   Home, Monitor, Shield, Users, FileText, Activity,
   LayoutDashboard, Calendar, Search, Copy, Save, Download,
   PenTool, Eye, AlertTriangle, LogOut, UserCog, Lock,
+  ShieldCheck, KeyRound,
 } from 'lucide-react';
 
 // Auth + data hooks
@@ -23,7 +24,9 @@ import SSASheet         from './components/sheets/SSASheet.jsx';
 import TeamSheet        from './components/sheets/TeamSheet.jsx';
 import ReportSheet      from './components/sheets/ReportSheet.jsx';
 import ActivityLogSheet from './components/sheets/ActivityLogSheet.jsx';
-import UsersSheet       from './components/sheets/UsersSheet.jsx';
+import UsersSheet             from './components/sheets/UsersSheet.jsx';
+import RolesAccessSheet      from './components/sheets/RolesAccessSheet.jsx';
+import MyIspModuleRolesSheet from './components/sheets/MyIspModuleRolesSheet.jsx';
 
 // Utils
 import { MONTH_OPTIONS, ROLES, ROLE_HIERARCHY, currentMonthKey } from './utils/constants.js';
@@ -310,9 +313,12 @@ function App() {
         React.createElement(DotDirty, { dirty: dirtyModules.team })
       ),
     },
-  ].concat(roleConfig.canViewReport ? [{ key: 'report', icon: React.createElement(FileText,  { size: 15 }), label: 'Report' }] : [])
-   .concat(roleConfig.canViewLogs    ? [{ key: 'logs',   icon: React.createElement(Activity,  { size: 15 }), label: 'Logs'   }] : [])
-   .concat(roleConfig.canManageUsers ? [{ key: 'users',  icon: React.createElement(UserCog,   { size: 15 }), label: 'Users'  }] : []);
+  ]
+   .concat(roleConfig.canViewReport      ? [{ key: 'report',      icon: React.createElement(FileText,   { size: 15 }), label: 'Report'              }] : [])
+   .concat(roleConfig.canViewLogs         ? [{ key: 'logs',        icon: React.createElement(Activity,   { size: 15 }), label: 'Logs'                }] : [])
+   .concat(roleConfig.canManageUsers      ? [{ key: 'users',       icon: React.createElement(UserCog,    { size: 15 }), label: 'Users'               }] : [])
+   .concat(roleConfig.canViewRolesAccess  ? [{ key: 'rolesaccess', icon: React.createElement(ShieldCheck, { size: 15 }), label: 'Roles & Access'      }] : [])
+   .concat(roleConfig.canViewMyIsp        ? [{ key: 'myisp',       icon: React.createElement(KeyRound,   { size: 15 }), label: 'MyISP Module Roles'  }] : []);
 
   const renderSheet = () => {
     switch (activeTab) {
@@ -364,6 +370,12 @@ function App() {
       case 'users':
         if (!roleConfig.canManageUsers) return null;
         return React.createElement(UsersSheet, { currentUserId: user.id, role, currentUserEmail: currentUser });
+      case 'rolesaccess':
+        if (!roleConfig.canViewRolesAccess) return null;
+        return React.createElement(RolesAccessSheet, { currentUser, role });
+      case 'myisp':
+        if (!roleConfig.canViewMyIsp) return null;
+        return React.createElement(MyIspModuleRolesSheet, { currentUser, role });
       default:
         return null;
     }
