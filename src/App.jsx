@@ -272,6 +272,60 @@ function App() {
     );
   }
 
+  // ── Standalone: Roles & Access ────────────────────────────
+  if (activeModule === 'rolesaccess') {
+    const _role = viewAsRole ?? authRole ?? 'viewer';
+    if (!(ROLES[_role]?.canViewRolesAccess)) { setActiveModule(null); return null; }
+    return (
+      <ConfigProvider theme={DARK_THEME}>
+        <div style={{ minHeight: '100vh', background: '#0d0f18' }}>
+          <div style={{
+            height: 52, background: '#0f1117', borderBottom: '1px solid #1e2332',
+            display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12,
+            position: 'sticky', top: 0, zIndex: 100,
+          }}>
+            <Button
+              size="small" type="text"
+              icon={React.createElement(ShieldCheck, { size: 14, color: '#22c55e' })}
+              onClick={() => setActiveModule(null)}
+              style={{ color: '#8892a4', fontSize: 12 }}
+            >
+              ← Back to Modules
+            </Button>
+          </div>
+          <RolesAccessSheet currentUser={user.email} role={_role} />
+        </div>
+      </ConfigProvider>
+    );
+  }
+
+  // ── Standalone: MyISP Module Roles ────────────────────────
+  if (activeModule === 'myisp') {
+    const _role = viewAsRole ?? authRole ?? 'viewer';
+    if (!(ROLES[_role]?.canViewMyIsp)) { setActiveModule(null); return null; }
+    return (
+      <ConfigProvider theme={DARK_THEME}>
+        <div style={{ minHeight: '100vh', background: '#0d0f18' }}>
+          <div style={{
+            height: 52, background: '#0f1117', borderBottom: '1px solid #1e2332',
+            display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12,
+            position: 'sticky', top: 0, zIndex: 100,
+          }}>
+            <Button
+              size="small" type="text"
+              icon={React.createElement(KeyRound, { size: 14, color: '#22c55e' })}
+              onClick={() => setActiveModule(null)}
+              style={{ color: '#8892a4', fontSize: 12 }}
+            >
+              ← Back to Modules
+            </Button>
+          </div>
+          <MyIspModuleRolesSheet currentUser={user.email} role={_role} />
+        </div>
+      </ConfigProvider>
+    );
+  }
+
   const currentUser = user.email;
   const actualRole  = authRole ?? 'viewer';
   const role        = viewAsRole ?? actualRole;
@@ -314,11 +368,9 @@ function App() {
       ),
     },
   ]
-   .concat(roleConfig.canViewReport      ? [{ key: 'report',      icon: React.createElement(FileText,   { size: 15 }), label: 'Report'              }] : [])
-   .concat(roleConfig.canViewLogs         ? [{ key: 'logs',        icon: React.createElement(Activity,   { size: 15 }), label: 'Logs'                }] : [])
-   .concat(roleConfig.canManageUsers      ? [{ key: 'users',       icon: React.createElement(UserCog,    { size: 15 }), label: 'Users'               }] : [])
-   .concat(roleConfig.canViewRolesAccess  ? [{ key: 'rolesaccess', icon: React.createElement(ShieldCheck, { size: 15 }), label: 'Roles & Access'      }] : [])
-   .concat(roleConfig.canViewMyIsp        ? [{ key: 'myisp',       icon: React.createElement(KeyRound,   { size: 15 }), label: 'MyISP Module Roles'  }] : []);
+   .concat(roleConfig.canViewReport  ? [{ key: 'report', icon: React.createElement(FileText, { size: 15 }), label: 'Report' }] : [])
+   .concat(roleConfig.canViewLogs    ? [{ key: 'logs',   icon: React.createElement(Activity, { size: 15 }), label: 'Logs'   }] : [])
+   .concat(roleConfig.canManageUsers ? [{ key: 'users',  icon: React.createElement(UserCog,  { size: 15 }), label: 'Users'  }] : []);
 
   const renderSheet = () => {
     switch (activeTab) {
@@ -370,12 +422,6 @@ function App() {
       case 'users':
         if (!roleConfig.canManageUsers) return null;
         return React.createElement(UsersSheet, { currentUserId: user.id, role, currentUserEmail: currentUser });
-      case 'rolesaccess':
-        if (!roleConfig.canViewRolesAccess) return null;
-        return React.createElement(RolesAccessSheet, { currentUser, role });
-      case 'myisp':
-        if (!roleConfig.canViewMyIsp) return null;
-        return React.createElement(MyIspModuleRolesSheet, { currentUser, role });
       default:
         return null;
     }

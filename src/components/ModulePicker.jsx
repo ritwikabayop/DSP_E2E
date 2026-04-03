@@ -3,6 +3,7 @@ import { Button, Tag, Tooltip, Dropdown } from 'antd';
 import {
   LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
   Monitor, Shield, Users, FileText, Activity, Video, BookOpen, User,
+  ShieldCheck, KeyRound,
 } from 'lucide-react';
 import { ROLES, ROLE_HIERARCHY } from '../utils/constants.js';
 
@@ -69,6 +70,42 @@ const modules = [
     ActionIcon: ArrowRight,
     external: false,
   },
+  {
+    key: 'rolesaccess',
+    label: 'Roles & Access',
+    description: 'Enterprise user roster — role categories, assignments, service and market information.',
+    icon: ShieldCheck,
+    color: '#22d3ee',
+    bg: 'rgba(34,211,238,0.08)',
+    border: 'rgba(34,211,238,0.25)',
+    hoverBorder: '#22d3ee',
+    chips: [
+      { icon: Users,      label: 'SA / SME' },
+      { icon: ShieldCheck, label: 'PMO / PLD' },
+      { icon: FileText,   label: 'Enterprise IDs' },
+    ],
+    action: 'Open Roles',
+    ActionIcon: ArrowRight,
+    external: false,
+  },
+  {
+    key: 'myisp',
+    label: 'MyISP Module Roles',
+    description: 'DS Domain test account registry — roles, MMS IDs, and interim access flags per ID.',
+    icon: KeyRound,
+    color: '#f59e0b',
+    bg: 'rgba(245,158,11,0.08)',
+    border: 'rgba(245,158,11,0.25)',
+    hoverBorder: '#f59e0b',
+    chips: [
+      { icon: KeyRound,  label: 'DS Domain IDs' },
+      { icon: Shield,    label: 'Role Mapping' },
+      { icon: FileText,  label: 'MMS IDs' },
+    ],
+    action: 'Open Registry',
+    ActionIcon: ArrowRight,
+    external: false,
+  },
 ];
 
 export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut }) {
@@ -81,8 +118,10 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
 
   // Only show modules the current role can access
   const visibleModules = modules.filter((mod) => {
-    if (mod.key === 'attendance') return roleConfig.canViewAttendance;
-    if (mod.key === 'kt')         return roleConfig.canViewKT;
+    if (mod.key === 'attendance')  return roleConfig.canViewAttendance;
+    if (mod.key === 'kt')          return roleConfig.canViewKT;
+    if (mod.key === 'rolesaccess') return roleConfig.canViewRolesAccess;
+    if (mod.key === 'myisp')       return roleConfig.canViewMyIsp;
     return true; // e2e always visible
   });
 
