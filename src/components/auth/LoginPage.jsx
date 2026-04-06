@@ -93,6 +93,36 @@ export default function LoginPage({ onSignIn }) {
   const [resetSent,    setResetSent]    = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError,   setResetError]   = useState('');
+  const [msLoading,    setMsLoading]    = useState(false);
+  const [loginTab,     setLoginTab]     = useState('password'); // 'password' | 'magic'
+  const [magicEmail,   setMagicEmail]   = useState('');
+  const [magicLoading, setMagicLoading] = useState(false);
+  const [magicSent,    setMagicSent]    = useState(false);
+  const [magicError,   setMagicError]   = useState('');
+
+  const handleMagicLink = async () => {
+    if (!magicEmail.trim()) { setMagicError('Please enter your email.'); return; }
+    setMagicError('');
+    setMagicLoading(true);
+    const base = window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/';
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email: magicEmail.trim().toLowerCase(),
+      options: { emailRedirectTo: window.location.origin + base },
+    });
+    setMagicLoading(false);
+    if (err) { setMagicError(err.message || 'Failed to send link.'); return; }
+    setMagicSent(true);
+  };
+
+  const handleMicrosoft = async () => {
+    setMsLoading(true);
+    const base = window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/';
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: 'azure',
+      options: { redirectTo: window.location.origin + base },
+    });
+    if (err) { setError(err.message || 'Microsoft sign-in failed.'); setMsLoading(false); }
+  };
 
   const handleFinish = async ({ email, password }) => {
     setError('');
@@ -228,12 +258,66 @@ export default function LoginPage({ onSignIn }) {
           ) : (
             /* ── Sign in ── */
             <>
-              {/* Header */}
-              <div style={{ marginBottom:32 }}>
-                <div style={{ color:'#e2e8f0', fontSize:26, fontWeight:800, marginBottom:4, letterSpacing:'-0.3px' }}>Sign in</div>
-                <div style={{ color:'#64748b', fontSize:13 }}>Enter your credentials to access the dashboard</div>
+              {/* Login method tabs */}
+              <div style={{ display:'flex', gap:4, marginBottom:28, background:'#0d1117', borderRadius:10, padding:4 }}>
+                {[{key:'password',label:'Password'},{key:'magic',label:'Magic Link'}].map((t) => (
+                  <button key={t.key} onClick={() => { setLoginTab(t.key); setError(''); setMagicError(''); setMagicSent(false); }}
+                    style={{
+                      flex:1, height:36, borderRadius:8, border:'none', cursor:'pointer',
+                      background: loginTab === t.key ? '#1a1f2e' : 'transparent',
+                      color: loginTab === t.key ? '#e2e8f0' : '#4b5568',
+                      fontWeight: loginTab === t.key ? 700 : 500,
+                      fontSize:13,
+                      fontFamily:"'Plus Jakarta Sans','Inter','Segoe UI',sans-serif",
+                      boxShadow: loginTab === t.key ? '0 1px 4px rgba(0,0,0,0.4)' : 'none',
+                      transition:'all 0.15s',
+                    }}
+                  >{t.label}</button>
+                ))}
               </div>
 
+              {loginTab === 'magic' ? (
+                /* ── Magic Link panel ── */
+                magicSent ? (
+                  <div style={{ textAlign:'center', paddingTop:12 }}>
+                    <div style={{ width:56, height:56, borderRadius:16, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
+                      <Mail size={24} color="#22c55e" />
+                    </div>
+                    <div style={{ color:'#e2e8f0', fontSize:20, fontWeight:800, marginBottom:8 }}>Check your email</div>
+                    <div style={{ color:'#64748b', fontSize:13, lineHeight:1.7, marginBottom:24 }}>
+                      We sent a login link to <strong style={{ color:'#e2e8f0' }}>{magicEmail}</strong>.<br/>Click it to sign in instantly.
+                    </div>
+                    <Button size="large" onClick={() => { setMagicSent(false); setMagicEmail(''); }}
+                      style={{ borderRadius:10, height:44, width:'100%', background:'rgba(255,255,255,0.05)', border:'1px solid #252d42', color:'#e2e8f0', fontWeight:600 }}>
+                      ← Use a different email
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ marginBottom:20 }}>
+                      <div style={{ color:'#e2e8f0', fontSize:22, fontWeight:800, marginBottom:4 }}>Sign in instantly</div>
+                      <div style={{ color:'#64748b', fontSize:13 }}>No password needed — we'll email you a link</div>
+                    </div>
+                    {magicError && <Alert message={magicError} type="error" showIcon closable onClose={() => setMagicError('')} style={{ marginBottom:16, borderRadius:8 }} />}
+                    <div style={{ marginBottom:20 }}>
+                      <span style={S.label}>Email address</span>
+                      <Input size="large"
+                        prefix={<Mail size={14} color="#4b5568" style={{ marginRight:4 }} />}
+                        placeholder="you@accenture.com" value={magicEmail}
+                        onChange={(e) => setMagicEmail(e.target.value)}
+                        onPressEnter={handleMagicLink}
+                        style={S.inputStyle} />
+                    </div>
+                    <Button type="primary" size="large" loading={magicLoading}
+                      onClick={handleMagicLink}
+                      style={S.submitBtn}>
+                      {magicLoading ? 'Sending…' : 'Send Login Link'}
+                    </Button>
+                  </>
+                )
+              ) : (
+                /* ── Password panel ── */
+                <>
               {error && <Alert message={error} type="error" showIcon closable onClose={() => setError('')} style={{ marginBottom:20, borderRadius:10 }} />}
 
               <Form layout="vertical" onFinish={handleFinish} requiredMark={false}>
@@ -279,16 +363,51 @@ export default function LoginPage({ onSignIn }) {
                 </Form.Item>
               </Form>
 
-              {/* Divider */}
-              <div style={{ display:'flex', alignItems:'center', gap:12, margin:'24px 0' }}>
+              {/* OR divider */}
+              <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0 16px' }}>
+                <div style={{ flex:1, height:1, background:'#1e2332' }} />
+                <span style={{ color:'#374151', fontSize:11 }}>or</span>
+                <div style={{ flex:1, height:1, background:'#1e2332' }} />
+              </div>
+
+              {/* Microsoft OAuth button */}
+              <button
+                onClick={handleMicrosoft}
+                disabled={msLoading}
+                style={{
+                  width:'100%', height:46, borderRadius:10, cursor:'pointer',
+                  background:'#141824', border:'1px solid #252d42',
+                  display:'flex', alignItems:'center', justifyContent:'center', gap:10,
+                  color:'#e2e8f0', fontSize:14, fontWeight:600,
+                  fontFamily:"'Plus Jakarta Sans','Inter','Segoe UI',sans-serif",
+                  transition:'border-color 0.2s, background 0.2s',
+                  opacity: msLoading ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0078d4'; e.currentTarget.style.background = '#161b2e'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#252d42'; e.currentTarget.style.background = '#141824'; }}
+              >
+                {/* Official Microsoft logo SVG */}
+                <svg width="18" height="18" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1"  y="1"  width="9" height="9" fill="#F25022"/>
+                  <rect x="11" y="1"  width="9" height="9" fill="#7FBA00"/>
+                  <rect x="1"  y="11" width="9" height="9" fill="#00A4EF"/>
+                  <rect x="11" y="11" width="9" height="9" fill="#FFB900"/>
+                </svg>
+                {msLoading ? 'Redirecting…' : 'Sign in with Microsoft'}
+              </button>
+
+              {/* Bottom divider */}
+              <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0 0' }}>
                 <div style={{ flex:1, height:1, background:'#1e2332' }} />
                 <span style={{ color:'#374151', fontSize:11 }}>secured by Supabase</span>
                 <div style={{ flex:1, height:1, background:'#1e2332' }} />
               </div>
 
-              <div style={{ color:'#374151', fontSize:11, textAlign:'center' }}>
+              <div style={{ color:'#374151', fontSize:11, textAlign:'center', marginTop:10 }}>
                 Contact your admin to create or reset your account.
               </div>
+              </>
+              )}
             </>
           )}
         </div>

@@ -164,7 +164,7 @@ export default function SSASheet({
             <Table
               dataSource={filterData(applyQuickFilter(ssaData), searchQuery)}
               columns={cols}
-              pagination={false} size="small" bordered scroll={{ x: 1150 }}
+              pagination={false} size="small" bordered scroll={{ x: 1420 }}
               rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
             />
           </Card>
