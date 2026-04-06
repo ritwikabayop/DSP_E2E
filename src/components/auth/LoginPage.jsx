@@ -93,7 +93,6 @@ export default function LoginPage({ onSignIn }) {
   const [resetSent,    setResetSent]    = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError,   setResetError]   = useState('');
-  const [msLoading,    setMsLoading]    = useState(false);
   const [loginTab,     setLoginTab]     = useState('password'); // 'password' | 'magic'
   const [magicEmail,   setMagicEmail]   = useState('');
   const [magicLoading, setMagicLoading] = useState(false);
@@ -112,16 +111,6 @@ export default function LoginPage({ onSignIn }) {
     setMagicLoading(false);
     if (err) { setMagicError(err.message || 'Failed to send link.'); return; }
     setMagicSent(true);
-  };
-
-  const handleMicrosoft = async () => {
-    setMsLoading(true);
-    const base = window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/';
-    const { error: err } = await supabase.auth.signInWithOAuth({
-      provider: 'azure',
-      options: { redirectTo: window.location.origin + base },
-    });
-    if (err) { setError(err.message || 'Microsoft sign-in failed.'); setMsLoading(false); }
   };
 
   const handleFinish = async ({ email, password }) => {
@@ -362,39 +351,6 @@ export default function LoginPage({ onSignIn }) {
                   </Button>
                 </Form.Item>
               </Form>
-
-              {/* OR divider */}
-              <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0 16px' }}>
-                <div style={{ flex:1, height:1, background:'#1e2332' }} />
-                <span style={{ color:'#374151', fontSize:11 }}>or</span>
-                <div style={{ flex:1, height:1, background:'#1e2332' }} />
-              </div>
-
-              {/* Microsoft OAuth button */}
-              <button
-                onClick={handleMicrosoft}
-                disabled={msLoading}
-                style={{
-                  width:'100%', height:46, borderRadius:10, cursor:'pointer',
-                  background:'#141824', border:'1px solid #252d42',
-                  display:'flex', alignItems:'center', justifyContent:'center', gap:10,
-                  color:'#e2e8f0', fontSize:14, fontWeight:600,
-                  fontFamily:"'Plus Jakarta Sans','Inter','Segoe UI',sans-serif",
-                  transition:'border-color 0.2s, background 0.2s',
-                  opacity: msLoading ? 0.7 : 1,
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0078d4'; e.currentTarget.style.background = '#161b2e'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#252d42'; e.currentTarget.style.background = '#141824'; }}
-              >
-                {/* Official Microsoft logo SVG */}
-                <svg width="18" height="18" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1"  y="1"  width="9" height="9" fill="#F25022"/>
-                  <rect x="11" y="1"  width="9" height="9" fill="#7FBA00"/>
-                  <rect x="1"  y="11" width="9" height="9" fill="#00A4EF"/>
-                  <rect x="11" y="11" width="9" height="9" fill="#FFB900"/>
-                </svg>
-                {msLoading ? 'Redirecting…' : 'Sign in with Microsoft'}
-              </button>
 
               {/* Bottom divider */}
               <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0 0' }}>
