@@ -639,27 +639,6 @@ function App() {
                 <Button size="small" onClick={() => { setViewAsRole(null); setEditMode(false); }} style={{ fontSize: 11 }}>Exit Preview</Button>
               </div>
             )}
-            {dirtyModules[activeTab] && (
-              <div style={{
-                position: 'sticky', top: 0, zIndex: 90,
-                background: 'rgba(245,158,11,0.12)',
-                borderBottom: '1px solid rgba(245,158,11,0.3)',
-                padding: '6px 16px',
-                display: 'flex', alignItems: 'center', gap: 10,
-              }}>
-                {React.createElement(AlertTriangle, { size: 13, color: '#f59e0b' })}
-                <span style={{ color: '#fbbf24', fontSize: 12, flex: 1 }}>
-                  You have unsaved changes on this sheet.
-                </span>
-                <Button
-                  size="small"
-                  onClick={() => saveModule(activeTab)}
-                  style={{ background: '#f59e0b', borderColor: '#f59e0b', color: '#fff', fontWeight: 600 }}
-                >
-                  Save Now
-                </Button>
-              </div>
-            )}
             {renderSheet()}
           </Content>
         </Layout>
