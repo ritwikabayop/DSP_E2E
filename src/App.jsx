@@ -553,11 +553,11 @@ function App() {
                     {
                       key: 'role-info',
                       label: React.createElement('div', { style: { padding: '4px 0', pointerEvents: 'none' } },
-                        React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
+                        React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Active Role'),
                         React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 } },
                           React.createElement(RoleIcon, { size: 13, color: roleConfig.color }),
                           React.createElement('span', { style: { color: roleConfig.color, fontWeight: 700, fontSize: 12 } }, roleConfig.label),
-                          viewAsRole && React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Previewing')
+                          viewAsRole && React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Switched')
                         ),
                         React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 3 } },
                           ...[
@@ -570,6 +570,33 @@ function App() {
                               React.createElement('span', { style: { color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1 } }, allowed ? '✓' : '✗'),
                               React.createElement('span', { style: { color: allowed ? '#e2e8f0' : '#6b7280' } }, perm)
                             )
+                          )
+                        ),
+                        // Show all roles this user has access to
+                        allowedRoles && allowedRoles.length > 0 && React.createElement('div', { style: { marginTop: 10, paddingTop: 8, borderTop: '1px solid #252d42' } },
+                          React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Access'),
+                          React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 } },
+                            ...allowedRoles.map((r) => {
+                              const rc = ROLES[r] ?? ROLES.viewer;
+                              const RIcon = rc.icon;
+                              const isActive = (viewAsRole ?? actualRole) === r;
+                              return React.createElement(Tag, {
+                                key: r,
+                                style: {
+                                  background: isActive ? rc.bg : 'transparent',
+                                  color: rc.color,
+                                  border: `1px solid ${isActive ? rc.border : '#252d42'}`,
+                                  fontSize: 11, margin: 0,
+                                  fontWeight: isActive ? 700 : 400,
+                                },
+                              },
+                                React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
+                                  React.createElement(RIcon, { size: 10 }),
+                                  rc.label,
+                                  isActive && React.createElement('span', { style: { fontSize: 9, marginLeft: 2 } }, '●')
+                                )
+                              );
+                            })
                           )
                         )
                       ),
@@ -600,7 +627,7 @@ function App() {
                           onClick: () => {
                             if (isCurrentActual) return;
                             if (viewAsRole === r) { setViewAsRole(null); setEditMode(actualRole === 'admin' || actualRole === 'tl'); }
-                            else { setViewAsRole(r); setEditMode(false); }
+                            else { setViewAsRole(r); setEditMode(r === 'admin' || r === 'tl'); }
                             setActiveTab('home');
                           },
                         };
