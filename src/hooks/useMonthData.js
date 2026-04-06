@@ -63,9 +63,10 @@ export function useMonthData(monthKey, user) {
           const def = getDefaultData();
           const now = new Date().toISOString();
           const stampSsa = (rows, mk) =>
-            rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, ...r }) => ({
+            rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, comments, versionId, ...r }) => ({
               ...r, month_key: mk, last_edited_by: '', last_edited_at: null,
               deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
+              comments: comments ?? '', version_id: versionId ?? 1,
             }));
           const stamp = (rows, mk) =>
             rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: mk, last_edited_by: '', last_edited_at: null }));
@@ -96,7 +97,9 @@ export function useMonthData(monthKey, user) {
             ...(r.deal_id  !== undefined ? { dealId:  r.deal_id  } : {}),
             ...(r.deal_id2 !== undefined ? { dealId2: r.deal_id2 } : {}),
             ...(r.deal_id3 !== undefined ? { dealId3: r.deal_id3 } : {}),
-            ...(r.deal_id4 !== undefined ? { dealId4: r.deal_id4 } : {}),
+            ...(r.deal_id4    !== undefined ? { dealId4:    r.deal_id4    } : {}),
+            ...(r.comments    !== undefined ? { comments:   r.comments    } : {}),
+            ...(r.version_id  !== undefined ? { versionId:  r.version_id  } : {}),
           }));
 
         const ndm = normalize(dm);
@@ -166,9 +169,10 @@ export function useMonthData(monthKey, user) {
       if (moduleKey === 'ssa') {
         const logs = diffRows(snapshotRef.current.ssaData, ssaData, 'SSA', changedBy, monthKey);
         const toDb = (rows) =>
-          rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, ...r }) => ({
+          rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, comments, versionId, ...r }) => ({
             ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null,
             deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
+            comments: comments ?? '', version_id: versionId ?? 1,
           }));
         await Promise.all([
           upsertRows('ssa_data', toDb(ssaData)),

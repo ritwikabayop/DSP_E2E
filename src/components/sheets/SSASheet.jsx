@@ -50,6 +50,7 @@ export default function SSASheet({
       {
         key: nextKey(ssaData), tester: '', module: '', dealId: '',
         dealId2: '', dealId3: '', dealId4: '', status: '',
+        comments: '', versionId: 1,
         lastEditedBy: currentUser || 'Unknown', lastEditedAt: new Date().toISOString(),
       },
     ]);
@@ -97,6 +98,17 @@ export default function SSASheet({
     {
       title: 'Last Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 140,
       render: (v) => v ? <Text type="secondary" style={{ fontSize: 11 }}>{fmtDate(v)}</Text> : <Text type="secondary">—</Text>,
+    },
+    {
+      title: 'Comments', dataIndex: 'comments', key: 'comments', width: 200,
+      render: (v, rec) =>
+        editMode && canEditRow(rec)
+          ? <EditableCell value={v ?? ''} record={rec} dataIndex="comments" onSave={handleSave} />
+          : (v ? <Text style={{ fontSize: 12 }}>{v}</Text> : <Text type="secondary">—</Text>),
+    },
+    {
+      title: 'Ver.', dataIndex: 'versionId', key: 'versionId', width: 55,
+      render: (v) => <Text type="secondary" style={{ fontSize: 11 }}>{v ?? 1}</Text>,
     },
   ];
 

@@ -103,6 +103,8 @@ CREATE TABLE IF NOT EXISTS ssa_data (
   deal_id3       TEXT    NOT NULL DEFAULT '',
   deal_id4       TEXT    NOT NULL DEFAULT '',
   status         TEXT    NOT NULL DEFAULT '',
+  comments       TEXT    NOT NULL DEFAULT '',
+  version_id     INT     NOT NULL DEFAULT 1,
   last_edited_by TEXT    NOT NULL DEFAULT '',
   last_edited_at TIMESTAMPTZ,
   month_key      TEXT    NOT NULL,
@@ -110,6 +112,10 @@ CREATE TABLE IF NOT EXISTS ssa_data (
 );
 
 CREATE INDEX IF NOT EXISTS idx_ssa_data_month ON ssa_data(month_key);
+
+-- Migration (safe to re-run)
+ALTER TABLE ssa_data ADD COLUMN IF NOT EXISTS comments   TEXT NOT NULL DEFAULT '';
+ALTER TABLE ssa_data ADD COLUMN IF NOT EXISTS version_id INT  NOT NULL DEFAULT 1;
 
 
 -- ──────────────────────────────────────────────────────────
@@ -400,7 +406,8 @@ ALTER TABLE myisp_module_roles ADD COLUMN IF NOT EXISTS ds_domain_ids TEXT[] NOT
 
 CREATE INDEX IF NOT EXISTS idx_myisp_module ON myisp_module_roles(module);
 
--- 20-row seed (SNO 1–20)
+-- 20-row seed (SNO 1–20)  — safe to re-run: deletes old seed rows first
+DELETE FROM myisp_module_roles WHERE last_edited_by = 'seed';
 INSERT INTO myisp_module_roles
   (sno, module, assignees, ds_domain_ids, ds_domain_id, roles, mms_ids, create_interim, last_edited_by, last_edited_at)
 VALUES
