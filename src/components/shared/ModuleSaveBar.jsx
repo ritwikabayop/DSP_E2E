@@ -9,22 +9,22 @@ export default function ModuleSaveBar({ moduleName, isDirty, onSave, lastSaved }
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '6px 16px',
-      background: isDirty ? '#fffbe6' : '#f6ffed',
-      border: `1px solid ${isDirty ? '#ffe58f' : '#b7eb8f'}`,
+      background: isDirty ? 'rgba(245,158,11,0.08)' : 'rgba(34,197,94,0.06)',
+      border: `1px solid ${isDirty ? 'rgba(245,158,11,0.3)' : 'rgba(34,197,94,0.2)'}`,
       borderRadius: 8, marginBottom: 12,
     }}>
       <Space>
         {isDirty ? (
           <>
             <AlertTriangle size={14} color="#faad14" />
-            <Text style={{ fontSize: 12, color: '#ad8b00' }}>
+            <Text style={{ fontSize: 12, color: '#f59e0b' }}>
               Unsaved changes in <strong>{moduleName}</strong>
             </Text>
           </>
         ) : (
           <>
             <CheckCircle size={14} color="#52c41a" />
-            <Text style={{ fontSize: 12, color: '#389e0d' }}>
+            <Text style={{ fontSize: 12, color: '#22c55e' }}>
               <strong>{moduleName}</strong> — all changes saved
             </Text>
           </>
