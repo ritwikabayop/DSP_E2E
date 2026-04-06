@@ -1,4 +1,5 @@
-import { Card, Table, Tag, Space, Badge, Button, Typography, Popconfirm, message, Row, Col } from 'antd';
+import { useState } from 'react';
+import { Card, Table, Tag, Space, Badge, Button, Typography, Popconfirm, message, Row, Col, Skeleton } from 'antd';
 import { Monitor, BarChart3, User, Trash2, Plus } from 'lucide-react';
 import EditableCell  from '../shared/EditableCell.jsx';
 import StatusSelect  from '../shared/StatusSelect.jsx';
@@ -14,9 +15,20 @@ export default function DSPSheet({
   dspManual, setDspManual,
   dspAuto,   setDspAuto,
   editMode, currentUser, role,
-  onSave, isDirty, lastSaved,
+  onSave, isDirty, lastSaved, loading,
 }) {
   const roleConfig = ROLES[role] ?? ROLES.viewer;
+  const [quickFilter, setQuickFilter] = useState('all');
+
+  const applyQuickFilter = (data) => {
+    switch (quickFilter) {
+      case 'progress': return data.filter((r) => /progress/i.test(r.status || ''));
+      case 'failed':   return data.filter((r) => /fail/i.test(r.status || ''));
+      case 'blocked':  return data.filter((r) => isHighPriority(r.status));
+      case 'mine':     return data.filter((r) => r.tester?.toLowerCase() === (currentUser || '').toLowerCase());
+      default:         return data;
+    }
+  };
 
   const canEditRow = (record) => {
     if (!roleConfig.canEdit) return false;
@@ -115,8 +127,9 @@ export default function DSPSheet({
 
   const renderEnvPair = (data, setter, label, accentColor, headerBg, headerBorder, icon) => {
     const cols   = makeCols(setter);
-    const ptData  = filterData(data.filter((r) => r.env === 'PT'),  searchQuery);
-    const uatData = filterData(data.filter((r) => r.env === 'UAT'), searchQuery);
+    const base    = applyQuickFilter(data);
+    const ptData  = filterData(base.filter((r) => r.env === 'PT'),  searchQuery);
+    const uatData = filterData(base.filter((r) => r.env === 'UAT'), searchQuery);
     return (
       <Card
         title={<Space>{icon} {label} <Badge count={data.length} style={{ background: accentColor }} /></Space>}
@@ -165,18 +178,45 @@ export default function DSPSheet({
     <div style={{ padding: 20 }}>
       <ModuleSaveBar moduleName="DSP" isDirty={isDirty} onSave={onSave} lastSaved={lastSaved} />
 
-      {renderEnvPair(
-        dspManual, setDspManual,
-        'Manual Testing Opportunities',
-        '#1890ff', 'linear-gradient(90deg,#e6f7ff,#f0f7ff)', '#91caff',
-        <Monitor size={16} />,
-      )}
+      {loading ? (
+        <>
+          <Skeleton active paragraph={{ rows: 8 }} style={{ marginBottom: 16 }} />
+          <Skeleton active paragraph={{ rows: 8 }} />
+        </>
+      ) : (
+        <>
+          {/* Quick-filter chips */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
+            {[{key:'all',label:'All'},{key:'progress',label:'In Progress'},{key:'failed',label:'Failed'},{key:'blocked',label:'Blocked'},{key:'mine',label:'Mine'}].map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setQuickFilter(f.key)}
+                style={{
+                  padding: '3px 12px', borderRadius: 20, cursor: 'pointer',
+                  border: quickFilter === f.key ? '1.5px solid #22c55e' : '1px solid #252d42',
+                  background: quickFilter === f.key ? 'rgba(34,197,94,0.12)' : 'transparent',
+                  color: quickFilter === f.key ? '#22c55e' : '#8892a4',
+                  fontSize: 12, fontFamily: 'inherit', transition: 'all 0.15s',
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          {renderEnvPair(
+            dspManual, setDspManual,
+            'Manual Testing Opportunities',
+            '#1890ff', 'linear-gradient(90deg,#e6f7ff,#f0f7ff)', '#91caff',
+            <Monitor size={16} />,
+          )}
 
-      {renderEnvPair(
-        dspAuto, setDspAuto,
-        'Automation Testing Opportunities',
-        '#52c41a', 'linear-gradient(90deg,#f6ffed,#e6fffb)', '#b7eb8f',
-        <BarChart3 size={16} />,
+          {renderEnvPair(
+            dspAuto, setDspAuto,
+            'Automation Testing Opportunities',
+            '#52c41a', 'linear-gradient(90deg,#f6ffed,#e6fffb)', '#b7eb8f',
+            <BarChart3 size={16} />,
+          )}
+        </>
       )}
     </div>
   );

@@ -255,7 +255,7 @@ export const fetchMyIspModuleRoles = async () => {
   const { data, error } = await supabase
     .from('myisp_module_roles')
     .select('*')
-    .order('ds_domain_id', { ascending: true });
+    .order('sno', { ascending: true, nullsFirst: false });
   if (error) throw error;
   return data;
 };

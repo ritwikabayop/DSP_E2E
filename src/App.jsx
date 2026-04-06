@@ -25,8 +25,7 @@ import TeamSheet        from './components/sheets/TeamSheet.jsx';
 import ReportSheet      from './components/sheets/ReportSheet.jsx';
 import ActivityLogSheet from './components/sheets/ActivityLogSheet.jsx';
 import UsersSheet             from './components/sheets/UsersSheet.jsx';
-import RolesAccessSheet      from './components/sheets/RolesAccessSheet.jsx';
-import MyIspModuleRolesSheet from './components/sheets/MyIspModuleRolesSheet.jsx';
+import AccessSheet           from './components/sheets/AccessSheet.jsx';
 
 // Utils
 import { MONTH_OPTIONS, ROLES, ROLE_HIERARCHY, currentMonthKey } from './utils/constants.js';
@@ -167,6 +166,7 @@ function App() {
     lastSaved,
     saveModule,
     saveAllModules,
+    loading: dataLoading,
   } = useMonthData(selectedMonth, user);
 
   useEffect(() => {
@@ -272,7 +272,7 @@ function App() {
     );
   }
 
-  // ── Standalone: Roles & Access ────────────────────────────
+  // ── Standalone: Roles & Access + MyISP Module Roles (tabbed) ──
   if (activeModule === 'rolesaccess') {
     const _role = viewAsRole ?? authRole ?? 'viewer';
     if (!(ROLES[_role]?.canViewRolesAccess)) { setActiveModule(null); return null; }
@@ -293,34 +293,7 @@ function App() {
               ← Back to Modules
             </Button>
           </div>
-          <RolesAccessSheet currentUser={user.email} role={_role} />
-        </div>
-      </ConfigProvider>
-    );
-  }
-
-  // ── Standalone: MyISP Module Roles ────────────────────────
-  if (activeModule === 'myisp') {
-    const _role = viewAsRole ?? authRole ?? 'viewer';
-    if (!(ROLES[_role]?.canViewMyIsp)) { setActiveModule(null); return null; }
-    return (
-      <ConfigProvider theme={DARK_THEME}>
-        <div style={{ minHeight: '100vh', background: '#0d0f18' }}>
-          <div style={{
-            height: 52, background: '#0f1117', borderBottom: '1px solid #1e2332',
-            display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12,
-            position: 'sticky', top: 0, zIndex: 100,
-          }}>
-            <Button
-              size="small" type="text"
-              icon={React.createElement(KeyRound, { size: 14, color: '#22c55e' })}
-              onClick={() => setActiveModule(null)}
-              style={{ color: '#8892a4', fontSize: 12 }}
-            >
-              ← Back to Modules
-            </Button>
-          </div>
-          <MyIspModuleRolesSheet currentUser={user.email} role={_role} />
+          <AccessSheet currentUser={user.email} role={_role} />
         </div>
       </ConfigProvider>
     );
@@ -379,7 +352,7 @@ function App() {
           <HomePage
             dspManual={dspManual} dspAuto={dspAuto} ssaData={ssaData} teamData={teamData}
             selectedMonth={selectedMonth} setActiveTab={setActiveTab}
-            currentUser={currentUser} role={role}
+            currentUser={currentUser} role={role} profile={profile}
           />
         );
       case 'dsp':
@@ -390,6 +363,7 @@ function App() {
             dspAuto={dspAuto}     setDspAuto={setDspAuto}
             editMode={editMode}   currentUser={currentUser} role={role}
             onSave={() => saveModule('dsp')} isDirty={dirtyModules.dsp} lastSaved={lastSaved.dsp}
+            loading={dataLoading}
           />
         );
       case 'ssa':
@@ -398,6 +372,7 @@ function App() {
             searchQuery={searchQuery} ssaData={ssaData} setSsaData={setSsaData}
             editMode={editMode}       currentUser={currentUser} role={role}
             onSave={() => saveModule('ssa')} isDirty={dirtyModules.ssa} lastSaved={lastSaved.ssa}
+            loading={dataLoading}
           />
         );
       case 'team':
@@ -406,6 +381,7 @@ function App() {
             searchQuery={searchQuery} teamData={teamData} setTeamData={setTeamData}
             editMode={editMode}       currentUser={currentUser} role={role}
             onSave={() => saveModule('team')} isDirty={dirtyModules.team} lastSaved={lastSaved.team}
+            loading={dataLoading}
           />
         );
       case 'report':
@@ -661,6 +637,27 @@ function App() {
               <div style={{ background: '#92400e', color: '#fef3c7', padding: '6px 16px', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span>Previewing as <strong>{ROLES[viewAsRole].label}</strong> — changes are disabled in preview mode</span>
                 <Button size="small" onClick={() => { setViewAsRole(null); setEditMode(false); }} style={{ fontSize: 11 }}>Exit Preview</Button>
+              </div>
+            )}
+            {dirtyModules[activeTab] && (
+              <div style={{
+                position: 'sticky', top: 0, zIndex: 90,
+                background: 'rgba(245,158,11,0.12)',
+                borderBottom: '1px solid rgba(245,158,11,0.3)',
+                padding: '6px 16px',
+                display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+                {React.createElement(AlertTriangle, { size: 13, color: '#f59e0b' })}
+                <span style={{ color: '#fbbf24', fontSize: 12, flex: 1 }}>
+                  You have unsaved changes on this sheet.
+                </span>
+                <Button
+                  size="small"
+                  onClick={() => saveModule(activeTab)}
+                  style={{ background: '#f59e0b', borderColor: '#f59e0b', color: '#fff', fontWeight: 600 }}
+                >
+                  Save Now
+                </Button>
               </div>
             )}
             {renderSheet()}

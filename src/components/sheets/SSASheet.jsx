@@ -1,4 +1,5 @@
-import { Card, Table, Tag, Space, Badge, Button, Typography, Alert, Popconfirm, message } from 'antd';
+import { useState } from 'react';
+import { Card, Table, Tag, Space, Badge, Button, Typography, Alert, Popconfirm, message, Skeleton } from 'antd';
 import { Shield, User, Trash2, Plus, Zap } from 'lucide-react';
 import EditableCell  from '../shared/EditableCell.jsx';
 import StatusSelect  from '../shared/StatusSelect.jsx';
@@ -11,9 +12,20 @@ const { Text } = Typography;
 export default function SSASheet({
   searchQuery, ssaData, setSsaData,
   editMode, currentUser, role,
-  onSave, isDirty, lastSaved,
+  onSave, isDirty, lastSaved, loading,
 }) {
   const roleConfig = ROLES[role] ?? ROLES.viewer;
+  const [quickFilter, setQuickFilter] = useState('all');
+
+  const applyQuickFilter = (data) => {
+    switch (quickFilter) {
+      case 'progress': return data.filter((r) => /progress/i.test(r.status || ''));
+      case 'failed':   return data.filter((r) => /fail/i.test(r.status || ''));
+      case 'blocked':  return data.filter((r) => isHighPriority(r.status));
+      case 'mine':     return data.filter((r) => r.tester?.toLowerCase() === (currentUser || '').toLowerCase());
+      default:         return data;
+    }
+  };
 
   const canEditRow = (record) => {
     if (!roleConfig.canEdit) return false;
@@ -107,21 +119,45 @@ export default function SSASheet({
         description="Ensure configuration is applied to all deals before proceeding."
         type="info" showIcon style={{ marginBottom: 16, borderRadius: 10 }}
       />
-      <Card
-        title={<Space><Shield size={16} /> SSA / GenAI Testing <Badge count={ssaData.length} style={{ background: '#722ed1' }} /></Space>}
-        size="small" className="glass-card"
-        styles={{ header: { background: 'linear-gradient(90deg,#f9f0ff,#efdbff)', borderBottom: '2px solid #b37feb' } }}
-        extra={editMode && roleConfig.canAddRow && (
-          <Button type="dashed" size="small" icon={<Plus size={14} />} onClick={addRow}>Add Row</Button>
-        )}
-      >
-        <Table
-          dataSource={filterData(ssaData, searchQuery)}
-          columns={cols}
-          pagination={false} size="small" bordered scroll={{ x: 1150 }}
-          rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
-        />
-      </Card>
+      {loading ? (
+        <Skeleton active paragraph={{ rows: 10 }} />
+      ) : (
+        <>
+          {/* Quick-filter chips */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
+            {[{key:'all',label:'All'},{key:'progress',label:'In Progress'},{key:'failed',label:'Failed'},{key:'blocked',label:'Blocked'},{key:'mine',label:'Mine'}].map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setQuickFilter(f.key)}
+                style={{
+                  padding: '3px 12px', borderRadius: 20, cursor: 'pointer',
+                  border: quickFilter === f.key ? '1.5px solid #8b5cf6' : '1px solid #252d42',
+                  background: quickFilter === f.key ? 'rgba(139,92,246,0.12)' : 'transparent',
+                  color: quickFilter === f.key ? '#8b5cf6' : '#8892a4',
+                  fontSize: 12, fontFamily: 'inherit', transition: 'all 0.15s',
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <Card
+            title={<Space><Shield size={16} /> SSA / GenAI Testing <Badge count={ssaData.length} style={{ background: '#722ed1' }} /></Space>}
+            size="small" className="glass-card"
+            styles={{ header: { background: 'linear-gradient(90deg,#f9f0ff,#efdbff)', borderBottom: '2px solid #b37feb' } }}
+            extra={editMode && roleConfig.canAddRow && (
+              <Button type="dashed" size="small" icon={<Plus size={14} />} onClick={addRow}>Add Row</Button>
+            )}
+          >
+            <Table
+              dataSource={filterData(applyQuickFilter(ssaData), searchQuery)}
+              columns={cols}
+              pagination={false} size="small" bordered scroll={{ x: 1150 }}
+              rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
+            />
+          </Card>
+        </>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Select, Input, Button, Space, Tooltip, Tag, Typography, Segmented } from 'antd';
 import {
   LayoutDashboard, Calendar, User, Save, Download, Search, Copy,
-  PenTool, Eye, Edit3, AlertTriangle, LogOut,
+  PenTool, Eye, Edit3, AlertTriangle, LogOut, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { ROLES, MONTH_OPTIONS } from '../../utils/constants.js';
 
@@ -58,13 +58,36 @@ export default function Ribbon({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 'auto', flexWrap: 'wrap' }}>
-          {/* Month selector */}
-          <div className="month-selector">
-            <Select
-              size="small" value={selectedMonth} onChange={onMonthChange}
-              options={MONTH_OPTIONS} style={{ width: 180 }} popupMatchSelectWidth={false}
-              suffixIcon={<Calendar size={13} color="rgba(255,255,255,0.7)" />}
-            />
+          {/* Month selector with prev/next navigation */}
+          <div className="month-selector" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {(() => {
+              const monthIdx = MONTH_OPTIONS.findIndex((m) => m.value === selectedMonth);
+              return (
+                <>
+                  <Button
+                    size="small" type="text"
+                    icon={<ChevronLeft size={14} />}
+                    onClick={() => onMonthChange(MONTH_OPTIONS[monthIdx - 1].value)}
+                    disabled={monthIdx <= 0}
+                    style={{ color: 'rgba(255,255,255,0.7)', padding: '0 4px', minWidth: 24 }}
+                    aria-label="Previous month"
+                  />
+                  <Select
+                    size="small" value={selectedMonth} onChange={onMonthChange}
+                    options={MONTH_OPTIONS} style={{ width: 150 }} popupMatchSelectWidth={false}
+                    suffixIcon={<Calendar size={13} color="rgba(255,255,255,0.7)" />}
+                  />
+                  <Button
+                    size="small" type="text"
+                    icon={<ChevronRight size={14} />}
+                    onClick={() => onMonthChange(MONTH_OPTIONS[monthIdx + 1].value)}
+                    disabled={monthIdx >= MONTH_OPTIONS.length - 1}
+                    style={{ color: 'rgba(255,255,255,0.7)', padding: '0 4px', minWidth: 24 }}
+                    aria-label="Next month"
+                  />
+                </>
+              );
+            })()}
           </div>
 
           {/* Logged-in user badge (read-only) */}

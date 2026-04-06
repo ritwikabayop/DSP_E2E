@@ -1,4 +1,4 @@
-import { Card, Table, Tag, Space, Badge, Button, Row, Col, Typography, Popconfirm, message } from 'antd';
+import { Card, Table, Tag, Space, Badge, Button, Row, Col, Typography, Popconfirm, message, Skeleton } from 'antd';
 import { Users, User, Trash2, Plus } from 'lucide-react';
 import EditableCell  from '../shared/EditableCell.jsx';
 import InlineSelect  from '../shared/InlineSelect.jsx';
@@ -11,7 +11,7 @@ const { Text } = Typography;
 export default function TeamSheet({
   searchQuery, teamData, setTeamData,
   editMode, currentUser, role,
-  onSave, isDirty, lastSaved,
+  onSave, isDirty, lastSaved, loading,
 }) {
   const roleConfig = ROLES[role] ?? ROLES.viewer;
 
@@ -111,28 +111,34 @@ export default function TeamSheet({
   return (
     <div style={{ padding: 20 }}>
       <ModuleSaveBar moduleName="Team" isDirty={isDirty} onSave={onSave} lastSaved={lastSaved} />
-      <Row gutter={[12, 12]} style={{ marginBottom: 16 }}>
-        {Object.entries(trackCounts).map(([track, count]) => (
-          <Col key={track}>
-            <Tag
-              color={trackColor(track)}
-              style={{ padding: '4px 12px', fontSize: 13 }}
-            >
-              {track}: <strong>{count}</strong>
-            </Tag>
-          </Col>
-        ))}
-      </Row>
-      <Card
-        title={<Space><Users size={16} /> Team Directory <Badge count={teamData.length} style={{ background: '#13c2c2' }} /></Space>}
-        size="small" className="glass-card"
-        styles={{ header: { background: 'linear-gradient(90deg,#e6fffb,#f0f7ff)', borderBottom: '2px solid #87e8de' } }}
-        extra={editMode && roleConfig.canAddTeamMember && (
-          <Button type="dashed" size="small" icon={<Plus size={14} />} onClick={addRow}>Add Member</Button>
-        )}
-      >
-        <Table dataSource={filtered} columns={cols} pagination={false} size="small" bordered scroll={{ x: 950 }} />
-      </Card>
+      {loading ? (
+        <Skeleton active paragraph={{ rows: 10 }} />
+      ) : (
+        <>
+          <Row gutter={[12, 12]} style={{ marginBottom: 16 }}>
+            {Object.entries(trackCounts).map(([track, count]) => (
+              <Col key={track}>
+                <Tag
+                  color={trackColor(track)}
+                  style={{ padding: '4px 12px', fontSize: 13 }}
+                >
+                  {track}: <strong>{count}</strong>
+                </Tag>
+              </Col>
+            ))}
+          </Row>
+          <Card
+            title={<Space><Users size={16} /> Team Directory <Badge count={teamData.length} style={{ background: '#13c2c2' }} /></Space>}
+            size="small" className="glass-card"
+            styles={{ header: { background: 'linear-gradient(90deg,#e6fffb,#f0f7ff)', borderBottom: '2px solid #87e8de' } }}
+            extra={editMode && roleConfig.canAddTeamMember && (
+              <Button type="dashed" size="small" icon={<Plus size={14} />} onClick={addRow}>Add Member</Button>
+            )}
+          >
+            <Table dataSource={filtered} columns={cols} pagination={false} size="small" bordered scroll={{ x: 950 }} />
+          </Card>
+        </>
+      )}
     </div>
   );
 }

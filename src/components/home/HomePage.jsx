@@ -1,25 +1,28 @@
-import { Row, Col, Card, Typography, Table, Tag, Space, Badge, Progress, Input, Button } from 'antd';
+import { Row, Col, Card, Typography, Table, Tag, Space, Badge, Progress, Input, Button, Skeleton } from 'antd';
 import {
   Monitor, Shield, Users, FileText, User, Calendar, Globe,
-  Activity, CheckCircle, Clock, XCircle, ArrowUpRight, ExternalLink, Pencil, Check, X,
+  Activity, CheckCircle, Clock, XCircle, ArrowUpRight, ExternalLink, Pencil, Check, X, Edit3,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import StatCard from '../shared/StatCard.jsx';
 import { ROLES, MONTH_OPTIONS, INIT_ENV_CONFIG } from '../../utils/constants.js';
 import { statusColor, isHighPriority, envTag } from '../../utils/helpers.jsx';
+import { fetchActivityLogs } from '../../services/api.js';
 
 const { Title, Text } = Typography;
 
 export default function HomePage({
   dspManual, dspAuto, ssaData, teamData,
-  selectedMonth, setActiveTab, currentUser, role,
+  selectedMonth, setActiveTab, currentUser, role, profile,
 }) {
   const allDsp  = [...dspManual, ...dspAuto];
   const allRows = [...allDsp, ...ssaData];
   const monthLabel   = MONTH_OPTIONS.find((m) => m.value === selectedMonth)?.label || selectedMonth;
+  const displayName  = profile?.display_name || currentUser;
   const roleConfig   = ROLES[role] ?? ROLES.viewer;
   const RoleIcon     = roleConfig.icon;
   const canEditEnv   = role === 'admin' || role === 'tl';
+  const canViewLogs  = roleConfig.canViewLogs;
 
   const [envConfig, setEnvConfig] = useState(() => {
     try { return JSON.parse(localStorage.getItem('myisp_env_config')) || INIT_ENV_CONFIG; }
@@ -27,6 +30,8 @@ export default function HomePage({
   });
   const [editingEnv, setEditingEnv] = useState(null);
   const [editBuf,    setEditBuf]    = useState({});
+  const [recentLogs, setRecentLogs]  = useState([]);
+  const [logsLoading, setLogsLoading] = useState(true);
 
   const startEdit  = (env) => { setEditingEnv(env); setEditBuf({ ...envConfig[env] }); };
   const cancelEdit = ()    => { setEditingEnv(null); setEditBuf({}); };
@@ -37,6 +42,17 @@ export default function HomePage({
     setEditingEnv(null); setEditBuf({});
   };
 
+  // Fetch today's recent changes for admin/tl
+  useEffect(() => {
+    if (!canViewLogs) return;
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    fetchActivityLogs({ dateFrom: todayStart.toISOString(), monthKey: selectedMonth })
+      .then((logs) => setRecentLogs(logs.slice(0, 5)))
+      .catch(() => {})
+      .finally(() => setLogsLoading(false));
+  }, [selectedMonth, canViewLogs]);
+
   const stats = {
     total:      allRows.length,
     completed:  allRows.filter((r) =>  r.status && /pass|complete|done/i.test(r.status)).length,
@@ -44,9 +60,8 @@ export default function HomePage({
     blocked:    allRows.filter((r) =>  isHighPriority(r.status)).length,
     notStarted: allRows.filter((r) => !r.status).length,
   };
-  const progress = stats.total
-    ? Math.round(((stats.completed + stats.inProgress) / stats.total) * 100)
-    : 0;
+  // Progress = completed-only percentage (not inflated by in-progress)
+  const progress = stats.total ? Math.round((stats.completed / stats.total) * 100) : 0;
 
   const moduleCards = [
     { key: 'dsp',    label: 'DSP Testing',  icon: Monitor,  color: '#22c55e', bg: 'rgba(34,197,94,0.12)',
@@ -62,9 +77,9 @@ export default function HomePage({
       count: null, done: null, description: 'Generate & export reports' },
   ];
 
-  // My tasks — matched by email (tester field)
+  // My tasks — matched by email across DSP and SSA
   const myTasks = currentUser
-    ? allDsp.filter((r) => r.tester && r.tester.toLowerCase() === currentUser.toLowerCase())
+    ? [...allDsp, ...ssaData].filter((r) => r.tester && r.tester.toLowerCase() === currentUser.toLowerCase())
     : [];
 
   return (
@@ -82,7 +97,7 @@ export default function HomePage({
         <Row align="middle" gutter={24}>
           <Col flex="auto">
             <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, display: 'block', marginBottom: 4 }}>
-              Welcome back{currentUser ? `, ${currentUser}` : ''} ·&nbsp;
+              Welcome back{displayName ? `, ${displayName}` : ''} ·&nbsp;
               <span style={{ background: roleConfig.bg, color: roleConfig.color, padding: '1px 8px', borderRadius: 20, fontSize: 11, fontWeight: 700 }}>
                 <RoleIcon size={10} style={{ marginRight: 3 }} />{roleConfig.label}
               </span>
@@ -157,19 +172,25 @@ export default function HomePage({
           {/* My Tasks */}
           {myTasks.length > 0 && (
             <Card
-              title={<Space><User size={14} color="#3b82f6" /> My Tasks ({currentUser})</Space>}
+              title={<Space><User size={14} color="#3b82f6" /> My Tasks ({displayName})</Space>}
               size="small" className="glass-card" style={{ marginTop: 16 }}
               styles={{ header: { background: 'rgba(59,130,246,0.08)', borderBottom: '1px solid rgba(59,130,246,0.2)' } }}
             >
               <Table
                 dataSource={myTasks}
                 columns={[
-                  { title: 'Module', dataIndex: 'module', key: 'module', width: 80 },
-                  { title: 'Env',    dataIndex: 'env',    key: 'env',    width: 80, render: envTag },
-                  { title: 'SG',     dataIndex: 'sg',     key: 'sg',     width: 80, render: (v) => <Tag>{v}</Tag> },
+                  { title: 'Module', dataIndex: 'module', key: 'module', width: 100 },
+                  { title: 'Env',    dataIndex: 'env',    key: 'env',    width: 70, render: (v) => v ? envTag(v) : <Tag>SSA</Tag> },
+                  { title: 'SG',     dataIndex: 'sg',     key: 'sg',     width: 70, render: (v) => v ? <Tag>{v}</Tag> : <Tag color="purple">SSA</Tag> },
                   { title: 'Status', dataIndex: 'status', key: 'status', render: (v) => <Tag color={statusColor(v)}>{v || 'Not Started'}</Tag> },
                 ]}
                 pagination={false} size="small" bordered
+                locale={{ emptyText: (
+                  <Space direction="vertical" size={4} style={{ padding: '12px 0', color: '#4b5568' }}>
+                    <CheckCircle size={22} color="#22c55e" />
+                    <span style={{ fontSize: 12 }}>No tasks assigned to you this month</span>
+                  </Space>
+                ) }}
               />
             </Card>
           )}
@@ -194,6 +215,39 @@ export default function HomePage({
               );
             })}
           </Card>
+
+          {/* Today's Changes — admin/tl only */}
+          {canViewLogs && (
+            <Card
+              title={<Space><Edit3 size={14} color="#8b5cf6" /> Today&apos;s Changes</Space>}
+              size="small" className="glass-card" style={{ marginTop: 16 }}
+              styles={{ header: { background: 'rgba(139,92,246,0.08)', borderBottom: '1px solid rgba(139,92,246,0.2)' } }}
+            >
+              {logsLoading ? (
+                <Skeleton active paragraph={{ rows: 4 }} />
+              ) : recentLogs.length === 0 ? (
+                <Text type="secondary" style={{ fontSize: 12 }}>No changes recorded today.</Text>
+              ) : (
+                recentLogs.map((log) => (
+                  <div key={log.id} style={{ padding: '5px 0', borderBottom: '1px solid #1e2332', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                    <Tag color="purple" style={{ fontSize: 10, flexShrink: 0, marginTop: 1 }}>{log.module_name}</Tag>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={{ fontSize: 11, color: '#e2e8f0' }}>
+                        <strong>{log.changed_by}</strong> changed <em>{log.field_name}</em>
+                      </Text>
+                      <div style={{ fontSize: 10, color: '#4b5568', marginTop: 1 }}>
+                        {log.old_value ? <><span style={{ color: '#f87171' }}>{log.old_value}</span> → </> : null}
+                        <span style={{ color: '#22c55e' }}>{log.new_value || '—'}</span>
+                      </div>
+                    </div>
+                    <Text type="secondary" style={{ fontSize: 10, flexShrink: 0 }}>
+                      {new Date(log.changed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                    </Text>
+                  </div>
+                ))
+              )}
+            </Card>
+          )}
         </Col>
       </Row>
 
