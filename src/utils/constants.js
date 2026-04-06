@@ -29,7 +29,7 @@ export const ROLES = {
     canEdit: true,  canDelete: false, canAddRow: false, onlyOwnRows: true,
     canAddTeamMember: false, canViewReport: false, canDownloadReport: false,
     canViewLogs: false, canManageUsers: false, canViewAttendance: false, canViewKT: true,
-    canViewRolesAccess: false, canViewMyIsp: false,
+    canViewRolesAccess: true, canViewMyIsp: false,
   },
   // Viewer — read only; can access KT Sessions
   viewer: {

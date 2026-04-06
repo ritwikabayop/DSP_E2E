@@ -340,9 +340,9 @@ CREATE INDEX IF NOT EXISTS idx_roles_access_enterprise ON roles_access(enterpris
 
 ALTER TABLE roles_access ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "admin_tl can read roles_access"
+CREATE POLICY "admin_tl_tester can read roles_access"
   ON roles_access FOR SELECT
-  USING (get_my_role() IN ('admin', 'tl'));
+  USING (get_my_role() IN ('admin', 'tl', 'tester'));
 
 CREATE POLICY "admin_tl can insert roles_access"
   ON roles_access FOR INSERT

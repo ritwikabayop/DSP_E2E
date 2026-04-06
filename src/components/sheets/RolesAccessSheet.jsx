@@ -79,7 +79,7 @@ export default function RolesAccessSheet({ currentUser, role }) {
   useEffect(() => { load(); }, []);
 
   // ── Access guard ──────────────────────────────────────────
-  if (role !== 'admin' && role !== 'tl') {
+  if (role !== 'admin' && role !== 'tl' && role !== 'tester') {
     return (
       <div style={{ padding: 24 }}>
         <Card><Text type="secondary">Access restricted. Admins and Super Users only.</Text></Card>
