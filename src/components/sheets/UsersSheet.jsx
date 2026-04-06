@@ -83,9 +83,20 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
   const handleInvite = async (values) => {
     setInviting(true);
     try {
-      const result = await inviteUser(values.email.trim().toLowerCase(), values.role, values.displayName?.trim() || '', currentUserEmail || '');
-      form.resetFields();
-      setInviteResult({ email: values.email.trim().toLowerCase(), existing: !!result?.existing, role: values.role });
+      const email = values.email.trim().toLowerCase();
+      const match = users.find((u) => u.email?.toLowerCase() === email);
+      if (match) {
+        // Existing user — merge new role into allowed_roles without replacing
+        const current = match.allowed_roles ?? [match.role];
+        const merged  = current.includes(values.role) ? current : [...current, values.role];
+        await updateUserAllowedRoles(match.id, merged);
+        form.resetFields();
+        setInviteResult({ email, existing: true, role: values.role, allRoles: merged });
+      } else {
+        const result = await inviteUser(email, values.role, values.displayName?.trim() || '', currentUserEmail || '');
+        form.resetFields();
+        setInviteResult({ email, existing: !!result?.existing, role: values.role, allRoles: [values.role] });
+      }
       load();
     } catch (e) {
       message.error('Invite failed: ' + e.message);
@@ -309,13 +320,21 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                     </Text>
                     <Text type="secondary" style={{ fontSize: 12 }}>
                       {inviteResult.existing
-                        ? `${inviteResult.email} has been reassigned to`
+                        ? `Role added to ${inviteResult.email}`
                         : `${inviteResult.email} will join as`}
                     </Text>
-                    <div style={{ marginTop: 6 }}>
-                      <Tag color={m.tagColor} icon={<Icon size={11} />} style={{ fontSize: 13, padding: '3px 12px' }}>
-                        {m.label}
-                      </Tag>
+                    <div style={{ marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center' }}>
+                      {(inviteResult.allRoles ?? [inviteResult.role]).map((r) => {
+                        const rm = ROLE_META[r] ?? ROLE_META.viewer;
+                        const RI = rm.icon;
+                        const isNew = r === inviteResult.role;
+                        return (
+                          <Tag key={r} color={rm.tagColor} icon={<RI size={11} />}
+                            style={{ fontSize: 12, padding: '3px 10px', fontWeight: isNew ? 700 : 400, opacity: isNew ? 1 : 0.7 }}>
+                            {rm.label}{isNew && inviteResult.existing ? ' ✦ new' : ''}
+                          </Tag>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -369,25 +388,36 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
               />
             </Form.Item>
 
-            {/* Live email lookup — show existing user's current role */}
+            {/* Live email lookup — show existing user's allowed roles */}
             {(() => {
               const match = inviteEmail && users.find((u) => u.email?.toLowerCase() === inviteEmail);
               if (!match) return null;
               const m = ROLE_META[match.role] ?? ROLE_META.viewer;
-              const Icon = m.icon;
+              const existingRoles = match.allowed_roles ?? [match.role];
               return (
-                <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '10px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <Avatar size={28} style={{ background: m.color, flexShrink: 0, fontSize: 12 }}>
-                    {(match.display_name || match.email || '?')[0].toUpperCase()}
-                  </Avatar>
-                  <div style={{ flex: 1 }}>
-                    <Text strong style={{ fontSize: 12, color: '#e2e8f0', display: 'block' }}>
-                      {match.display_name || match.email}
-                      <Tag color="orange" style={{ marginLeft: 6, fontSize: 10 }}>Existing User</Tag>
+                <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <Avatar size={28} style={{ background: m.color, flexShrink: 0, fontSize: 12 }}>
+                      {(match.display_name || match.email || '?')[0].toUpperCase()}
+                    </Avatar>
+                    <div style={{ flex: 1 }}>
+                      <Text strong style={{ fontSize: 12, color: '#e2e8f0', display: 'block' }}>
+                        {match.display_name || match.email}
+                        <Tag color="orange" style={{ marginLeft: 6, fontSize: 10 }}>Existing User</Tag>
+                      </Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>{match.email}</Text>
+                    </div>
+                  </div>
+                  <div style={{ borderTop: '1px solid #252d42', paddingTop: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
+                      Has {existingRoles.length} role{existingRoles.length > 1 ? 's' : ''}
                     </Text>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <Text type="secondary" style={{ fontSize: 11 }}>Current role:</Text>
-                      <Tag color={m.tagColor} icon={<Icon size={10} />} style={{ fontSize: 11 }}>{m.label}</Tag>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      {existingRoles.map((r) => {
+                        const rm = ROLE_META[r] ?? ROLE_META.viewer;
+                        const RI = rm.icon;
+                        return <Tag key={r} color={rm.tagColor} icon={<RI size={10} />} style={{ fontSize: 11 }}>{rm.label}</Tag>;
+                      })}
                     </div>
                   </div>
                 </div>
@@ -398,7 +428,12 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
               <Input placeholder="e.g. Santhwana M R" size="middle" />
             </Form.Item>
 
-            <Form.Item name="role" label="Assign Role" initialValue="tester" rules={[{ required: true }]}>
+            <Form.Item
+              name="role"
+              label={inviteEmail && users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Add Role' : 'Assign Role'}
+              initialValue="tester"
+              rules={[{ required: true }]}
+            >
               <Select
                 size="middle"
                 onChange={(val) => setInviteRole(val)}
@@ -443,7 +478,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                 <Button onClick={closeInviteModal}>Cancel</Button>
                 <Button type="primary" htmlType="submit" loading={inviting}
                   style={{ background: '#217346', borderColor: '#217346' }}>
-                  {users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Update Role' : 'Send Invite'}
+                  {users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Add Role' : 'Send Invite'}
                 </Button>
               </Space>
             </Form.Item>
