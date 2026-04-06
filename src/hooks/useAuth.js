@@ -81,6 +81,7 @@ export function useAuth() {
     user,
     profile,
     role: profile?.role ?? 'viewer',
+    allowedRoles: profile?.allowed_roles ?? [profile?.role ?? 'viewer'],
     loading,
     needsPasswordReset,
     signIn,

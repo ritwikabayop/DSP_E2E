@@ -147,7 +147,7 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
 }
 
 function App() {
-  const { user, profile, role: authRole, loading: authLoading, signIn, signOut, needsPasswordReset, updatePassword } = useAuth();
+  const { user, profile, role: authRole, loading: authLoading, signIn, signOut, needsPasswordReset, updatePassword, allowedRoles } = useAuth();
 
   const [activeModule,  setActiveModule]  = useState(null); // null = picker, 'e2e' = dashboard
   const [activeTab,     setActiveTab]     = useState('home');
@@ -575,10 +575,11 @@ function App() {
                       ),
                     },
                     { type: 'divider' },
-                    // Switch Role View — only shown to admin (preview mode)
-                    ...(actualRole === 'admin' ? [
-                      { type: 'group', label: 'Switch Role View' },
-                      ...['admin','tl','tester','viewer'].map((r) => {
+                    // Switch Role — visible to any user with multiple allowed roles
+                    ...(allowedRoles && allowedRoles.length > 1 ? [
+                      { type: 'group', label: actualRole === 'admin' ? 'Switch Role View' : 'Switch Role' },
+                      // admin can preview all 4 roles; others can only switch to their allowed_roles
+                      ...(actualRole === 'admin' ? ['admin','tl','tester','viewer'] : allowedRoles).map((r) => {
                         const rc = ROLES[r];
                         const RIcon = rc.icon;
                         const isCurrentActual = r === actualRole && !viewAsRole;

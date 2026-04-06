@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Divider } from 'antd';
 import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users, Copy, CheckCheck } from 'lucide-react';
-import { listUserProfiles, updateUserRole, inviteUser } from '../../services/api.js';
+import { listUserProfiles, updateUserRole, updateUserAllowedRoles, inviteUser } from '../../services/api.js';
 
 const { Text } = Typography;
 
@@ -61,6 +61,20 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
       message.success('Role updated');
     } catch (e) {
       message.error('Failed to update role: ' + e.message);
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleAllowedRolesChange = async (userId, roles) => {
+    if (!roles.length) { message.warning('At least one role is required'); return; }
+    setSaving(userId + '-allowed');
+    try {
+      await updateUserAllowedRoles(userId, roles);
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, allowed_roles: roles } : u)));
+      message.success('Allowed roles updated');
+    } catch (e) {
+      message.error('Failed to update allowed roles: ' + e.message);
     } finally {
       setSaving(null);
     }
@@ -158,8 +172,38 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
               ),
             }))}
             loading={saving === rec.id}
-            disabled={saving === rec.id || rec.id === currentUserId}
+            disabled={saving === rec.id}
             style={{ width: 170 }}
+            popupMatchSelectWidth={false}
+          />
+        ),
+    },
+    {
+      title: 'Allowed Roles', key: 'allowed_roles', width: 260,
+      render: (_, rec) => !canEdit
+        ? (
+          <Space size={4} wrap>
+            {(rec.allowed_roles ?? [rec.role]).map((r) => roleTag(r))}
+          </Space>
+        )
+        : (
+          <Select
+            mode="multiple"
+            size="small"
+            value={rec.allowed_roles ?? [rec.role]}
+            onChange={(vals) => handleAllowedRolesChange(rec.id, vals)}
+            options={ROLE_OPTIONS.map((o) => ({
+              ...o,
+              label: (
+                <Space size={4}>
+                  {(() => { const M = ROLE_META[o.value]; const I = M.icon; return <I size={11} color={M.color} />; })()}
+                  <span>{o.label}</span>
+                </Space>
+              ),
+            }))}
+            loading={saving === rec.id + '-allowed'}
+            disabled={saving === rec.id + '-allowed'}
+            style={{ width: 240 }}
             popupMatchSelectWidth={false}
           />
         ),

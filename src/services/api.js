@@ -145,6 +145,28 @@ export const updateUserRole = async (userId, role) => {
 };
 
 /**
+ * Admin: update the allowed_roles array for a user (multi-role switching).
+ */
+export const updateUserAllowedRoles = async (userId, roles) => {
+  const { error } = await supabase
+    .from('user_profiles')
+    .update({ allowed_roles: roles })
+    .eq('id', userId);
+  if (error) throw error;
+};
+
+/**
+ * Admin/self: update display_name for a user profile.
+ */
+export const updateUserDisplayName = async (userId, displayName) => {
+  const { error } = await supabase
+    .from('user_profiles')
+    .update({ display_name: displayName })
+    .eq('id', userId);
+  if (error) throw error;
+};
+
+/**
  * Admin: invite a new user by email.
  * Creates a Supabase auth account and pre-assigns their role profile.
  * The user receives a confirmation email to set their password.

@@ -16,14 +16,23 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 --    policies on all other tables read from this table.
 -- ──────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS user_profiles (
-  id           UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  email        TEXT NOT NULL UNIQUE,
-  display_name TEXT NOT NULL DEFAULT '',
-  role         TEXT NOT NULL DEFAULT 'viewer'
-                   CHECK (role IN ('admin', 'tl', 'tester', 'viewer')),
-  invited_by   TEXT NOT NULL DEFAULT '',
-  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email         TEXT NOT NULL UNIQUE,
+  display_name  TEXT NOT NULL DEFAULT '',
+  role          TEXT NOT NULL DEFAULT 'viewer'
+                    CHECK (role IN ('admin', 'tl', 'tester', 'viewer')),
+  allowed_roles TEXT[] NOT NULL DEFAULT ARRAY['viewer']::TEXT[],
+  invited_by    TEXT NOT NULL DEFAULT '',
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Migration: add allowed_roles column if upgrading from an older schema
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS
+  allowed_roles TEXT[] NOT NULL DEFAULT ARRAY['viewer']::TEXT[];
+
+-- Backfill: existing rows get allowed_roles = ARRAY[role]
+UPDATE user_profiles SET allowed_roles = ARRAY[role]::TEXT[]
+  WHERE allowed_roles = ARRAY['viewer']::TEXT[] AND role <> 'viewer';
 
 -- Auto-populate display_name and role from auth.users on insert
 -- Role is read from user_meta_data so admin invites pre-assign the correct role.
