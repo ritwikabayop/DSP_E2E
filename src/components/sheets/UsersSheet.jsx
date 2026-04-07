@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Divider } from 'antd';
 import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users, Copy, CheckCheck } from 'lucide-react';
 import { listUserProfiles, updateUserRole, updateUserAllowedRoles, inviteUser } from '../../services/api.js';
+import { resolveRole, PERMISSION_GROUPS, PERMISSION_LABELS } from '../../utils/constants.js';
 
 const { Text } = Typography;
 
@@ -12,13 +13,7 @@ const ROLE_META = {
   viewer: { color: '#8c8c8c', bg: '#fafafa', border: '#d9d9d9', tagColor: 'default', icon: Eye,        label: 'Viewer',         desc: 'Read-only access' },
 };
 
-// Permission breakdown shown per role in the invite form
-const ROLE_PERMISSIONS = {
-  admin:  [['Edit rows', true], ['Delete rows', true], ['Add rows (DSP/SSA)', true], ['Add team members', true], ['View reports', true], ['Download reports', true], ['View activity logs', true], ['Manage users', true], ['View attendance', true]],
-  tl:     [['Edit rows', true], ['Delete rows', true], ['Add rows (DSP/SSA)', true], ['Add team members', true], ['View reports', true], ['Download reports', true], ['View activity logs', true], ['Manage users', true], ['View attendance', true]],
-  tester: [['Edit rows', true], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['Add team members', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Manage users', false], ['KT Sessions', true], ['Own rows only', true]],
-  viewer: [['Edit rows', false], ['Delete rows', false], ['Add rows (DSP/SSA)', false], ['View reports', false], ['Download reports', false], ['View activity logs', false], ['Read-only access', true]],
-};
+
 
 const ROLE_OPTIONS = Object.entries(ROLE_META).map(([value, m]) => ({ value, label: m.label }));
 
@@ -307,7 +302,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
             {(() => {
               const m     = ROLE_META[inviteResult.role] ?? ROLE_META.viewer;
               const Icon  = m.icon;
-              const perms = ROLE_PERMISSIONS[inviteResult.role] ?? [];
+              const perms = Object.values(PERMISSION_GROUPS).flat().map((k) => [PERMISSION_LABELS[k] ?? k, resolveRole(inviteResult.role)[k] ?? false]);
               return (
                 <>
                   {/* Header */}
@@ -454,7 +449,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
             {inviteRole && (() => {
               const m    = ROLE_META[inviteRole] ?? ROLE_META.viewer;
               const Icon = m.icon;
-              const perms = ROLE_PERMISSIONS[inviteRole] ?? [];
+              const perms = Object.values(PERMISSION_GROUPS).flat().map((k) => [PERMISSION_LABELS[k] ?? k, resolveRole(inviteRole)[k] ?? false]);
               return (
                 <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>

@@ -93,7 +93,7 @@ export default function SSASheet({
     },
     {
       title: 'Last Edited By', dataIndex: 'lastEditedBy', key: 'lastEditedBy', width: 150,
-      render: (v) => v ? <Tag icon={<User size={10} />} color="blue">{v}</Tag> : <Text type="secondary">—</Text>,
+      render: (v) => v ? <Tag icon={<User size={10} />} color="blue" style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }} title={v}>{v}</Tag> : <Text type="secondary">—</Text>,
     },
     {
       title: 'Last Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 140,
@@ -108,7 +108,11 @@ export default function SSASheet({
     },
     {
       title: 'Ver.', dataIndex: 'versionId', key: 'versionId', width: 55,
-      render: (v) => <Text type="secondary" style={{ fontSize: 11 }}>{v ?? 1}</Text>,
+      render: (v, rec) =>
+        editMode && canEditRow(rec)
+          ? <EditableCell value={String(v ?? 1)} record={rec} dataIndex="versionId"
+              onSave={(key, field, val) => handleSave(key, field, Number(val) || 1)} />
+          : <Text type="secondary" style={{ fontSize: 11 }}>{v ?? 1}</Text>,
     },
   ];
 
