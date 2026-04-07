@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Layout, Menu, Space, Badge, ConfigProvider, FloatButton, Modal, Spin,
-  Typography, Tag, Button, Tooltip, Segmented, Select, Input, theme as antTheme, Dropdown, Form,
+  Typography, Tag, Button, Tooltip, Select, Input, theme as antTheme, Dropdown, Form,
 } from 'antd';
 import {
   Home, Monitor, Shield, Users, FileText, Activity,
   LayoutDashboard, Calendar, Search, Copy, Save, Download,
-  PenTool, Eye, AlertTriangle, LogOut, UserCog, Lock,
+  AlertTriangle, LogOut, UserCog, Lock,
   ShieldCheck, KeyRound,
 } from 'lucide-react';
 
@@ -152,7 +152,6 @@ function App() {
   const [activeModule,  setActiveModule]  = useState(null); // null = picker, 'e2e' = dashboard
   const [activeTab,     setActiveTab]     = useState('home');
   const [searchQuery,   setSearchQuery]   = useState('');
-  const [editMode,      setEditMode]      = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey());
   const [collapsed,     setCollapsed]     = useState(false);
   const [viewAsRole,    setViewAsRole]    = useState(null); // admin preview override
@@ -168,11 +167,6 @@ function App() {
     saveAllModules,
     loading: dataLoading,
   } = useMonthData(selectedMonth, user);
-
-  useEffect(() => {
-    if (authRole === 'viewer' || authRole === 'tester') setEditMode(false);
-    else if (authRole === 'admin' || authRole === 'tl') setEditMode(true);
-  }, [authRole]);
 
   const handleMonthChange = (newMonth) => {
     if (Object.values(dirtyModules).some(Boolean)) {
@@ -254,8 +248,8 @@ function App() {
           actualRole={authRole ?? 'viewer'}
           viewAsRole={viewAsRole}
           onRoleSwitch={(r) => {
-            if (r === null) { setViewAsRole(null); setEditMode(authRole === 'admin' || authRole === 'tl'); }
-            else { setViewAsRole(r); setEditMode(false); }
+            if (r === null) setViewAsRole(null);
+            else setViewAsRole(r);
           }}
           onSelect={(mod) => setActiveModule(mod)}
           onSignOut={() => { signOut(); setActiveModule(null); }}
@@ -355,7 +349,8 @@ function App() {
             currentUser={currentUser} role={role} profile={profile}
           />
         );
-      case 'dsp':
+      case 'dsp': {
+        const editMode = roleConfig.canEdit;
         return (
           <DSPSheet
             searchQuery={searchQuery}
@@ -366,7 +361,9 @@ function App() {
             loading={dataLoading}
           />
         );
-      case 'ssa':
+      }
+      case 'ssa': {
+        const editMode = roleConfig.canEdit;
         return (
           <SSASheet
             searchQuery={searchQuery} ssaData={ssaData} setSsaData={setSsaData}
@@ -375,7 +372,9 @@ function App() {
             loading={dataLoading}
           />
         );
-      case 'team':
+      }
+      case 'team': {
+        const editMode = roleConfig.canEdit;
         return (
           <TeamSheet
             searchQuery={searchQuery} teamData={teamData} setTeamData={setTeamData}
@@ -384,6 +383,7 @@ function App() {
             loading={dataLoading}
           />
         );
+      }
       case 'report':
         if (!roleConfig.canViewReport) return null;
         return (
@@ -502,28 +502,6 @@ function App() {
 
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
 
-              {/* Edit / View toggle */}
-              {(role === 'admin' || role === 'tl') && (
-                <Segmented
-                  size="small"
-                  value="edit"
-                  options={[
-                    { value: 'edit', label: React.createElement(Space, { size: 3 }, React.createElement(PenTool, { size: 11 }), 'Edit') },
-                  ]}
-                />
-              )}
-              {role === 'tester' && (
-                <Segmented
-                  size="small"
-                  value={editMode ? 'edit' : 'view'}
-                  onChange={function(v) { setEditMode(v === 'edit'); }}
-                  options={[
-                    { value: 'view', label: React.createElement(Space, { size: 3 }, React.createElement(Eye, { size: 11 }), 'View') },
-                    { value: 'edit', label: React.createElement(Space, { size: 3 }, React.createElement(PenTool, { size: 11 }), 'Edit') },
-                  ]}
-                />
-              )}
-
               {/* Save button — always visible for non-viewers */}
               {role !== 'viewer' && (
                 <Tooltip title={anyDirty ? 'Save all unsaved changes' : 'No unsaved changes'}>
@@ -611,8 +589,8 @@ function App() {
                           ),
                           onClick: () => {
                             if (isCurrentActual) return;
-                            if (viewAsRole === r) { setViewAsRole(null); setEditMode(actualRole === 'admin' || actualRole === 'tl'); }
-                            else { setViewAsRole(r); setEditMode(r === 'admin' || r === 'tl'); }
+                            if (viewAsRole === r) setViewAsRole(null);
+                            else setViewAsRole(r);
                             setActiveTab('home');
                           },
                         };
@@ -651,7 +629,7 @@ function App() {
             {viewAsRole && (
               <div style={{ background: 'var(--warning-bg)', color: '#fef3c7', padding: '6px 16px', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span>Previewing as <strong>{ROLES[viewAsRole].label}</strong> — changes are disabled in preview mode</span>
-                <Button size="small" onClick={() => { setViewAsRole(null); setEditMode(false); }} style={{ fontSize: 11 }}>Exit Preview</Button>
+                <Button size="small" onClick={() => setViewAsRole(null)} style={{ fontSize: 11 }}>Exit Preview</Button>
               </div>
             )}
             {renderSheet()}

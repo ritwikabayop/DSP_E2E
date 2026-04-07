@@ -50,7 +50,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
   const [newRoleName,  setNewRoleName]  = useState('');
   const [newRoleBase,  setNewRoleBase]  = useState('viewer');
 
-  const canEdit        = currentUserRole === 'admin';
+  const canEdit        = currentUserRole === 'admin' || currentUserRole === 'tl';
   const selectedConfig = configs[selectedRole] ?? {};
   const parentKey      = selectedConfig.inherits;
   const resolved       = useMemo(() => resolveRole(selectedRole, configs), [selectedRole, configs]);
