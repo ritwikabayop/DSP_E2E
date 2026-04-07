@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Layout, Menu, Space, Badge, ConfigProvider, FloatButton, Modal, Spin,
   Typography, Tag, Button, Tooltip, Select, Input, theme as antTheme, Dropdown, Form,
@@ -24,7 +24,6 @@ import SSASheet         from './components/sheets/SSASheet.jsx';
 import TeamSheet        from './components/sheets/TeamSheet.jsx';
 import ReportSheet      from './components/sheets/ReportSheet.jsx';
 import ActivityLogSheet from './components/sheets/ActivityLogSheet.jsx';
-import UsersSheet             from './components/sheets/UsersSheet.jsx';
 import AccessSheet           from './components/sheets/AccessSheet.jsx';
 
 // Utils
@@ -155,6 +154,21 @@ function App() {
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey());
   const [collapsed,     setCollapsed]     = useState(false);
   const [viewAsRole,    setViewAsRole]    = useState(null); // admin preview override
+
+  // ── Hash routing ──────────────────────────────────────────
+  useEffect(() => {
+    const h = window.location.hash.replace(/^#\//, '');
+    if (h.startsWith('e2e/')) { setActiveModule('e2e'); setActiveTab(h.slice(4) || 'home'); }
+    else if (h === 'kt')     setActiveModule('kt');
+    else if (h === 'roles')  setActiveModule('rolesaccess');
+  }, []);
+
+  useEffect(() => {
+    if      (activeModule === 'e2e')        window.location.hash = '/e2e/' + activeTab;
+    else if (activeModule === 'kt')         window.location.hash = '/kt';
+    else if (activeModule === 'rolesaccess') window.location.hash = '/roles';
+    else                                    window.location.hash = '/';
+  }, [activeModule, activeTab]);
 
   const {
     dspManual, setDspManual,
@@ -287,7 +301,7 @@ function App() {
               ← Back to Modules
             </Button>
           </div>
-          <AccessSheet currentUser={user.email} role={_role} />
+          <AccessSheet currentUser={user.email} currentUserId={user.id} role={_role} />
         </div>
       </ConfigProvider>
     );
@@ -337,7 +351,7 @@ function App() {
   ]
    .concat(roleConfig.canViewReport  ? [{ key: 'report', icon: React.createElement(FileText, { size: 15 }), label: 'Report' }] : [])
    .concat(roleConfig.canViewLogs    ? [{ key: 'logs',   icon: React.createElement(Activity, { size: 15 }), label: 'Logs'   }] : [])
-   .concat(roleConfig.canManageUsers ? [{ key: 'users',  icon: React.createElement(UserCog,  { size: 15 }), label: 'Users'  }] : []);
+   ;
 
   const renderSheet = () => {
     switch (activeTab) {
@@ -395,9 +409,6 @@ function App() {
       case 'logs':
         if (!roleConfig.canViewLogs) return null;
         return React.createElement(ActivityLogSheet, { currentUser, role, dspManual, dspAuto, ssaData, selectedMonth });
-      case 'users':
-        if (!roleConfig.canManageUsers) return null;
-        return React.createElement(UsersSheet, { currentUserId: user.id, role, currentUserEmail: currentUser });
       default:
         return null;
     }
