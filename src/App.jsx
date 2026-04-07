@@ -278,9 +278,9 @@ function App() {
     if (!(ROLES[_role]?.canViewRolesAccess)) { setActiveModule(null); return null; }
     return (
       <ConfigProvider theme={DARK_THEME}>
-        <div style={{ minHeight: '100vh', background: '#0d0f18' }}>
+          <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
           <div style={{
-            height: 52, background: '#0f1117', borderBottom: '1px solid #1e2332',
+            height: 52, background: 'var(--bg-sidebar)', borderBottom: '1px solid var(--border-subtle)',
             display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12,
             position: 'sticky', top: 0, zIndex: 100,
           }}>
@@ -308,7 +308,7 @@ function App() {
   const displayName = profile && profile.display_name ? profile.display_name : user.email;
 
   const DotDirty = ({ dirty }) => dirty
-    ? <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block', marginLeft: 4, verticalAlign: 'middle' }} />
+    ? <span aria-label="Unsaved changes" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--warning)', display: 'inline-block', marginLeft: 4, verticalAlign: 'middle' }} />
     : null;
 
   const navItems = [
@@ -405,7 +405,7 @@ function App() {
 
   return (
     <ConfigProvider theme={DARK_THEME}>
-      <Layout style={{ minHeight: '100vh', background: '#0d0f18' }}>
+      <Layout style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
 
         <Sider
           collapsible
@@ -413,17 +413,21 @@ function App() {
           onCollapse={setCollapsed}
           width={210}
           collapsedWidth={60}
-          style={{ background: '#0f1117', borderRight: '1px solid #1e2332' }}
+          style={{ background: 'var(--bg-sidebar)', borderRight: '1px solid var(--border-subtle)' }}
         >
           <div style={{
             padding: collapsed ? '16px 13px' : '14px 16px',
-            borderBottom: '1px solid #1e2332',
+            borderBottom: '1px solid var(--border-subtle)',
             display: 'flex', alignItems: 'center', gap: 10,
             minHeight: 60,
           }}>
             <Tooltip title="Back to Modules">
               <div
+                role="button"
+                tabIndex={0}
+                aria-label="Back to module picker"
                 onClick={() => setActiveModule(null)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveModule(null); } }}
                 style={{
                   width: 34, height: 34, borderRadius: 9, flexShrink: 0,
                   background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
@@ -455,20 +459,8 @@ function App() {
 
         </Sider>
 
-        <Layout style={{ background: '#0d0f18' }}>
-          <Header style={{
-            background: '#131720',
-            borderBottom: '1px solid #1e2332',
-            height: 52,
-            padding: '0 14px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            lineHeight: 'normal',
-            position: 'sticky',
-            top: 0,
-            zIndex: 100,
-          }}>
+        <Layout style={{ background: 'var(--bg-base)' }}>
+          <Header className="app-header" style={{ padding: '0 14px', lineHeight: 'normal' }}>
             <Select
               size="small"
               value={selectedMonth}
@@ -542,7 +534,7 @@ function App() {
               </Tooltip>
 
               {/* Divider */}
-              <div style={{ width: 1, height: 20, background: '#1e2332', margin: '0 4px' }} />
+              <div style={{ width: 1, height: 20, background: 'var(--border-subtle)', margin: '0 4px' }} />
 
               {/* Profile dropdown */}
               {React.createElement(Dropdown, {
@@ -637,8 +629,10 @@ function App() {
                     { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
                   ],
                 },
-                children: React.createElement('div', {
-                  style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: '#1a2035', border: '1px solid #1e2332', cursor: 'pointer' }
+            children: React.createElement('div', {
+                  role: 'button',
+                  tabIndex: 0,
+                  style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: '#1a2035', border: '1px solid var(--border-subtle)', cursor: 'pointer' }
                 },
                   React.createElement('div', { style: { width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #22c55e, #16a34a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
                     React.createElement(RoleIcon, { size: 11, color: '#fff' })
@@ -660,9 +654,9 @@ function App() {
             </div>
           </Header>
 
-          <Content style={{ background: '#0d0f18', overflow: 'auto' }}>
+            <Content style={{ background: 'var(--bg-base)', overflow: 'auto' }}>
             {viewAsRole && (
-              <div style={{ background: '#92400e', color: '#fef3c7', padding: '6px 16px', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ background: 'var(--warning-bg)', color: '#fef3c7', padding: '6px 16px', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span>Previewing as <strong>{ROLES[viewAsRole].label}</strong> — changes are disabled in preview mode</span>
                 <Button size="small" onClick={() => { setViewAsRole(null); setEditMode(false); }} style={{ fontSize: 11 }}>Exit Preview</Button>
               </div>

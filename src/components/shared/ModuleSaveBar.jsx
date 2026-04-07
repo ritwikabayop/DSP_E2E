@@ -6,29 +6,28 @@ const { Text } = Typography;
 
 export default function ModuleSaveBar({ moduleName, isDirty, onSave, lastSaved }) {
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '6px 16px',
-      background: isDirty ? 'rgba(245,158,11,0.08)' : 'rgba(34,197,94,0.06)',
-      border: `1px solid ${isDirty ? 'rgba(245,158,11,0.3)' : 'rgba(34,197,94,0.2)'}`,
-      borderRadius: 8, marginBottom: 12,
-    }}>
+    <div
+      className={isDirty ? 'module-save-bar-dirty' : 'module-save-bar-clean'}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 16px', borderRadius: 8, marginBottom: 12 }}
+    >
       <Space>
-        {isDirty ? (
-          <>
-            <AlertTriangle size={14} color="#faad14" />
-            <Text style={{ fontSize: 12, color: '#f59e0b' }}>
-              Unsaved changes in <strong>{moduleName}</strong>
-            </Text>
-          </>
-        ) : (
-          <>
-            <CheckCircle size={14} color="#52c41a" />
-            <Text style={{ fontSize: 12, color: '#22c55e' }}>
-              <strong>{moduleName}</strong> — all changes saved
-            </Text>
-          </>
-        )}
+        <span aria-live="polite" aria-atomic="true" style={{ display: 'contents' }}>
+          {isDirty ? (
+            <>
+              <AlertTriangle size={14} color="var(--warning)" aria-hidden="true" />
+              <Text style={{ fontSize: 12, color: 'var(--warning)' }}>
+                Unsaved changes in <strong>{moduleName}</strong>
+              </Text>
+            </>
+          ) : (
+            <>
+              <CheckCircle size={14} color="var(--accent)" aria-hidden="true" />
+              <Text style={{ fontSize: 12, color: 'var(--accent)' }}>
+                <strong>{moduleName}</strong> — all changes saved
+              </Text>
+            </>
+          )}
+        </span>
         {lastSaved && (
           <Text type="secondary" style={{ fontSize: 11 }}>
             Last saved: {fmtDate(lastSaved)}
@@ -41,7 +40,7 @@ export default function ModuleSaveBar({ moduleName, isDirty, onSave, lastSaved }
         icon={<Save size={13} />}
         onClick={onSave}
         disabled={!isDirty}
-        style={isDirty ? { background: '#217346', borderColor: '#217346' } : {}}
+        style={isDirty ? { background: 'var(--excel-green)', borderColor: 'var(--excel-green)' } : {}}
       >
         Save {moduleName}
       </Button>

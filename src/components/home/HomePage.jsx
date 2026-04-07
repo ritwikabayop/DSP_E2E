@@ -85,15 +85,9 @@ export default function HomePage({
   return (
     <div style={{ padding: 24 }}>
       {/* Welcome banner */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0f2d1f 0%, #0d1f15 50%, #091711 100%)',
-        borderRadius: 16, padding: '24px 32px', marginBottom: 24,
-        border: '1px solid rgba(34,197,94,0.18)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-        position: 'relative', overflow: 'hidden',
-      }}>
-        <div style={{ position: 'absolute', top: -20,  right: -20,  width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-        <div style={{ position: 'absolute', bottom: -40, right: 80,  width: 150, height: 150, borderRadius: '50%', background: 'rgba(255,255,255,0.03)' }} />
+      <div className="home-banner">
+        <div aria-hidden="true" style={{ position: 'absolute', top: -20,  right: -20,  width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
+        <div aria-hidden="true" style={{ position: 'absolute', bottom: -40, right: 80,  width: 150, height: 150, borderRadius: '50%', background: 'rgba(255,255,255,0.03)' }} />
         <Row align="middle" gutter={24}>
           <Col flex="auto">
             <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, display: 'block', marginBottom: 4 }}>
@@ -136,7 +130,7 @@ export default function HomePage({
       <Row gutter={[16, 16]}>
         {/* Module overview */}
         <Col xs={24} lg={14}>
-          <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12, color: '#4b5568', letterSpacing: 0.8, textTransform: 'uppercase' }}>Module Overview</Text>
+          <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12, color: 'var(--text-muted)', letterSpacing: 0.8, textTransform: 'uppercase' }}>Module Overview</Text>
           <Row gutter={[12, 12]}>
             {moduleCards.map((m) => {
               const Icon = m.icon;
@@ -147,13 +141,17 @@ export default function HomePage({
                     className="stat-card"
                     style={{ cursor: 'pointer', borderTop: `3px solid ${m.color}`, background: 'var(--bg-card)' }}
                     size="small"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Go to ${m.label}`}
                     onClick={() => setActiveTab(m.key)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab(m.key); } }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div style={{ width: 36, height: 36, borderRadius: 8, background: `${m.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Icon size={18} color={m.color} />
+                        <Icon size={18} color={m.color} aria-hidden="true" />
                       </div>
-                      <ArrowUpRight size={14} color={m.color} />
+                      <ArrowUpRight size={14} color={m.color} aria-hidden="true" />
                     </div>
                     <Text strong style={{ display: 'block', marginTop: 8, fontSize: 13 }}>{m.label}</Text>
                     <Text type="secondary" style={{ fontSize: 11 }}>{m.description}</Text>
@@ -198,7 +196,7 @@ export default function HomePage({
 
         {/* Right column */}
         <Col xs={24} lg={10}>
-          <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12, color: '#4b5568', letterSpacing: 0.8, textTransform: 'uppercase' }}>DSP Coverage by SG</Text>
+          <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12, color: 'var(--text-muted)', letterSpacing: 0.8, textTransform: 'uppercase' }}>DSP Coverage by SG</Text>
           <Card size="small" className="glass-card">
             {['SI', 'AMS', 'BPMS', 'IMS'].map((sg) => {
               const rows = allDsp.filter((r) => r.sg === sg);
@@ -229,14 +227,14 @@ export default function HomePage({
                 <Text type="secondary" style={{ fontSize: 12 }}>No changes recorded today.</Text>
               ) : (
                 recentLogs.map((log) => (
-                  <div key={log.id} style={{ padding: '5px 0', borderBottom: '1px solid #1e2332', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <div key={log.id} style={{ padding: '5px 0', borderBottom: '1px solid var(--border-subtle)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     <Tag color="purple" style={{ fontSize: 10, flexShrink: 0, marginTop: 1 }}>{log.module_name}</Tag>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 11, color: '#e2e8f0' }}>
                         <strong>{log.changed_by}</strong> changed <em>{log.field_name}</em>
                       </Text>
                       <div style={{ fontSize: 10, color: '#4b5568', marginTop: 1 }}>
-                        {log.old_value ? <><span style={{ color: '#f87171' }}>{log.old_value}</span> → </> : null}
+                        {log.old_value ? <><span style={{ color: 'var(--danger-light)' }}>{log.old_value}</span> → </> : null}
                         <span style={{ color: '#22c55e' }}>{log.new_value || '—'}</span>
                       </div>
                     </div>
@@ -261,8 +259,8 @@ export default function HomePage({
           {Object.entries(envConfig).map(([env, cfg]) => (
             <Col xs={24} sm={12} key={env}>
               <div style={{
-                background: '#151c2c',
-                border: `1px solid ${editingEnv === env ? '#3b82f6' : '#1e2332'}`,
+              background: 'var(--bg-deep)',
+              border: `1px solid ${editingEnv === env ? 'var(--info)' : 'var(--border-subtle)'}`,
                 borderRadius: 8, padding: '10px 14px',
                 display: 'flex', flexDirection: 'column', gap: 8,
               }}>
@@ -274,7 +272,7 @@ export default function HomePage({
                       style={{ flex: 1, fontSize: 12 }} placeholder="https://..." />
                   ) : (
                     <a href={cfg.url} target="_blank" rel="noreferrer"
-                      style={{ color: '#60a5fa', fontSize: 12, wordBreak: 'break-all', flex: 1, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      style={{ color: 'var(--link)', fontSize: 12, wordBreak: 'break-all', flex: 1, display: 'flex', alignItems: 'center', gap: 4 }}>
                       {cfg.url}<ExternalLink size={11} style={{ flexShrink: 0 }} />
                     </a>
                   )}

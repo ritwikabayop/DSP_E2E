@@ -5,6 +5,7 @@ export default function InlineSelect({ value, record, dataIndex, onSave, options
     <Select
       size="small"
       value={value}
+      aria-label={dataIndex}
       onChange={(v) => onSave(record.key, dataIndex, v)}
       options={options}
       style={{ width: '100%', minWidth: 80 }}

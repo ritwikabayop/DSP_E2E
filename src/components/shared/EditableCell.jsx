@@ -22,6 +22,7 @@ export default function EditableCell({ value, record, dataIndex, onSave }) {
         ref={inputRef}
         size="small"
         value={val}
+        aria-label={`Edit ${dataIndex}`}
         onChange={(e) => setVal(e.target.value)}
         onPressEnter={save}
         onBlur={save}
@@ -31,8 +32,15 @@ export default function EditableCell({ value, record, dataIndex, onSave }) {
   }
 
   return (
-    <div className="editable-cell" onClick={() => setEditing(true)} title="Click to edit">
-      {value || <span className="cell-placeholder">—</span>}
+    <div
+      className="editable-cell"
+      role="button"
+      tabIndex={0}
+      aria-label={`Edit ${dataIndex}: ${value || 'empty'}`}
+      onClick={() => setEditing(true)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setEditing(true); } }}
+    >
+      {value || <span className="cell-placeholder" aria-hidden="true">—</span>}
     </div>
   );
 }

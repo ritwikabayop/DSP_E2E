@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Table, Tag, Space, Badge, Button, Typography, Popconfirm, message, Row, Col, Skeleton } from 'antd';
+import { Card, Table, Tag, Space, Badge, Button, Typography, Popconfirm, message, Row, Col, Skeleton, Empty } from 'antd';
 import { Monitor, BarChart3, User, Trash2, Plus } from 'lucide-react';
 import EditableCell  from '../shared/EditableCell.jsx';
 import StatusSelect  from '../shared/StatusSelect.jsx';
@@ -148,26 +148,32 @@ export default function DSPSheet({
               <Tag color="green" style={{ fontWeight: 700, fontSize: 12 }}>PT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{ptData.length} row{ptData.length !== 1 ? 's' : ''}</Text>
             </div>
-            <Table
-              dataSource={ptData} columns={cols}
-              pagination={false} size="small" bordered
-              scroll={{ x: 950 }}
-              style={{ tableLayout: 'fixed' }}
-              rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
-            />
+            <section aria-label="PT Testing Rows">
+              <Table
+                dataSource={ptData} columns={cols}
+                pagination={false} size="small" bordered
+                scroll={{ x: 950 }}
+                style={{ tableLayout: 'fixed' }}
+                rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
+                locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No rows match the current filter" /> }}
+              />
+            </section>
           </Col>
           <Col xs={24} lg={12}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="orange" style={{ fontWeight: 700, fontSize: 12 }}>UAT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{uatData.length} row{uatData.length !== 1 ? 's' : ''}</Text>
             </div>
-            <Table
-              dataSource={uatData} columns={cols}
-              pagination={false} size="small" bordered
-              scroll={{ x: 950 }}
-              style={{ tableLayout: 'fixed' }}
-              rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
-            />
+            <section aria-label="UAT Testing Rows">
+              <Table
+                dataSource={uatData} columns={cols}
+                pagination={false} size="small" bordered
+                scroll={{ x: 950 }}
+                style={{ tableLayout: 'fixed' }}
+                rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
+                locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No rows match the current filter" /> }}
+              />
+            </section>
           </Col>
         </Row>
       </Card>
@@ -186,18 +192,13 @@ export default function DSPSheet({
       ) : (
         <>
           {/* Quick-filter chips */}
-          <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
+          <div role="group" aria-label="Filter rows" style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
             {[{key:'all',label:'All'},{key:'progress',label:'In Progress'},{key:'failed',label:'Failed'},{key:'blocked',label:'Blocked'},{key:'mine',label:'Mine'}].map((f) => (
               <button
                 key={f.key}
+                className={`filter-chip${quickFilter === f.key ? ' filter-chip--active' : ''}`}
+                aria-pressed={quickFilter === f.key}
                 onClick={() => setQuickFilter(f.key)}
-                style={{
-                  padding: '3px 12px', borderRadius: 20, cursor: 'pointer',
-                  border: quickFilter === f.key ? '1.5px solid #22c55e' : '1px solid #252d42',
-                  background: quickFilter === f.key ? 'rgba(34,197,94,0.12)' : 'transparent',
-                  color: quickFilter === f.key ? '#22c55e' : '#8892a4',
-                  fontSize: 12, fontFamily: 'inherit', transition: 'all 0.15s',
-                }}
               >
                 {f.label}
               </button>
@@ -206,14 +207,14 @@ export default function DSPSheet({
           {renderEnvPair(
             dspManual, setDspManual,
             'Manual Testing Opportunities',
-            '#1890ff', 'linear-gradient(90deg,#e6f7ff,#f0f7ff)', '#91caff',
+            'var(--info)', 'linear-gradient(90deg, var(--bg-surface), var(--bg-card))', 'var(--border)',
             <Monitor size={16} />,
           )}
 
           {renderEnvPair(
             dspAuto, setDspAuto,
             'Automation Testing Opportunities',
-            '#52c41a', 'linear-gradient(90deg,#f6ffed,#e6fffb)', '#b7eb8f',
+            'var(--accent)', 'linear-gradient(90deg, var(--bg-surface), var(--bg-card))', 'var(--border)',
             <BarChart3 size={16} />,
           )}
         </>

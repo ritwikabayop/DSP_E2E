@@ -43,11 +43,11 @@ export default function KTSessionsPage({ onBack }) {
     });
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0d0f18', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', display: 'flex', flexDirection: 'column' }}>
 
       {/* ── Header ── */}
       <div style={{
-        height: 56, background: '#0f1117', borderBottom: '1px solid #1e2332',
+        height: 56, background: 'var(--bg-sidebar)', borderBottom: '1px solid var(--border-subtle)',
         display: 'flex', alignItems: 'center', padding: '0 24px', gap: 14,
         position: 'sticky', top: 0, zIndex: 100,
       }}>
@@ -56,13 +56,13 @@ export default function KTSessionsPage({ onBack }) {
             size="small"
             icon={<ArrowLeft size={14} />}
             onClick={onBack}
-            style={{ background: 'transparent', borderColor: '#1e2332', color: '#8892a4' }}
+            style={{ background: 'transparent', borderColor: 'var(--border-subtle)', color: 'var(--text-secondary)' }}
           >
             Modules
           </Button>
         </Tooltip>
 
-        <div style={{ width: 1, height: 20, background: '#1e2332' }} />
+        <div style={{ width: 1, height: 20, background: 'var(--border-subtle)' }} />
 
         <div style={{
           width: 32, height: 32, borderRadius: 8, flexShrink: 0,
@@ -73,13 +73,14 @@ export default function KTSessionsPage({ onBack }) {
           <Video size={16} color="#fff" />
         </div>
         <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>KT Sessions</span>
-        <Tag style={{ margin: 0, fontSize: 11, color: '#6b7280', background: 'rgba(255,255,255,0.04)', border: '1px solid #1e2332' }}>
+        <Tag style={{ margin: 0, fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)' }}>
           {SESSIONS.length} session{SESSIONS.length !== 1 ? 's' : ''}
         </Tag>
 
         <Input
           placeholder="Search sessions…"
           prefix={<Search size={12} color="#4b5568" />}
+          aria-label="Search sessions"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           allowClear
@@ -92,21 +93,22 @@ export default function KTSessionsPage({ onBack }) {
       <div style={{ flex: 1, padding: 24, maxWidth: 1100, width: '100%', margin: '0 auto' }}>
 
         {/* Category pills */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
+        <div role="group" aria-label="Filter by category" style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
           {CATEGORIES.map((cat) => {
             const active = activecat === cat.value;
             return (
               <button
                 key={cat.value}
-                onClick={() => setActivecat(cat.value)}
+                className={`filter-chip${active ? ' filter-chip--active' : ''}`}
                 style={{
-                  padding: '5px 16px', borderRadius: 20, cursor: 'pointer',
-                  border: `1.5px solid ${active ? cat.color : '#252d42'}`,
-                  background: active ? `${cat.color}18` : 'transparent',
-                  color: active ? cat.color : '#6b7280',
-                  fontSize: 13, fontWeight: active ? 700 : 400,
-                  transition: 'all 0.15s',
+                  padding: '5px 16px',
+                  borderColor: active ? cat.color : undefined,
+                  color: active ? cat.color : undefined,
+                  fontSize: 13,
+                  fontWeight: active ? 700 : 400,
                 }}
+                aria-pressed={active}
+                onClick={() => setActivecat(cat.value)}
               >
                 {cat.label}
                 {cat.value !== 'All' && (
@@ -121,7 +123,7 @@ export default function KTSessionsPage({ onBack }) {
 
         {/* Cards grid */}
         {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', paddingTop: 80, color: '#6b7280' }}>No sessions found.</div>
+          <div role="status" aria-live="polite" style={{ textAlign: 'center', paddingTop: 80, color: 'var(--text-muted)' }}>No sessions found.</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
             {filtered.map((session) => <SessionCard key={session.id} session={session} />)}
@@ -133,22 +135,14 @@ export default function KTSessionsPage({ onBack }) {
 }
 
 function SessionCard({ session }) {
-  const [hovered, setHovered] = useState(false);
   const color = catColor(session.category);
 
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: hovered ? 'rgba(255,255,255,0.03)' : '#131720',
-        border: `1.5px solid ${hovered ? color + '66' : '#1e2332'}`,
-        borderRadius: 14, padding: '22px 22px 18px',
-        display: 'flex', flexDirection: 'column', gap: 14,
-        transition: 'all 0.2s ease',
-        boxShadow: hovered ? `0 6px 24px ${color}18` : 'none',
-        transform: hovered ? 'translateY(-2px)' : 'none',
-      }}
+    <article
+      className="kt-session-card"
+      tabIndex={0}
+      aria-label={session.title}
+      style={{ '--card-accent': color }}
     >
       <Tag style={{
         margin: 0, fontSize: 11, fontWeight: 700, width: 'fit-content',
@@ -158,28 +152,36 @@ function SessionCard({ session }) {
         {session.category}
       </Tag>
 
-      <div style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 16, lineHeight: 1.4 }}>
+      <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 16, lineHeight: 1.4 }}>
         {session.title}
       </div>
 
       {session.description && (
-        <div style={{ color: '#8892a4', fontSize: 13, lineHeight: 1.7, flex: 1 }}>
+        <div style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7, flex: 1 }}>
           {session.description}
         </div>
       )}
 
-      <div style={{ paddingTop: 12, borderTop: '1px solid #1e2332' }}>
-        <Button
-          icon={<ExternalLink size={13} />}
-          onClick={() => window.open(session.url, '_blank', 'noopener,noreferrer')}
+      <div style={{ paddingTop: 12, borderTop: '1px solid var(--border-subtle)' }}>
+        <a
+          href={session.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Watch video: ${session.title}`}
           style={{
-            background: `${color}18`, borderColor: `${color}44`,
-            color, fontWeight: 700, fontSize: 13,
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '4px 14px', borderRadius: 6,
+            background: `${color}18`, border: `1px solid ${color}44`,
+            color, fontWeight: 700, fontSize: 13, textDecoration: 'none',
+            transition: 'opacity 0.15s',
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.8')}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
         >
+          <ExternalLink size={13} aria-hidden="true" />
           Watch Video
-        </Button>
+        </a>
       </div>
-    </div>
+    </article>
   );
 }

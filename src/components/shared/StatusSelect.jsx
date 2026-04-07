@@ -8,9 +8,9 @@ export default function StatusSelect({ value, record, onSave, readOnly }) {
   const color = statusColor(value);
 
   const icon =
-    color === 'success' ? <CheckCircle size={10} /> :
-    color === 'error'   ? <XCircle size={10} /> :
-                          <Clock size={10} />;
+    color === 'success' ? <CheckCircle size={10} aria-hidden="true" /> :
+    color === 'error'   ? <XCircle size={10} aria-hidden="true" /> :
+                          <Clock size={10} aria-hidden="true" />;
 
   const tagStyle = isHighPriority(value) ? { fontWeight: 600, fontStyle: 'italic' } : {};
 
@@ -26,6 +26,7 @@ export default function StatusSelect({ value, record, onSave, readOnly }) {
     <Select
       size="small"
       value={value || ''}
+      aria-label="Status"
       onChange={(v) => onSave(record.key, 'status', v)}
       options={STATUS_OPTIONS}
       style={{ width: '100%', minWidth: 165 }}

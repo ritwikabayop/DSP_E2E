@@ -13,7 +13,7 @@ export default function StatCard({ icon: Icon, title, value, color, total, iconB
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: iconBg || `${color}18`,
         }}>
-          <Icon size={20} color={color} />
+          <Icon size={20} color={color} aria-hidden="true" />
         </div>
         <div style={{ flex: 1 }}>
           <Text type="secondary" style={{ fontSize: 11, display: 'block' }}>{title}</Text>
