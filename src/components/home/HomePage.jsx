@@ -60,8 +60,7 @@ export default function HomePage({
     blocked:    allRows.filter((r) =>  isHighPriority(r.status)).length,
     notStarted: allRows.filter((r) => !r.status).length,
   };
-  // Progress = completed-only percentage (not inflated by in-progress)
-  const progress = stats.total ? Math.round((stats.completed / stats.total) * 100) : 0;
+  // progress variable removed — donut chart uses raw counts directly
 
   const moduleCards = [
     { key: 'dsp',    label: 'DSP Testing',  icon: Monitor,  color: '#22c55e', bg: 'rgba(34,197,94,0.12)',
@@ -104,17 +103,50 @@ export default function HomePage({
             </Text>
           </Col>
           <Col>
-            <div style={{ textAlign: 'center' }}>
-              <Progress
-                type="circle" percent={progress} size={80}
-                strokeColor={{ '0%': '#22c55e', '100%': '#86efac' }}
-                trailColor="rgba(255,255,255,0.15)"
-                format={(p) => <span style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>{p}%</span>}
-              />
-              <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, display: 'block', marginTop: 4 }}>
-                Overall Progress
-              </Text>
-            </div>
+            {(() => {
+              const circ = 2 * Math.PI * 40;
+              const slices = [
+                { label: 'Completed',   count: stats.completed,  color: '#22c55e' },
+                { label: 'In Progress', count: stats.inProgress, color: '#3b82f6' },
+                { label: 'Blocked',     count: stats.blocked,    color: '#ef4444' },
+                { label: 'Not Started', count: stats.notStarted, color: '#252d42' },
+              ];
+              const total = stats.total || 1;
+              let offset = 0;
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    {slices.map((s) => {
+                      const dash = (s.count / total) * circ;
+                      const off  = circ - offset;
+                      offset    += dash;
+                      return (
+                        <circle
+                          key={s.label}
+                          cx="50" cy="50" r="40"
+                          fill="none"
+                          stroke={s.color}
+                          strokeWidth="10"
+                          strokeDasharray={`${dash} ${circ - dash}`}
+                          strokeDashoffset={off}
+                          style={{ transition: 'stroke-dasharray 0.4s' }}
+                        />
+                      );
+                    })}
+                    <text x="50" y="46" textAnchor="middle" fill="#fff" fontSize="16" fontWeight="700">{stats.total}</text>
+                    <text x="50" y="60" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="9">total</text>
+                  </svg>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+                    {slices.map((s) => (
+                      <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                        <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>{s.label} {s.count}</Text>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </Col>
         </Row>
       </div>

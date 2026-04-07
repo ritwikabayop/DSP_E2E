@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>E2E Dashboard — More Theme Suggestions</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #09090b; color: #e4e4e7; }
+
+  h1 { text-align: center; padding: 40px 0 8px; font-size: 22px; color: #fff; letter-spacing: -0.5px; }
+  .subtitle { text-align: center; color: #71717a; font-size: 13px; margin-bottom: 40px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 28px; padding: 0 40px 60px; max-width: 1600px; margin: 0 auto; }
+
+  .theme-card { border-radius: 16px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.07); transition: transform 0.2s, box-shadow 0.2s; }
+  .theme-card:hover { transform: translateY(-4px); box-shadow: 0 16px 56px rgba(0,0,0,0.7); }
+
+  .tc-header { padding: 18px 20px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .tc-name { font-weight: 700; font-size: 15px; }
+  .tc-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.8px; background: rgba(255,255,255,0.1); color: #e4e4e7; }
+
+  .swatches { display: flex; height: 8px; }
+  .swatches span { flex: 1; }
+
+  .mini-app { display: flex; height: 280px; }
+  .mini-sidebar { width: 56px; display: flex; flex-direction: column; padding: 10px 8px; gap: 6px; }
+  .mini-sidebar .logo { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 4px; }
+  .mini-nav-item { height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .mini-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .mini-header { height: 40px; display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0; }
+  .mini-header .month-pill { height: 24px; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 10px; font-weight: 600; }
+  .mini-header .search { flex: 1; height: 24px; border-radius: 6px; display: flex; align-items: center; padding: 0 8px; font-size: 10px; }
+  .mini-header .save-btn { height: 24px; border-radius: 6px; padding: 0 10px; font-size: 10px; font-weight: 700; display: flex; align-items: center; }
+  .mini-header .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-left: auto; }
+  .mini-content { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .mini-banner { border-radius: 10px; padding: 10px 14px; font-size: 11px; font-weight: 700; }
+  .mini-banner span { font-size: 9px; font-weight: 400; opacity: 0.7; display: block; margin-top: 2px; }
+  .mini-stat-row { display: flex; gap: 6px; }
+  .mini-stat { flex: 1; border-radius: 8px; padding: 8px 10px; font-size: 9px; color: #a1a1aa; }
+  .mini-stat strong { display: block; font-size: 17px; font-weight: 800; margin-bottom: 1px; }
+  .mini-table-row { height: 22px; border-radius: 5px; display: flex; align-items: center; padding: 0 8px; gap: 8px; font-size: 9px; }
+  .mini-table-row .cell { flex: 1; }
+  .mini-table-row .tag { height: 14px; border-radius: 4px; padding: 0 6px; font-size: 9px; display: flex; align-items: center; font-weight: 700; }
+  .mini-chip-row { display: flex; gap: 4px; }
+  .mini-chip { height: 20px; border-radius: 20px; padding: 0 10px; font-size: 9px; display: flex; align-items: center; border-width: 1px; border-style: solid; }
+
+  .vars-block { padding: 14px 20px 18px; }
+  .vars-block h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #71717a; margin-bottom: 10px; }
+  .var-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; color: #a1a1aa; }
+  .var-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+
+  /* ── THEME A: Nord ── */
+  .tA { background: #2e3440; }
+  .tA .tc-header { background: #272c36; border-bottom: 1px solid #3b4252; }
+  .tA .tc-name { color: #88c0d0; }
+  .tA .swatches span:nth-child(1) { background: #2e3440; }
+  .tA .swatches span:nth-child(2) { background: #3b4252; }
+  .tA .swatches span:nth-child(3) { background: #88c0d0; }
+  .tA .swatches span:nth-child(4) { background: #bf616a; }
+  .tA .swatches span:nth-child(5) { background: #ebcb8b; }
+  .tA .mini-sidebar { background: #272c36; border-right: 1px solid #3b4252; }
+  .tA .logo { background: linear-gradient(135deg, #88c0d0, #5e81ac); }
+  .tA .mini-nav-item { color: #616e88; }
+  .tA .mini-nav-item.active { background: rgba(136,192,208,0.12); color: #88c0d0; }
+  .tA .mini-header { background: #2e3440; border-bottom: 1px solid #3b4252; }
+  .tA .mini-header .month-pill { background: #3b4252; color: #616e88; }
+  .tA .mini-header .search { background: #3b4252; color: #4c566a; }
+  .tA .mini-header .save-btn { background: #88c0d0; color: #2e3440; }
+  .tA .mini-header .avatar { background: linear-gradient(135deg, #88c0d0, #5e81ac); color: #2e3440; }
+  .tA .mini-content { background: #2e3440; }
+  .tA .mini-banner { background: linear-gradient(135deg, #283040, #252a38); border: 1px solid rgba(136,192,208,0.2); color: #eceff4; }
+  .tA .mini-stat { background: #3b4252; border: 1px solid #434c5e; }
+  .tA .mini-stat strong { color: #88c0d0; }
+  .tA .mini-table-row { background: #3b4252; color: #616e88; }
+  .tA .mini-table-row .tag { background: rgba(136,192,208,0.12); color: #88c0d0; border: 1px solid rgba(136,192,208,0.3); }
+  .tA .mini-chip { border-color: #434c5e; color: #616e88; }
+  .tA .mini-chip.active { background: rgba(136,192,208,0.12); border-color: #88c0d0; color: #88c0d0; }
+  .tA .vars-block { background: #272c36; border-top: 1px solid #3b4252; }
+
+  /* ── THEME B: Neon Matrix ── */
+  .tB { background: #010b07; }
+  .tB .tc-header { background: #030f08; border-bottom: 1px solid #083018; }
+  .tB .tc-name { color: #39ff14; }
+  .tB .swatches span:nth-child(1) { background: #010b07; }
+  .tB .swatches span:nth-child(2) { background: #030f08; }
+  .tB .swatches span:nth-child(3) { background: #39ff14; }
+  .tB .swatches span:nth-child(4) { background: #ff3131; }
+  .tB .swatches span:nth-child(5) { background: #ffea00; }
+  .tB .mini-sidebar { background: #020d06; border-right: 1px solid #083018; }
+  .tB .logo { background: linear-gradient(135deg, #39ff14, #00cc44); }
+  .tB .mini-nav-item { color: #1a6030; }
+  .tB .mini-nav-item.active { background: rgba(57,255,20,0.08); color: #39ff14; }
+  .tB .mini-header { background: #030f08; border-bottom: 1px solid #083018; }
+  .tB .mini-header .month-pill { background: #071a0d; color: #1a6030; }
+  .tB .mini-header .search { background: #071a0d; color: #0d3018; }
+  .tB .mini-header .save-btn { background: #39ff14; color: #010b07; font-weight: 900; }
+  .tB .mini-header .avatar { background: linear-gradient(135deg, #39ff14, #00cc44); color: #010b07; }
+  .tB .mini-content { background: #010b07; }
+  .tB .mini-banner { background: linear-gradient(135deg, #051a0c, #030e07); border: 1px solid rgba(57,255,20,0.2); color: #b8ffb0; }
+  .tB .mini-stat { background: #061408; border: 1px solid #083018; }
+  .tB .mini-stat strong { color: #39ff14; }
+  .tB .mini-table-row { background: #061408; color: #1a6030; }
+  .tB .mini-table-row .tag { background: rgba(57,255,20,0.08); color: #39ff14; border: 1px solid rgba(57,255,20,0.25); }
+  .tB .mini-chip { border-color: #083018; color: #1a6030; }
+  .tB .mini-chip.active { background: rgba(57,255,20,0.08); border-color: #39ff14; color: #39ff14; }
+  .tB .vars-block { background: #030f08; border-top: 1px solid #083018; }
+
+  /* ── THEME C: Copper ── */
+  .tC { background: #110a06; }
+  .tC .tc-header { background: #180d08; border-bottom: 1px solid #2e1a0e; }
+  .tC .tc-name { color: #e07b39; }
+  .tC .swatches span:nth-child(1) { background: #110a06; }
+  .tC .swatches span:nth-child(2) { background: #1e1008; }
+  .tC .swatches span:nth-child(3) { background: #e07b39; }
+  .tC .swatches span:nth-child(4) { background: #fbbf24; }
+  .tC .swatches span:nth-child(5) { background: #34d399; }
+  .tC .mini-sidebar { background: #0d0803; border-right: 1px solid #2e1a0e; }
+  .tC .logo { background: linear-gradient(135deg, #e07b39, #b05a20); }
+  .tC .mini-nav-item { color: #7a4020; }
+  .tC .mini-nav-item.active { background: rgba(224,123,57,0.1); color: #e07b39; }
+  .tC .mini-header { background: #180d08; border-bottom: 1px solid #2e1a0e; }
+  .tC .mini-header .month-pill { background: #221510; color: #7a4020; }
+  .tC .mini-header .search { background: #221510; color: #3e1e0a; }
+  .tC .mini-header .save-btn { background: #e07b39; color: #fff; }
+  .tC .mini-header .avatar { background: linear-gradient(135deg, #e07b39, #b05a20); color: #fff; }
+  .tC .mini-content { background: #110a06; }
+  .tC .mini-banner { background: linear-gradient(135deg, #281306, #1c0d04); border: 1px solid rgba(224,123,57,0.2); color: #fde8d8; }
+  .tC .mini-stat { background: #1e1008; border: 1px solid #2e1a0e; }
+  .tC .mini-stat strong { color: #e07b39; }
+  .tC .mini-table-row { background: #1e1008; color: #7a4020; }
+  .tC .mini-table-row .tag { background: rgba(224,123,57,0.1); color: #e07b39; border: 1px solid rgba(224,123,57,0.3); }
+  .tC .mini-chip { border-color: #2e1a0e; color: #7a4020; }
+  .tC .mini-chip.active { background: rgba(224,123,57,0.1); border-color: #e07b39; color: #e07b39; }
+  .tC .vars-block { background: #180d08; border-top: 1px solid #2e1a0e; }
+
+  /* ── THEME D: Sakura ── */
+  .tD { background: #0f0810; }
+  .tD .tc-header { background: #160b17; border-bottom: 1px solid #2a1530; }
+  .tD .tc-name { color: #f9a8d4; }
+  .tD .swatches span:nth-child(1) { background: #0f0810; }
+  .tD .swatches span:nth-child(2) { background: #160b17; }
+  .tD .swatches span:nth-child(3) { background: #f9a8d4; }
+  .tD .swatches span:nth-child(4) { background: #fb7185; }
+  .tD .swatches span:nth-child(5) { background: #c084fc; }
+  .tD .mini-sidebar { background: #0c060d; border-right: 1px solid #2a1530; }
+  .tD .logo { background: linear-gradient(135deg, #f9a8d4, #ec4899); }
+  .tD .mini-nav-item { color: #7a3560; }
+  .tD .mini-nav-item.active { background: rgba(249,168,212,0.1); color: #f9a8d4; }
+  .tD .mini-header { background: #160b17; border-bottom: 1px solid #2a1530; }
+  .tD .mini-header .month-pill { background: #201028; color: #7a3560; }
+  .tD .mini-header .search { background: #201028; color: #3d1a3e; }
+  .tD .mini-header .save-btn { background: #f9a8d4; color: #0f0810; }
+  .tD .mini-header .avatar { background: linear-gradient(135deg, #f9a8d4, #ec4899); color: #0f0810; }
+  .tD .mini-content { background: #0f0810; }
+  .tD .mini-banner { background: linear-gradient(135deg, #22102a, #160b1c); border: 1px solid rgba(249,168,212,0.18); color: #fce7f3; }
+  .tD .mini-stat { background: #160b17; border: 1px solid #2a1530; }
+  .tD .mini-stat strong { color: #f9a8d4; }
+  .tD .mini-table-row { background: #160b17; color: #7a3560; }
+  .tD .mini-table-row .tag { background: rgba(249,168,212,0.1); color: #f9a8d4; border: 1px solid rgba(249,168,212,0.3); }
+  .tD .mini-chip { border-color: #2a1530; color: #7a3560; }
+  .tD .mini-chip.active { background: rgba(249,168,212,0.1); border-color: #f9a8d4; color: #f9a8d4; }
+  .tD .vars-block { background: #160b17; border-top: 1px solid #2a1530; }
+
+  /* ── THEME E: Indigo Frost ── */
+  .tE { background: #0c0e1e; }
+  .tE .tc-header { background: #101228; border-bottom: 1px solid #1e2252; }
+  .tE .tc-name { color: #818cf8; }
+  .tE .swatches span:nth-child(1) { background: #0c0e1e; }
+  .tE .swatches span:nth-child(2) { background: #101228; }
+  .tE .swatches span:nth-child(3) { background: #818cf8; }
+  .tE .swatches span:nth-child(4) { background: #f472b6; }
+  .tE .swatches span:nth-child(5) { background: #34d399; }
+  .tE .mini-sidebar { background: #090b18; border-right: 1px solid #1e2252; }
+  .tE .logo { background: linear-gradient(135deg, #818cf8, #6366f1); }
+  .tE .mini-nav-item { color: #3d4488; }
+  .tE .mini-nav-item.active { background: rgba(129,140,248,0.12); color: #818cf8; }
+  .tE .mini-header { background: #101228; border-bottom: 1px solid #1e2252; }
+  .tE .mini-header .month-pill { background: #161a38; color: #3d4488; }
+  .tE .mini-header .search { background: #161a38; color: #242855; }
+  .tE .mini-header .save-btn { background: #818cf8; color: #0c0e1e; }
+  .tE .mini-header .avatar { background: linear-gradient(135deg, #818cf8, #6366f1); color: #fff; }
+  .tE .mini-content { background: #0c0e1e; }
+  .tE .mini-banner { background: linear-gradient(135deg, #131540, #0e1030); border: 1px solid rgba(129,140,248,0.2); color: #e0e7ff; }
+  .tE .mini-stat { background: #101228; border: 1px solid #1e2252; }
+  .tE .mini-stat strong { color: #818cf8; }
+  .tE .mini-table-row { background: #101228; color: #3d4488; }
+  .tE .mini-table-row .tag { background: rgba(129,140,248,0.12); color: #818cf8; border: 1px solid rgba(129,140,248,0.3); }
+  .tE .mini-chip { border-color: #1e2252; color: #3d4488; }
+  .tE .mini-chip.active { background: rgba(129,140,248,0.12); border-color: #818cf8; color: #818cf8; }
+  .tE .vars-block { background: #101228; border-top: 1px solid #1e2252; }
+
+  /* ── THEME F: Teal Storm ── */
+  .tF { background: #060f0f; }
+  .tF .tc-header { background: #081414; border-bottom: 1px solid #0d2828; }
+  .tF .tc-name { color: #2dd4bf; }
+  .tF .swatches span:nth-child(1) { background: #060f0f; }
+  .tF .swatches span:nth-child(2) { background: #081414; }
+  .tF .swatches span:nth-child(3) { background: #2dd4bf; }
+  .tF .swatches span:nth-child(4) { background: #f87171; }
+  .tF .swatches span:nth-child(5) { background: #a78bfa; }
+  .tF .mini-sidebar { background: #040c0c; border-right: 1px solid #0d2828; }
+  .tF .logo { background: linear-gradient(135deg, #2dd4bf, #0f9488); }
+  .tF .mini-nav-item { color: #1a5e58; }
+  .tF .mini-nav-item.active { background: rgba(45,212,191,0.1); color: #2dd4bf; }
+  .tF .mini-header { background: #081414; border-bottom: 1px solid #0d2828; }
+  .tF .mini-header .month-pill { background: #0c1e1e; color: #1a5e58; }
+  .tF .mini-header .search { background: #0c1e1e; color: #0e2e2e; }
+  .tF .mini-header .save-btn { background: #2dd4bf; color: #060f0f; }
+  .tF .mini-header .avatar { background: linear-gradient(135deg, #2dd4bf, #0f9488); color: #060f0f; }
+  .tF .mini-content { background: #060f0f; }
+  .tF .mini-banner { background: linear-gradient(135deg, #061e1e, #051414); border: 1px solid rgba(45,212,191,0.18); color: #ccfbf1; }
+  .tF .mini-stat { background: #0c1e1e; border: 1px solid #0d2828; }
+  .tF .mini-stat strong { color: #2dd4bf; }
+  .tF .mini-table-row { background: #0c1e1e; color: #1a5e58; }
+  .tF .mini-table-row .tag { background: rgba(45,212,191,0.1); color: #2dd4bf; border: 1px solid rgba(45,212,191,0.3); }
+  .tF .mini-chip { border-color: #0d2828; color: #1a5e58; }
+  .tF .mini-chip.active { background: rgba(45,212,191,0.1); border-color: #2dd4bf; color: #2dd4bf; }
+  .tF .vars-block { background: #081414; border-top: 1px solid #0d2828; }
+</style>
+</head>
+<body>
+
+<h1>E2E Dashboard — More Theme Suggestions</h1>
+<p class="subtitle">6 additional themes · Each only needs ~5 variable changes in <code>src/index.css</code></p>
+
+<div class="grid">
+
+  <!-- ── THEME A: Nord ── -->
+  <div class="theme-card tA">
+    <div class="tc-header tA">
+      <span class="tc-name">🏔 Nord Arctic</span>
+      <span class="tc-badge">Blue-Grey · Cool</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar tA">
+        <div class="logo tA">🔵</div>
+        <div class="mini-nav-item tA active">🏠</div>
+        <div class="mini-nav-item tA">📊</div>
+        <div class="mini-nav-item tA">🛡</div>
+        <div class="mini-nav-item tA">👥</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header tA">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content tA">
+          <div class="mini-banner tA">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat tA"><strong>36</strong>Total</div>
+            <div class="mini-stat tA"><strong style="color:#88c0d0">28</strong>Done</div>
+            <div class="mini-stat tA"><strong style="color:#ebcb8b">5</strong>WIP</div>
+            <div class="mini-stat tA"><strong style="color:#bf616a">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip tA active">All</div>
+            <div class="mini-chip tA">In Progress</div>
+            <div class="mini-chip tA">Failed</div>
+            <div class="mini-chip tA">Mine</div>
+          </div>
+          <div class="mini-table-row tA"><span class="cell">kalpana@accenture.com</span><span class="tag tA">Passed</span></div>
+          <div class="mini-table-row tA"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(235,203,139,0.1);color:#ebcb8b;border:1px solid rgba(235,203,139,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block tA">
+      <h4>CSS Variables</h4>
+      <div class="var-row"><div class="var-dot" style="background:#2e3440"></div><code style="font-size:10px">--bg-base: #2e3440</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#88c0d0"></div><code style="font-size:10px">--accent: #88c0d0</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#3b4252"></div><code style="font-size:10px">--border: #3b4252</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#bf616a"></div><code style="font-size:10px">--danger: #bf616a</code></div>
+      <div class="var-row" style="margin-top:6px;font-size:10px;color:#616e88;">Note: bg is medium-dark not pitch black — unique feel</div>
+    </div>
+  </div>
+
+  <!-- ── THEME B: Neon Matrix ── -->
+  <div class="theme-card tB">
+    <div class="tc-header tB">
+      <span class="tc-name">💻 Neon Matrix</span>
+      <span class="tc-badge">Pitch Black · Electric</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar tB">
+        <div class="logo tB">🟢</div>
+        <div class="mini-nav-item tB active">🏠</div>
+        <div class="mini-nav-item tB">📊</div>
+        <div class="mini-nav-item tB">🛡</div>
+        <div class="mini-nav-item tB">👥</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header tB">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content tB">
+          <div class="mini-banner tB">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat tB"><strong>36</strong>Total</div>
+            <div class="mini-stat tB"><strong style="color:#39ff14">28</strong>Done</div>
+            <div class="mini-stat tB"><strong style="color:#ffea00">5</strong>WIP</div>
+            <div class="mini-stat tB"><strong style="color:#ff3131">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip tB active">All</div>
+            <div class="mini-chip tB">In Progress</div>
+            <div class="mini-chip tB">Failed</div>
+            <div class="mini-chip tB">Mine</div>
+          </div>
+          <div class="mini-table-row tB"><span class="cell">kalpana@accenture.com</span><span class="tag tB">Passed</span></div>
+          <div class="mini-table-row tB"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(255,234,0,0.08);color:#ffea00;border:1px solid rgba(255,234,0,0.25)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block tB">
+      <h4>CSS Variables</h4>
+      <div class="var-row"><div class="var-dot" style="background:#010b07;border:1px solid #222"></div><code style="font-size:10px">--bg-base: #010b07</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#39ff14"></div><code style="font-size:10px">--accent: #39ff14</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#083018;border:1px solid #555"></div><code style="font-size:10px">--border: #083018</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#ff3131"></div><code style="font-size:10px">--danger: #ff3131</code></div>
+      <div class="var-row" style="margin-top:6px;font-size:10px;color:#1a6030;">High contrast — very readable on monitors</div>
+    </div>
+  </div>
+
+  <!-- ── THEME C: Copper ── -->
+  <div class="theme-card tC">
+    <div class="tc-header tC">
+      <span class="tc-name">⚙️ Copper Industrial</span>
+      <span class="tc-badge">Warm Dark · Bronze</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar tC">
+        <div class="logo tC">🟠</div>
+        <div class="mini-nav-item tC active">🏠</div>
+        <div class="mini-nav-item tC">📊</div>
+        <div class="mini-nav-item tC">🛡</div>
+        <div class="mini-nav-item tC">👥</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header tC">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content tC">
+          <div class="mini-banner tC">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat tC"><strong>36</strong>Total</div>
+            <div class="mini-stat tC"><strong style="color:#e07b39">28</strong>Done</div>
+            <div class="mini-stat tC"><strong style="color:#fbbf24">5</strong>WIP</div>
+            <div class="mini-stat tC"><strong style="color:#34d399">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip tC active">All</div>
+            <div class="mini-chip tC">In Progress</div>
+            <div class="mini-chip tC">Failed</div>
+            <div class="mini-chip tC">Mine</div>
+          </div>
+          <div class="mini-table-row tC"><span class="cell">kalpana@accenture.com</span><span class="tag tC">Passed</span></div>
+          <div class="mini-table-row tC"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block tC">
+      <h4>CSS Variables</h4>
+      <div class="var-row"><div class="var-dot" style="background:#110a06;border:1px solid #333"></div><code style="font-size:10px">--bg-base: #110a06</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#e07b39"></div><code style="font-size:10px">--accent: #e07b39</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#2e1a0e;border:1px solid #555"></div><code style="font-size:10px">--border: #2e1a0e</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#34d399"></div><code style="font-size:10px">--info: #34d399 (teal contrast)</code></div>
+    </div>
+  </div>
+
+  <!-- ── THEME D: Sakura ── -->
+  <div class="theme-card tD">
+    <div class="tc-header tD">
+      <span class="tc-name">🌸 Sakura Night</span>
+      <span class="tc-badge">Dark · Soft Pink</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar tD">
+        <div class="logo tD">🌸</div>
+        <div class="mini-nav-item tD active">🏠</div>
+        <div class="mini-nav-item tD">📊</div>
+        <div class="mini-nav-item tD">🛡</div>
+        <div class="mini-nav-item tD">👥</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header tD">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content tD">
+          <div class="mini-banner tD">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat tD"><strong>36</strong>Total</div>
+            <div class="mini-stat tD"><strong style="color:#f9a8d4">28</strong>Done</div>
+            <div class="mini-stat tD"><strong style="color:#c084fc">5</strong>WIP</div>
+            <div class="mini-stat tD"><strong style="color:#fb7185">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip tD active">All</div>
+            <div class="mini-chip tD">In Progress</div>
+            <div class="mini-chip tD">Failed</div>
+            <div class="mini-chip tD">Mine</div>
+          </div>
+          <div class="mini-table-row tD"><span class="cell">kalpana@accenture.com</span><span class="tag tD">Passed</span></div>
+          <div class="mini-table-row tD"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(192,132,252,0.1);color:#c084fc;border:1px solid rgba(192,132,252,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block tD">
+      <h4>CSS Variables</h4>
+      <div class="var-row"><div class="var-dot" style="background:#0f0810;border:1px solid #333"></div><code style="font-size:10px">--bg-base: #0f0810</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#f9a8d4"></div><code style="font-size:10px">--accent: #f9a8d4</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#2a1530;border:1px solid #555"></div><code style="font-size:10px">--border: #2a1530</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#c084fc"></div><code style="font-size:10px">--info: #c084fc</code></div>
+    </div>
+  </div>
+
+  <!-- ── THEME E: Indigo Frost ── -->
+  <div class="theme-card tE">
+    <div class="tc-header tE">
+      <span class="tc-name">❄️ Indigo Frost</span>
+      <span class="tc-badge">Dark Navy · Soft Indigo</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar tE">
+        <div class="logo tE">💠</div>
+        <div class="mini-nav-item tE active">🏠</div>
+        <div class="mini-nav-item tE">📊</div>
+        <div class="mini-nav-item tE">🛡</div>
+        <div class="mini-nav-item tE">👥</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header tE">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content tE">
+          <div class="mini-banner tE">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat tE"><strong>36</strong>Total</div>
+            <div class="mini-stat tE"><strong style="color:#818cf8">28</strong>Done</div>
+            <div class="mini-stat tE"><strong style="color:#34d399">5</strong>WIP</div>
+            <div class="mini-stat tE"><strong style="color:#f472b6">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip tE active">All</div>
+            <div class="mini-chip tE">In Progress</div>
+            <div class="mini-chip tE">Failed</div>
+            <div class="mini-chip tE">Mine</div>
+          </div>
+          <div class="mini-table-row tE"><span class="cell">kalpana@accenture.com</span><span class="tag tE">Passed</span></div>
+          <div class="mini-table-row tE"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block tE">
+      <h4>CSS Variables</h4>
+      <div class="var-row"><div class="var-dot" style="background:#0c0e1e;border:1px solid #333"></div><code style="font-size:10px">--bg-base: #0c0e1e</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#818cf8"></div><code style="font-size:10px">--accent: #818cf8</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#1e2252;border:1px solid #555"></div><code style="font-size:10px">--border: #1e2252</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#f472b6"></div><code style="font-size:10px">--danger: #f472b6</code></div>
+    </div>
+  </div>
+
+  <!-- ── THEME F: Teal Storm ── -->
+  <div class="theme-card tF">
+    <div class="tc-header tF">
+      <span class="tc-name">🌀 Teal Storm</span>
+      <span class="tc-badge">Deep Dark · Teal</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar tF">
+        <div class="logo tF">🔵</div>
+        <div class="mini-nav-item tF active">🏠</div>
+        <div class="mini-nav-item tF">📊</div>
+        <div class="mini-nav-item tF">🛡</div>
+        <div class="mini-nav-item tF">👥</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header tF">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content tF">
+          <div class="mini-banner tF">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat tF"><strong>36</strong>Total</div>
+            <div class="mini-stat tF"><strong style="color:#2dd4bf">28</strong>Done</div>
+            <div class="mini-stat tF"><strong style="color:#a78bfa">5</strong>WIP</div>
+            <div class="mini-stat tF"><strong style="color:#f87171">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip tF active">All</div>
+            <div class="mini-chip tF">In Progress</div>
+            <div class="mini-chip tF">Failed</div>
+            <div class="mini-chip tF">Mine</div>
+          </div>
+          <div class="mini-table-row tF"><span class="cell">kalpana@accenture.com</span><span class="tag tF">Passed</span></div>
+          <div class="mini-table-row tF"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block tF">
+      <h4>CSS Variables</h4>
+      <div class="var-row"><div class="var-dot" style="background:#060f0f;border:1px solid #333"></div><code style="font-size:10px">--bg-base: #060f0f</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#2dd4bf"></div><code style="font-size:10px">--accent: #2dd4bf</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#0d2828;border:1px solid #555"></div><code style="font-size:10px">--border: #0d2828</code></div>
+      <div class="var-row"><div class="var-dot" style="background:#a78bfa"></div><code style="font-size:10px">--purple: #a78bfa (secondary)</code></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Quick-apply guide ── -->
+<div style="max-width:860px;margin:0 auto 60px;padding:0 40px;">
+  <div style="background:#111113;border:1px solid #1e1e24;border-radius:14px;padding:28px 32px;">
+    <h3 style="color:#e4e4e7;font-size:14px;margin-bottom:16px;letter-spacing:-0.3px;">⚡ How to apply any theme — 2 steps</h3>
+    <p style="color:#71717a;font-size:12px;margin-bottom:16px;">Because all hardcoded colours were replaced with CSS variables in the last session, you only need to edit the <code style="color:#a1a1aa">:root</code> block in <code style="color:#a1a1aa">src/index.css</code>.</p>
+    <pre style="background:#0c0c0e;border:1px solid #1e1e24;border-radius:8px;padding:16px;font-size:12px;color:#a1a1aa;overflow-x:auto;line-height:1.8;">/* Example — switching to Teal Storm */
+:root {
+  --bg-base:       #060f0f;
+  --bg-surface:    #081414;
+  --bg-card:       #0c1e1e;
+  --bg-sidebar:    #040c0c;
+  --bg-header:     #081414;
+  --border:        #0d2828;
+  --border-subtle: #0d2828;
+  --accent:        <span style="color:#2dd4bf">#2dd4bf</span>;
+  --accent-dim:    #0f9488;
+  --accent-glow:   rgba(45,212,191,0.15);
+}</pre>
+    <p style="color:#52525b;font-size:11px;margin-top:12px;">Step 2: Optionally update the Ant Design dark token in <code style="color:#71717a">src/App.jsx</code> — the <code style="color:#71717a">colorPrimary</code> token inside <code style="color:#71717a">DARK_THEME</code>.</p>
+  </div>
+</div>
+
+</body>
+</html>

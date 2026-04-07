@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>E2E Dashboard — Royal Themes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #0a0509; color: #e4e4e7; }
+
+  h1 { text-align: center; padding: 44px 0 8px; font-size: 24px; color: #fff; letter-spacing: -0.5px; }
+  .subtitle { text-align: center; color: #71717a; font-size: 13px; margin-bottom: 44px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px; padding: 0 40px 60px; max-width: 1700px; margin: 0 auto; }
+
+  .theme-card { border-radius: 18px; overflow: hidden; box-shadow: 0 8px 48px rgba(0,0,0,0.7); transition: transform 0.2s, box-shadow 0.2s; }
+  .theme-card:hover { transform: translateY(-5px); box-shadow: 0 20px 64px rgba(0,0,0,0.8); }
+
+  .tc-header { padding: 20px 22px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .tc-name { font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
+  .tc-badge { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .swatches { display: flex; height: 6px; }
+  .swatches span { flex: 1; }
+
+  .mini-app { display: flex; height: 290px; }
+  .mini-sidebar { width: 58px; display: flex; flex-direction: column; padding: 10px 8px; gap: 6px; }
+  .mini-sidebar .logo { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; margin-bottom: 6px; }
+  .mini-nav-item { height: 33px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .mini-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .mini-header { height: 42px; display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0; }
+  .mini-header .month-pill { height: 26px; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .mini-header .search { flex: 1; height: 26px; border-radius: 6px; display: flex; align-items: center; padding: 0 8px; font-size: 10px; }
+  .mini-header .save-btn { height: 26px; border-radius: 6px; padding: 0 12px; font-size: 10px; font-weight: 800; display: flex; align-items: center; white-space: nowrap; letter-spacing: 0.3px; }
+  .mini-header .avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-left: auto; flex-shrink: 0; }
+  .mini-content { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .mini-banner { border-radius: 10px; padding: 11px 14px; font-size: 11px; font-weight: 800; position: relative; overflow: hidden; }
+  .mini-banner span { font-size: 9px; font-weight: 400; opacity: 0.65; display: block; margin-top: 3px; }
+  .mini-stat-row { display: flex; gap: 6px; }
+  .mini-stat { flex: 1; border-radius: 8px; padding: 8px 10px; font-size: 9px; color: #a1a1aa; }
+  .mini-stat strong { display: block; font-size: 18px; font-weight: 900; margin-bottom: 1px; line-height: 1; }
+  .mini-table-row { height: 23px; border-radius: 5px; display: flex; align-items: center; padding: 0 8px; gap: 8px; font-size: 9px; }
+  .mini-table-row .cell { flex: 1; }
+  .mini-table-row .tag { height: 15px; border-radius: 4px; padding: 0 7px; font-size: 9px; display: flex; align-items: center; font-weight: 700; }
+  .mini-chip-row { display: flex; gap: 4px; }
+  .mini-chip { height: 20px; border-radius: 20px; padding: 0 10px; font-size: 9px; display: flex; align-items: center; border-width: 1px; border-style: solid; }
+
+  .vars-block { padding: 16px 22px 20px; }
+  .vars-block h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #52525b; margin-bottom: 12px; }
+  .var-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .var-row { display: flex; align-items: center; gap: 7px; font-size: 10.5px; color: #a1a1aa; }
+  .var-dot { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ═══════════════════════════════
+     R1 — IMPERIAL PURPLE
+  ═══════════════════════════════ */
+  .r1 { background: #0d0614; border: 1.5px solid #2a1040; }
+  .r1 .tc-header { background: #120819; border-bottom: 1px solid #2a1040; }
+  .r1 .tc-name { background: linear-gradient(90deg,#c084fc,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .r1 .tc-badge { background: rgba(192,132,252,0.12); color: #c084fc; border: 1px solid rgba(192,132,252,0.25); }
+  .r1 .swatches span:nth-child(1){background:#0d0614}
+  .r1 .swatches span:nth-child(2){background:#1e0d30}
+  .r1 .swatches span:nth-child(3){background:#a855f7}
+  .r1 .swatches span:nth-child(4){background:#fbbf24}
+  .r1 .swatches span:nth-child(5){background:#f43f5e}
+  .r1 .mini-sidebar { background: #090410; border-right: 1px solid #2a1040; }
+  .r1 .logo { background: linear-gradient(135deg,#a855f7,#7c3aed); }
+  .r1 .mini-nav-item { color: #5b2f88; }
+  .r1 .mini-nav-item.active { background: rgba(168,85,247,0.14); color: #c084fc; }
+  .r1 .mini-header { background: #120819; border-bottom: 1px solid #2a1040; }
+  .r1 .mini-header .month-pill { background: #1e0d30; color: #6b3a9e; }
+  .r1 .mini-header .search { background: #1e0d30; color: #3d1a5e; }
+  .r1 .mini-header .save-btn { background: linear-gradient(135deg,#a855f7,#7c3aed); color: #fff; }
+  .r1 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #0d0614; }
+  .r1 .mini-content { background: #0d0614; }
+  .r1 .mini-banner { background: linear-gradient(135deg,#200a38,#16062a); border: 1px solid rgba(168,85,247,0.25); color: #f3e8ff; }
+  .r1 .mini-stat { background: #180a28; border: 1px solid #2a1040; }
+  .r1 .mini-stat strong { color: #c084fc; }
+  .r1 .mini-table-row { background: #180a28; color: #5b2f88; }
+  .r1 .mini-table-row .tag { background: rgba(168,85,247,0.14); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+  .r1 .mini-chip { border-color: #2a1040; color: #5b2f88; }
+  .r1 .mini-chip.active { background: rgba(168,85,247,0.14); border-color: #a855f7; color: #c084fc; }
+  .r1 .vars-block { background: #120819; border-top: 1px solid #2a1040; }
+
+  /* ═══════════════════════════════
+     R2 — ROYAL GOLD
+  ═══════════════════════════════ */
+  .r2 { background: #0c0900; border: 1.5px solid #2e2000; }
+  .r2 .tc-header { background: #120d00; border-bottom: 1px solid #2e2000; }
+  .r2 .tc-name { background: linear-gradient(90deg,#fbbf24,#f59e0b,#d97706); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .r2 .tc-badge { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+  .r2 .swatches span:nth-child(1){background:#0c0900}
+  .r2 .swatches span:nth-child(2){background:#1a1200}
+  .r2 .swatches span:nth-child(3){background:#fbbf24}
+  .r2 .swatches span:nth-child(4){background:#a855f7}
+  .r2 .swatches span:nth-child(5){background:#ef4444}
+  .r2 .mini-sidebar { background: #080600; border-right: 1px solid #2e2000; }
+  .r2 .logo { background: linear-gradient(135deg,#fbbf24,#d97706); }
+  .r2 .mini-nav-item { color: #6b4d00; }
+  .r2 .mini-nav-item.active { background: rgba(251,191,36,0.1); color: #fbbf24; }
+  .r2 .mini-header { background: #120d00; border-bottom: 1px solid #2e2000; }
+  .r2 .mini-header .month-pill { background: #1a1200; color: #7a5800; }
+  .r2 .mini-header .search { background: #1a1200; color: #3a2800; }
+  .r2 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#d97706); color: #0c0900; font-weight: 900; }
+  .r2 .mini-header .avatar { background: linear-gradient(135deg,#a855f7,#7c3aed); color: #fff; }
+  .r2 .mini-content { background: #0c0900; }
+  .r2 .mini-banner { background: linear-gradient(135deg,#221800,#181000); border: 1px solid rgba(251,191,36,0.2); color: #fef9e7; }
+  .r2 .mini-stat { background: #1a1200; border: 1px solid #2e2000; }
+  .r2 .mini-stat strong { color: #fbbf24; }
+  .r2 .mini-table-row { background: #1a1200; color: #6b4d00; }
+  .r2 .mini-table-row .tag { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+  .r2 .mini-chip { border-color: #2e2000; color: #6b4d00; }
+  .r2 .mini-chip.active { background: rgba(251,191,36,0.1); border-color: #fbbf24; color: #fbbf24; }
+  .r2 .vars-block { background: #120d00; border-top: 1px solid #2e2000; }
+
+  /* ═══════════════════════════════
+     R3 — BURGUNDY THRONE
+  ═══════════════════════════════ */
+  .r3 { background: #0e0306; border: 1.5px solid #340a14; }
+  .r3 .tc-header { background: #140408; border-bottom: 1px solid #340a14; }
+  .r3 .tc-name { background: linear-gradient(90deg,#fda4af,#fb7185,#e11d48); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .r3 .tc-badge { background: rgba(253,164,175,0.1); color: #fda4af; border: 1px solid rgba(253,164,175,0.2); }
+  .r3 .swatches span:nth-child(1){background:#0e0306}
+  .r3 .swatches span:nth-child(2){background:#1e0810}
+  .r3 .swatches span:nth-child(3){background:#e11d48}
+  .r3 .swatches span:nth-child(4){background:#fbbf24}
+  .r3 .swatches span:nth-child(5){background:#818cf8}
+  .r3 .mini-sidebar { background: #0a0204; border-right: 1px solid #340a14; }
+  .r3 .logo { background: linear-gradient(135deg,#e11d48,#9f0a2c); }
+  .r3 .mini-nav-item { color: #6b1030; }
+  .r3 .mini-nav-item.active { background: rgba(225,29,72,0.12); color: #fda4af; }
+  .r3 .mini-header { background: #140408; border-bottom: 1px solid #340a14; }
+  .r3 .mini-header .month-pill { background: #1e0810; color: #7a1030; }
+  .r3 .mini-header .search { background: #1e0810; color: #3a0818; }
+  .r3 .mini-header .save-btn { background: linear-gradient(135deg,#e11d48,#9f0a2c); color: #fff; }
+  .r3 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#d97706); color: #0e0306; }
+  .r3 .mini-content { background: #0e0306; }
+  .r3 .mini-banner { background: linear-gradient(135deg,#280a12,#1a0608); border: 1px solid rgba(225,29,72,0.2); color: #fff1f2; }
+  .r3 .mini-stat { background: #1a0608; border: 1px solid #340a14; }
+  .r3 .mini-stat strong { color: #fda4af; }
+  .r3 .mini-table-row { background: #1a0608; color: #6b1030; }
+  .r3 .mini-table-row .tag { background: rgba(225,29,72,0.1); color: #fda4af; border: 1px solid rgba(225,29,72,0.3); }
+  .r3 .mini-chip { border-color: #340a14; color: #6b1030; }
+  .r3 .mini-chip.active { background: rgba(225,29,72,0.12); border-color: #e11d48; color: #fda4af; }
+  .r3 .vars-block { background: #140408; border-top: 1px solid #340a14; }
+
+  /* ═══════════════════════════════
+     R4 — CROWN SAPPHIRE
+  ═══════════════════════════════ */
+  .r4 { background: #030818; border: 1.5px solid #0a1a48; }
+  .r4 .tc-header { background: #040b1e; border-bottom: 1px solid #0a1a48; }
+  .r4 .tc-name { background: linear-gradient(90deg,#93c5fd,#60a5fa,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .r4 .tc-badge { background: rgba(147,197,253,0.08); color: #93c5fd; border: 1px solid rgba(147,197,253,0.2); }
+  .r4 .swatches span:nth-child(1){background:#030818}
+  .r4 .swatches span:nth-child(2){background:#071230}
+  .r4 .swatches span:nth-child(3){background:#3b82f6}
+  .r4 .swatches span:nth-child(4){background:#fbbf24}
+  .r4 .swatches span:nth-child(5){background:#34d399}
+  .r4 .mini-sidebar { background: #020610; border-right: 1px solid #0a1a48; }
+  .r4 .logo { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+  .r4 .mini-nav-item { color: #1e3a7e; }
+  .r4 .mini-nav-item.active { background: rgba(59,130,246,0.12); color: #93c5fd; }
+  .r4 .mini-header { background: #040b1e; border-bottom: 1px solid #0a1a48; }
+  .r4 .mini-header .month-pill { background: #071230; color: #243e8a; }
+  .r4 .mini-header .search { background: #071230; color: #112060; }
+  .r4 .mini-header .save-btn { background: linear-gradient(135deg,#3b82f6,#1d4ed8); color: #fff; }
+  .r4 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#d97706); color: #030818; }
+  .r4 .mini-content { background: #030818; }
+  .r4 .mini-banner { background: linear-gradient(135deg,#071230,#040c20); border: 1px solid rgba(59,130,246,0.2); color: #dbeafe; }
+  .r4 .mini-stat { background: #071230; border: 1px solid #0a1a48; }
+  .r4 .mini-stat strong { color: #93c5fd; }
+  .r4 .mini-table-row { background: #071230; color: #1e3a7e; }
+  .r4 .mini-table-row .tag { background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); }
+  .r4 .mini-chip { border-color: #0a1a48; color: #1e3a7e; }
+  .r4 .mini-chip.active { background: rgba(59,130,246,0.12); border-color: #3b82f6; color: #93c5fd; }
+  .r4 .vars-block { background: #040b1e; border-top: 1px solid #0a1a48; }
+
+  /* ═══════════════════════════════
+     R5 — OBSIDIAN & EMERALD
+  ═══════════════════════════════ */
+  .r5 { background: #030a04; border: 1.5px solid #0a2810; }
+  .r5 .tc-header { background: #040e06; border-bottom: 1px solid #0a2810; }
+  .r5 .tc-name { background: linear-gradient(90deg,#6ee7b7,#34d399,#059669); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .r5 .tc-badge { background: rgba(110,231,183,0.08); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.2); }
+  .r5 .swatches span:nth-child(1){background:#030a04}
+  .r5 .swatches span:nth-child(2){background:#071a0a}
+  .r5 .swatches span:nth-child(3){background:#34d399}
+  .r5 .swatches span:nth-child(4){background:#fbbf24}
+  .r5 .swatches span:nth-child(5){background:#818cf8}
+  .r5 .mini-sidebar { background: #020704; border-right: 1px solid #0a2810; }
+  .r5 .logo { background: linear-gradient(135deg,#34d399,#059669); }
+  .r5 .mini-nav-item { color: #1c5c30; }
+  .r5 .mini-nav-item.active { background: rgba(52,211,153,0.1); color: #6ee7b7; }
+  .r5 .mini-header { background: #040e06; border-bottom: 1px solid #0a2810; }
+  .r5 .mini-header .month-pill { background: #071a0a; color: #245e32; }
+  .r5 .mini-header .search { background: #071a0a; color: #103018; }
+  .r5 .mini-header .save-btn { background: linear-gradient(135deg,#34d399,#059669); color: #030a04; font-weight: 900; }
+  .r5 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#d97706); color: #030a04; }
+  .r5 .mini-content { background: #030a04; }
+  .r5 .mini-banner { background: linear-gradient(135deg,#071c0a,#051406); border: 1px solid rgba(52,211,153,0.18); color: #ecfdf5; }
+  .r5 .mini-stat { background: #071a0a; border: 1px solid #0a2810; }
+  .r5 .mini-stat strong { color: #6ee7b7; }
+  .r5 .mini-table-row { background: #071a0a; color: #1c5c30; }
+  .r5 .mini-table-row .tag { background: rgba(52,211,153,0.1); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.25); }
+  .r5 .mini-chip { border-color: #0a2810; color: #1c5c30; }
+  .r5 .mini-chip.active { background: rgba(52,211,153,0.1); border-color: #34d399; color: #6ee7b7; }
+  .r5 .vars-block { background: #040e06; border-top: 1px solid #0a2810; }
+
+  /* ═══════════════════════════════
+     R6 — AMETHYST EMPIRE
+  ═══════════════════════════════ */
+  .r6 { background: #080612; border: 1.5px solid #1e1240; }
+  .r6 .tc-header { background: #0d0a1c; border-bottom: 1px solid #1e1240; }
+  .r6 .tc-name { background: linear-gradient(90deg,#e879f9,#d946ef,#a21caf); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .r6 .tc-badge { background: rgba(232,121,249,0.1); color: #e879f9; border: 1px solid rgba(232,121,249,0.2); }
+  .r6 .swatches span:nth-child(1){background:#080612}
+  .r6 .swatches span:nth-child(2){background:#140e28}
+  .r6 .swatches span:nth-child(3){background:#d946ef}
+  .r6 .swatches span:nth-child(4){background:#fbbf24}
+  .r6 .swatches span:nth-child(5){background:#38bdf8}
+  .r6 .mini-sidebar { background: #060410; border-right: 1px solid #1e1240; }
+  .r6 .logo { background: linear-gradient(135deg,#d946ef,#a21caf); }
+  .r6 .mini-nav-item { color: #5a2878; }
+  .r6 .mini-nav-item.active { background: rgba(217,70,239,0.12); color: #e879f9; }
+  .r6 .mini-header { background: #0d0a1c; border-bottom: 1px solid #1e1240; }
+  .r6 .mini-header .month-pill { background: #140e28; color: #6a3090; }
+  .r6 .mini-header .search { background: #140e28; color: #321860; }
+  .r6 .mini-header .save-btn { background: linear-gradient(135deg,#d946ef,#a21caf); color: #fff; }
+  .r6 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#d97706); color: #080612; }
+  .r6 .mini-content { background: #080612; }
+  .r6 .mini-banner { background: linear-gradient(135deg,#1c0a38,#120822); border: 1px solid rgba(217,70,239,0.2); color: #fdf4ff; }
+  .r6 .mini-stat { background: #140e28; border: 1px solid #1e1240; }
+  .r6 .mini-stat strong { color: #e879f9; }
+  .r6 .mini-table-row { background: #140e28; color: #5a2878; }
+  .r6 .mini-table-row .tag { background: rgba(217,70,239,0.1); color: #e879f9; border: 1px solid rgba(217,70,239,0.25); }
+  .r6 .mini-chip { border-color: #1e1240; color: #5a2878; }
+  .r6 .mini-chip.active { background: rgba(217,70,239,0.12); border-color: #d946ef; color: #e879f9; }
+  .r6 .vars-block { background: #0d0a1c; border-top: 1px solid #1e1240; }
+</style>
+</head>
+<body>
+
+<h1>👑 Royal Colour Themes</h1>
+<p class="subtitle">Deep, rich, jewel-toned palettes — Imperial Purple · Royal Gold · Burgundy · Crown Sapphire · Obsidian Emerald · Amethyst</p>
+
+<div class="grid">
+
+  <!-- R1 Imperial Purple -->
+  <div class="theme-card r1">
+    <div class="tc-header r1">
+      <span class="tc-name">👑 Imperial Purple</span>
+      <span class="tc-badge r1">Purple + Gold</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar r1">
+        <div class="logo r1">♛</div>
+        <div class="mini-nav-item r1 active">⌂</div>
+        <div class="mini-nav-item r1">⊞</div>
+        <div class="mini-nav-item r1">◈</div>
+        <div class="mini-nav-item r1">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header r1">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content r1">
+          <div class="mini-banner r1">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat r1"><strong>36</strong>Total</div>
+            <div class="mini-stat r1"><strong style="color:#c084fc">28</strong>Done</div>
+            <div class="mini-stat r1"><strong style="color:#fbbf24">5</strong>WIP</div>
+            <div class="mini-stat r1"><strong style="color:#f43f5e">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip r1 active">All</div>
+            <div class="mini-chip r1">In Progress</div>
+            <div class="mini-chip r1">Failed</div>
+            <div class="mini-chip r1">Mine</div>
+          </div>
+          <div class="mini-table-row r1"><span class="cell">kalpana@accenture.com</span><span class="tag r1">Passed</span></div>
+          <div class="mini-table-row r1"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block r1">
+      <h4>Apply these variables in src/index.css</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#0d0614;border:1px solid #2a1040"></div><code>--bg-base: #0d0614</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#a855f7"></div><code>--accent: #a855f7</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#2a1040;border:1px solid #555"></div><code>--border: #2a1040</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#c084fc"></div><code>--accent-dim: #c084fc</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24 (gold)</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#120819;border:1px solid #555"></div><code>--bg-sidebar: #120819</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R2 Royal Gold -->
+  <div class="theme-card r2">
+    <div class="tc-header r2">
+      <span class="tc-name">✨ Royal Gold</span>
+      <span class="tc-badge r2">Gold + Obsidian</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar r2">
+        <div class="logo r2">⭐</div>
+        <div class="mini-nav-item r2 active">⌂</div>
+        <div class="mini-nav-item r2">⊞</div>
+        <div class="mini-nav-item r2">◈</div>
+        <div class="mini-nav-item r2">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header r2">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content r2">
+          <div class="mini-banner r2">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat r2"><strong>36</strong>Total</div>
+            <div class="mini-stat r2"><strong style="color:#fbbf24">28</strong>Done</div>
+            <div class="mini-stat r2"><strong style="color:#a855f7">5</strong>WIP</div>
+            <div class="mini-stat r2"><strong style="color:#ef4444">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip r2 active">All</div>
+            <div class="mini-chip r2">In Progress</div>
+            <div class="mini-chip r2">Failed</div>
+            <div class="mini-chip r2">Mine</div>
+          </div>
+          <div class="mini-table-row r2"><span class="cell">kalpana@accenture.com</span><span class="tag r2">Passed</span></div>
+          <div class="mini-table-row r2"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block r2">
+      <h4>Apply these variables in src/index.css</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#0c0900;border:1px solid #333"></div><code>--bg-base: #0c0900</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--accent: #fbbf24</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#2e2000;border:1px solid #555"></div><code>--border: #2e2000</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#d97706"></div><code>--accent-dim: #d97706</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#a855f7"></div><code>--purple: #a855f7 (contrast)</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#120d00;border:1px solid #555"></div><code>--bg-sidebar: #120d00</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R3 Burgundy -->
+  <div class="theme-card r3">
+    <div class="tc-header r3">
+      <span class="tc-name">🍷 Burgundy Throne</span>
+      <span class="tc-badge r3">Crimson + Gold</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar r3">
+        <div class="logo r3">♞</div>
+        <div class="mini-nav-item r3 active">⌂</div>
+        <div class="mini-nav-item r3">⊞</div>
+        <div class="mini-nav-item r3">◈</div>
+        <div class="mini-nav-item r3">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header r3">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content r3">
+          <div class="mini-banner r3">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat r3"><strong>36</strong>Total</div>
+            <div class="mini-stat r3"><strong style="color:#fda4af">28</strong>Done</div>
+            <div class="mini-stat r3"><strong style="color:#fbbf24">5</strong>WIP</div>
+            <div class="mini-stat r3"><strong style="color:#818cf8">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip r3 active">All</div>
+            <div class="mini-chip r3">In Progress</div>
+            <div class="mini-chip r3">Failed</div>
+            <div class="mini-chip r3">Mine</div>
+          </div>
+          <div class="mini-table-row r3"><span class="cell">kalpana@accenture.com</span><span class="tag r3">Passed</span></div>
+          <div class="mini-table-row r3"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block r3">
+      <h4>Apply these variables in src/index.css</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#0e0306;border:1px solid #333"></div><code>--bg-base: #0e0306</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#e11d48"></div><code>--accent: #e11d48</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#340a14;border:1px solid #555"></div><code>--border: #340a14</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fda4af"></div><code>--accent-dim: #fda4af</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24 (gold)</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#140408;border:1px solid #555"></div><code>--bg-sidebar: #140408</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R4 Crown Sapphire -->
+  <div class="theme-card r4">
+    <div class="tc-header r4">
+      <span class="tc-name">💎 Crown Sapphire</span>
+      <span class="tc-badge r4">Deep Blue + Gold</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar r4">
+        <div class="logo r4">♚</div>
+        <div class="mini-nav-item r4 active">⌂</div>
+        <div class="mini-nav-item r4">⊞</div>
+        <div class="mini-nav-item r4">◈</div>
+        <div class="mini-nav-item r4">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header r4">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content r4">
+          <div class="mini-banner r4">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat r4"><strong>36</strong>Total</div>
+            <div class="mini-stat r4"><strong style="color:#93c5fd">28</strong>Done</div>
+            <div class="mini-stat r4"><strong style="color:#fbbf24">5</strong>WIP</div>
+            <div class="mini-stat r4"><strong style="color:#34d399">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip r4 active">All</div>
+            <div class="mini-chip r4">In Progress</div>
+            <div class="mini-chip r4">Failed</div>
+            <div class="mini-chip r4">Mine</div>
+          </div>
+          <div class="mini-table-row r4"><span class="cell">kalpana@accenture.com</span><span class="tag r4">Passed</span></div>
+          <div class="mini-table-row r4"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block r4">
+      <h4>Apply these variables in src/index.css</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#030818;border:1px solid #333"></div><code>--bg-base: #030818</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#3b82f6"></div><code>--accent: #3b82f6</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#0a1a48;border:1px solid #555"></div><code>--border: #0a1a48</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#93c5fd"></div><code>--accent-dim: #93c5fd</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24 (gold)</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#040b1e;border:1px solid #555"></div><code>--bg-sidebar: #040b1e</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R5 Obsidian Emerald -->
+  <div class="theme-card r5">
+    <div class="tc-header r5">
+      <span class="tc-name">🟢 Obsidian Emerald</span>
+      <span class="tc-badge r5">Pitch Black + Jewel</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar r5">
+        <div class="logo r5">◆</div>
+        <div class="mini-nav-item r5 active">⌂</div>
+        <div class="mini-nav-item r5">⊞</div>
+        <div class="mini-nav-item r5">◈</div>
+        <div class="mini-nav-item r5">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header r5">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content r5">
+          <div class="mini-banner r5">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat r5"><strong>36</strong>Total</div>
+            <div class="mini-stat r5"><strong style="color:#6ee7b7">28</strong>Done</div>
+            <div class="mini-stat r5"><strong style="color:#fbbf24">5</strong>WIP</div>
+            <div class="mini-stat r5"><strong style="color:#818cf8">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip r5 active">All</div>
+            <div class="mini-chip r5">In Progress</div>
+            <div class="mini-chip r5">Failed</div>
+            <div class="mini-chip r5">Mine</div>
+          </div>
+          <div class="mini-table-row r5"><span class="cell">kalpana@accenture.com</span><span class="tag r5">Passed</span></div>
+          <div class="mini-table-row r5"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block r5">
+      <h4>Apply these variables in src/index.css</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#030a04;border:1px solid #333"></div><code>--bg-base: #030a04</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#34d399"></div><code>--accent: #34d399</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#0a2810;border:1px solid #555"></div><code>--border: #0a2810</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#6ee7b7"></div><code>--accent-dim: #6ee7b7</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24 (gold)</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#040e06;border:1px solid #555"></div><code>--bg-sidebar: #040e06</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R6 Amethyst Empire -->
+  <div class="theme-card r6">
+    <div class="tc-header r6">
+      <span class="tc-name">💜 Amethyst Empire</span>
+      <span class="tc-badge r6">Magenta + Gold</span>
+    </div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar r6">
+        <div class="logo r6">✦</div>
+        <div class="mini-nav-item r6 active">⌂</div>
+        <div class="mini-nav-item r6">⊞</div>
+        <div class="mini-nav-item r6">◈</div>
+        <div class="mini-nav-item r6">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header r6">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search DSP…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content r6">
+          <div class="mini-banner r6">MyISP – Insight &amp; Status Platform<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat r6"><strong>36</strong>Total</div>
+            <div class="mini-stat r6"><strong style="color:#e879f9">28</strong>Done</div>
+            <div class="mini-stat r6"><strong style="color:#fbbf24">5</strong>WIP</div>
+            <div class="mini-stat r6"><strong style="color:#38bdf8">3</strong>Block</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip r6 active">All</div>
+            <div class="mini-chip r6">In Progress</div>
+            <div class="mini-chip r6">Failed</div>
+            <div class="mini-chip r6">Mine</div>
+          </div>
+          <div class="mini-table-row r6"><span class="cell">kalpana@accenture.com</span><span class="tag r6">Passed</span></div>
+          <div class="mini-table-row r6"><span class="cell">swati@accenture.com</span><span class="tag" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block r6">
+      <h4>Apply these variables in src/index.css</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#080612;border:1px solid #333"></div><code>--bg-base: #080612</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#d946ef"></div><code>--accent: #d946ef</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#1e1240;border:1px solid #555"></div><code>--border: #1e1240</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#e879f9"></div><code>--accent-dim: #e879f9</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24 (gold)</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#0d0a1c;border:1px solid #555"></div><code>--bg-sidebar: #0d0a1c</code></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:0 0 56px;color:#3f3f46;font-size:12px;">
+  All royal themes pair the jewel accent with <span style="color:#fbbf24">gold (#fbbf24)</span> as the warning colour for a consistent regal feel.
+  Tell me which one to apply and I'll update <code style="color:#71717a">src/index.css</code> immediately.
+</div>
+
+</body>
+</html>

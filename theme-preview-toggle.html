@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>E2E Dashboard — Themes + Dark Toggle</title>
+<style>
+  /* ── Mode Variables ── */
+  :root {
+    --c-bg:#f5f8fb; --c-hdr:#ffffff; --c-card:#ffffff; --c-bdr:#e0e8f0;
+    --c-text:#0f172a; --c-text2:#64748b; --c-text3:#94a3b8;
+    --c-thead:#f8fafc; --c-rowbdr:#f0f4f8; --c-sec:#f0f5fa;
+    --bar-bg:#edf2f8; --bar-url:#dde6f0; --bar-url-text:#8098b8;
+  }
+  body.dark {
+    --c-bg:#0f172a; --c-hdr:#111827; --c-card:#1e293b; --c-bdr:rgba(255,255,255,0.07);
+    --c-text:#e2e8f0; --c-text2:#475569; --c-text3:#334155;
+    --c-thead:#162032; --c-rowbdr:rgba(255,255,255,0.05); --c-sec:#162032;
+    --bar-bg:#080c18; --bar-url:#131d2c; --bar-url-text:#344560;
+  }
+
+  /* ── Reset & Transitions ── */
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  *{transition:background-color .25s,color .2s,border-color .25s;}
+  body{font-family:'Segoe UI',-apple-system,sans-serif;background:#eef0f4;min-height:100vh;}
+  body.dark{background:#060c18;}
+
+  /* ── Toggle Bar ── */
+  .top-bar{
+    position:sticky;top:0;z-index:200;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 40px;
+    background:rgba(238,240,244,0.96);backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(0,0,0,0.06);
+  }
+  body.dark .top-bar{background:rgba(6,12,24,0.96);border-bottom-color:rgba(255,255,255,0.06);}
+  h1{font-size:20px;color:#1a1a2e;font-weight:800;}
+  body.dark h1{color:#e2e8f0;}
+  .sub{font-size:12px;color:#888;margin-top:3px;}
+  body.dark .sub{color:#475569;}
+
+  .toggle-btn{
+    display:flex;align-items:center;gap:8px;
+    background:#0f172a;color:#f1f5f9;
+    border:none;padding:10px 22px;border-radius:99px;
+    cursor:pointer;font-size:13px;font-weight:700;
+    box-shadow:0 4px 16px rgba(0,0,0,0.25);
+    font-family:inherit;letter-spacing:.2px;
+    flex-shrink:0;
+  }
+  body.dark .toggle-btn{background:#f1f5f9;color:#0f172a;box-shadow:0 4px 16px rgba(0,0,0,0.6);}
+
+  /* ── Grid ── */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:1600px;margin:0 auto;padding:40px;}
+
+  /* ── Frame ── */
+  .frame{border-radius:14px;box-shadow:0 16px 56px rgba(0,0,0,0.12);overflow:hidden;}
+  body.dark .frame{box-shadow:0 16px 56px rgba(0,0,0,0.55);}
+  .dot{width:11px;height:11px;border-radius:50%;}
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .bar{height:36px;display:flex;align-items:center;gap:7px;padding:0 14px;background:var(--bar-bg);}
+  .urlbox{flex:1;height:20px;border-radius:5px;margin:0 12px;display:flex;align-items:center;padding:0 8px;font-size:10px;background:var(--bar-url);color:var(--bar-url-text);}
+
+  /* ── App Layout ── */
+  .app{display:flex;height:560px;}
+
+  /* ── Sidebar (always dark/colour; uses --sb, --ac, --acd per frame) ── */
+  .sb{width:200px;display:flex;flex-direction:column;flex-shrink:0;background:var(--sb,#1e3a8a);}
+  .sb-logo{padding:14px 12px 12px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,0.1);}
+  .li{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;background:linear-gradient(135deg,var(--ac),var(--acd));color:#fff;}
+  .lt1{font-size:12px;font-weight:800;color:#fff;line-height:1.2;}
+  .lt2{font-size:9px;color:rgba(255,255,255,0.4);}
+  .nav{padding:8px 6px;flex:1;display:flex;flex-direction:column;gap:2px;}
+  .ni{height:36px;border-radius:7px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:12px;color:rgba(255,255,255,0.5);cursor:pointer;}
+  .ni.active{background:rgba(255,255,255,0.11);color:#fff;font-weight:700;border-left:3px solid var(--ac);padding-left:7px;}
+  .ns{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 10px 3px;color:rgba(255,255,255,0.28);}
+  .sb-foot{padding:10px 6px;border-top:1px solid rgba(255,255,255,0.1);}
+  .av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;background:linear-gradient(135deg,var(--ac),var(--acd));color:#fff;flex-shrink:0;}
+  .ur{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;background:rgba(255,255,255,0.07);}
+  .ur-name{font-size:11px;font-weight:700;color:#fff;}
+  .ur-role{font-size:9px;color:rgba(255,255,255,0.38);}
+
+  /* ── Main content (uses --c-* mode vars) ── */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--c-bg);}
+  .hdr{height:48px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;background:var(--c-hdr);border-bottom:1px solid var(--c-bdr);}
+  .ht{font-size:14px;font-weight:800;color:var(--c-text);}
+  .hs{flex:1;}
+  .pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;background:var(--acl,rgba(255,255,255,0.1));color:var(--act,#64748b);border:1px solid var(--acl,rgba(255,255,255,0.1));}
+  .sbtn{border:none;border-radius:7px;padding:5px 14px;font-size:11px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--ac),var(--acd));color:#fff;font-family:inherit;box-shadow:0 2px 10px var(--acl,rgba(0,0,0,0.2));}
+  .ibtn{border-radius:7px;padding:4px 12px;font-size:11px;cursor:pointer;border:1px solid var(--c-bdr);background:transparent;color:var(--c-text2);font-family:inherit;}
+
+  .body{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;background:var(--c-bg);}
+
+  /* Stat cards */
+  .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .sc{border-radius:9px;padding:12px 14px;background:var(--c-card);border:1px solid var(--c-bdr);}
+  .sc.t-ac{border-top:3px solid var(--ac);}
+  .sc.t-pass{border-top:3px solid #22c55e;}
+  .sc.t-wip{border-top:3px solid #f59e0b;}
+  .sc.t-fail{border-top:3px solid #f87171;}
+  .sl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--c-text3);margin-bottom:5px;}
+  .sv{font-size:24px;font-weight:900;line-height:1;}
+  .sv.v-ac{color:var(--c-text);}
+  .sv.v-pass{color:#22c55e;}
+  .sv.v-wip{color:#f59e0b;}
+  .sv.v-fail{color:#f87171;}
+  .sbr{height:3px;border-radius:99px;margin-top:6px;overflow:hidden;}
+  .sbr.b-ac{background:var(--acl,rgba(99,102,241,0.12));}
+  .sbr.b-pass{background:rgba(34,197,94,0.12);}
+  .sbr.b-wip{background:rgba(245,158,11,0.12);}
+  .sbr.b-fail{background:rgba(248,113,113,0.12);}
+  .sbf{height:100%;border-radius:99px;}
+  .sbf.f-ac{background:linear-gradient(90deg,var(--ac),var(--acd));}
+  .sbf.f-pass{background:#22c55e;}
+  .sbf.f-wip{background:#f59e0b;}
+  .sbf.f-fail{background:#f87171;}
+
+  /* Filter chips */
+  .cr{display:flex;gap:5px;}
+  .ch{padding:3px 11px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid;}
+  .ch.c-ac{background:var(--ac);border-color:var(--ac);color:#fff;}
+  .ch.c-pass{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.25);color:#22c55e;}
+  .ch.c-wip{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.25);color:#f59e0b;}
+  .ch.c-fail{background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.25);color:#f87171;}
+
+  /* Table */
+  .tc{border-radius:9px;overflow:hidden;border:1px solid var(--c-bdr);}
+  .th2{padding:9px 14px;border-bottom:1px solid var(--c-bdr);display:flex;align-items:center;justify-content:space-between;background:var(--c-sec);}
+  .tt{font-size:12px;font-weight:700;color:var(--c-text);}
+  .tc2{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--c-bdr);color:var(--c-text3);background:var(--c-card);}
+  table{width:100%;border-collapse:collapse;background:var(--c-card);}
+  thead{background:var(--c-thead);}
+  thead th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:6px 12px;text-align:left;border-bottom:1px solid var(--c-bdr);color:var(--c-text3);}
+  tbody td{padding:7px 12px;font-size:11px;border-bottom:1px solid var(--c-rowbdr);color:var(--c-text);}
+  .tg{display:inline-flex;align-items:center;padding:1px 8px;border-radius:4px;font-size:10px;font-weight:700;border:1px solid;}
+  .tg.pass{background:rgba(34,197,94,0.1);color:#22c55e;border-color:rgba(34,197,94,0.25);}
+  .tg.wip{background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.25);}
+  .tg.fail{background:rgba(248,113,113,0.1);color:#f87171;border-color:rgba(248,113,113,0.25);}
+  .badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:var(--acl,rgba(255,255,255,0.07));color:var(--act,#94a3b8);}
+
+  /* Name labels */
+  .name-label{font-size:12px;color:#555;text-align:center;margin-top:14px;font-weight:700;}
+  body.dark .name-label{color:#64748b;}
+  .name-sub{font-size:11px;color:#999;text-align:center;margin-top:3px;}
+  body.dark .name-sub{color:#334155;}
+
+  /* Mode badge in corner */
+  .mode-badge{position:fixed;bottom:24px;right:32px;font-size:11px;font-weight:700;padding:6px 14px;border-radius:99px;background:#0f172a;color:#f1f5f9;letter-spacing:.5px;pointer-events:none;}
+  body.dark .mode-badge{background:#f1f5f9;color:#0f172a;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <h1>✦ 6 New Themes — Light &amp; Dark Toggle</h1>
+    <p class="sub">All 6 themes switch together. Say "apply 1–6" to apply any.</p>
+  </div>
+  <button class="toggle-btn" id="toggleBtn" onclick="toggleMode()">🌙 Switch to Dark</button>
+</div>
+
+<div class="grid">
+
+  <!-- ══════════════════════════════════ -->
+  <!-- THEME 1 — COBALT BLUE            -->
+  <!-- ══════════════════════════════════ -->
+  <div>
+  <div class="frame" style="--sb:#1e3a8a;--ac:#3b82f6;--acd:#1d4ed8;--acl:rgba(59,130,246,0.12);--act:#1d4ed8">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox">localhost:5173/DSP_E2E/</div></div>
+    <div class="app">
+      <div class="sb">
+        <div class="sb-logo"><div class="li">E</div><div><div class="lt1">E2E Hub</div><div class="lt2">Master Dashboard</div></div></div>
+        <div class="nav">
+          <div class="ns">Main</div>
+          <div class="ni active">⊞ Home</div>
+          <div class="ni">◈ DSP Sheet</div>
+          <div class="ni">⚇ Team</div>
+          <div class="ni">▤ Reports</div>
+          <div class="ns">Settings</div>
+          <div class="ni">✦ KT Sessions</div>
+          <div class="ni">⛨ Access</div>
+        </div>
+        <div class="sb-foot"><div class="ur"><div class="av">RS</div><div><div class="ur-name">Ritwik S.</div><div class="ur-role">Admin</div></div></div></div>
+      </div>
+      <div class="main">
+        <div class="hdr"><div class="ht">DSP Sheet</div><div class="pill">April 2026</div><div class="hs"></div><button class="ibtn">Export</button><button class="sbtn">Save Changes</button></div>
+        <div class="body">
+          <div class="sg">
+            <div class="sc t-ac"><div class="sl">Total</div><div class="sv v-ac">36</div><div class="sbr b-ac"><div class="sbf f-ac" style="width:100%"></div></div></div>
+            <div class="sc t-pass"><div class="sl">Passed</div><div class="sv v-pass">24</div><div class="sbr b-pass"><div class="sbf f-pass" style="width:67%"></div></div></div>
+            <div class="sc t-wip"><div class="sl">In Progress</div><div class="sv v-wip">8</div><div class="sbr b-wip"><div class="sbf f-wip" style="width:22%"></div></div></div>
+            <div class="sc t-fail"><div class="sl">Failed</div><div class="sv v-fail">4</div><div class="sbr b-fail"><div class="sbf f-fail" style="width:11%"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c-ac">All</div><div class="ch c-pass">Passed</div><div class="ch c-wip">In Progress</div><div class="ch c-fail">Failed</div></div>
+          <div class="tc">
+            <div class="th2"><div class="tt">Manual Testing</div><div class="tc2">36 rows</div></div>
+            <table><thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Tester</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--c-text3)">1</td><td>Login with valid credentials</td><td><span class="tg pass">Passed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+              <tr><td style="color:var(--c-text3)">2</td><td>Password reset flow</td><td><span class="tg wip">In Progress</span></td><td><span class="badge">swati.m</span></td></tr>
+              <tr><td style="color:var(--c-text3)">3</td><td>Export to Excel validation</td><td><span class="tg fail">Failed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">1 — Cobalt Blue</div>
+  <div class="name-sub">Navy sidebar · Blue accent · White or dark content area</div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- THEME 2 — RASPBERRY              -->
+  <!-- ══════════════════════════════════ -->
+  <div>
+  <div class="frame" style="--sb:#500724;--ac:#f43f5e;--acd:#e11d48;--acl:rgba(244,63,94,0.12);--act:#be123c">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox">localhost:5173/DSP_E2E/</div></div>
+    <div class="app">
+      <div class="sb">
+        <div class="sb-logo"><div class="li">E</div><div><div class="lt1">E2E Hub</div><div class="lt2">Master Dashboard</div></div></div>
+        <div class="nav">
+          <div class="ns">Main</div>
+          <div class="ni active">⊞ Home</div>
+          <div class="ni">◈ DSP Sheet</div>
+          <div class="ni">⚇ Team</div>
+          <div class="ni">▤ Reports</div>
+          <div class="ns">Settings</div>
+          <div class="ni">✦ KT Sessions</div>
+          <div class="ni">⛨ Access</div>
+        </div>
+        <div class="sb-foot"><div class="ur"><div class="av">RS</div><div><div class="ur-name">Ritwik S.</div><div class="ur-role">Admin</div></div></div></div>
+      </div>
+      <div class="main">
+        <div class="hdr"><div class="ht">DSP Sheet</div><div class="pill">April 2026</div><div class="hs"></div><button class="ibtn">Export</button><button class="sbtn">Save Changes</button></div>
+        <div class="body">
+          <div class="sg">
+            <div class="sc t-ac"><div class="sl">Total</div><div class="sv v-ac">36</div><div class="sbr b-ac"><div class="sbf f-ac" style="width:100%"></div></div></div>
+            <div class="sc t-pass"><div class="sl">Passed</div><div class="sv v-pass">24</div><div class="sbr b-pass"><div class="sbf f-pass" style="width:67%"></div></div></div>
+            <div class="sc t-wip"><div class="sl">In Progress</div><div class="sv v-wip">8</div><div class="sbr b-wip"><div class="sbf f-wip" style="width:22%"></div></div></div>
+            <div class="sc t-fail"><div class="sl">Failed</div><div class="sv v-fail">4</div><div class="sbr b-fail"><div class="sbf f-fail" style="width:11%"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c-ac">All</div><div class="ch c-pass">Passed</div><div class="ch c-wip">In Progress</div><div class="ch c-fail">Failed</div></div>
+          <div class="tc">
+            <div class="th2"><div class="tt">Manual Testing</div><div class="tc2">36 rows</div></div>
+            <table><thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Tester</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--c-text3)">1</td><td>Login with valid credentials</td><td><span class="tg pass">Passed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+              <tr><td style="color:var(--c-text3)">2</td><td>Password reset flow</td><td><span class="tg wip">In Progress</span></td><td><span class="badge">swati.m</span></td></tr>
+              <tr><td style="color:var(--c-text3)">3</td><td>Export to Excel validation</td><td><span class="tg fail">Failed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">2 — Raspberry</div>
+  <div class="name-sub">Deep crimson sidebar · Hot rose accent</div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- THEME 3 — MALACHITE              -->
+  <!-- ══════════════════════════════════ -->
+  <div>
+  <div class="frame" style="--sb:#022c22;--ac:#10b981;--acd:#059669;--acl:rgba(16,185,129,0.12);--act:#065f46">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox">localhost:5173/DSP_E2E/</div></div>
+    <div class="app">
+      <div class="sb">
+        <div class="sb-logo"><div class="li">E</div><div><div class="lt1">E2E Hub</div><div class="lt2">Master Dashboard</div></div></div>
+        <div class="nav">
+          <div class="ns">Main</div>
+          <div class="ni active">⊞ Home</div>
+          <div class="ni">◈ DSP Sheet</div>
+          <div class="ni">⚇ Team</div>
+          <div class="ni">▤ Reports</div>
+          <div class="ns">Settings</div>
+          <div class="ni">✦ KT Sessions</div>
+          <div class="ni">⛨ Access</div>
+        </div>
+        <div class="sb-foot"><div class="ur"><div class="av">RS</div><div><div class="ur-name">Ritwik S.</div><div class="ur-role">Admin</div></div></div></div>
+      </div>
+      <div class="main">
+        <div class="hdr"><div class="ht">DSP Sheet</div><div class="pill">April 2026</div><div class="hs"></div><button class="ibtn">Export</button><button class="sbtn">Save Changes</button></div>
+        <div class="body">
+          <div class="sg">
+            <div class="sc t-ac"><div class="sl">Total</div><div class="sv v-ac">36</div><div class="sbr b-ac"><div class="sbf f-ac" style="width:100%"></div></div></div>
+            <div class="sc t-pass"><div class="sl">Passed</div><div class="sv v-pass">24</div><div class="sbr b-pass"><div class="sbf f-pass" style="width:67%"></div></div></div>
+            <div class="sc t-wip"><div class="sl">In Progress</div><div class="sv v-wip">8</div><div class="sbr b-wip"><div class="sbf f-wip" style="width:22%"></div></div></div>
+            <div class="sc t-fail"><div class="sl">Failed</div><div class="sv v-fail">4</div><div class="sbr b-fail"><div class="sbf f-fail" style="width:11%"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c-ac">All</div><div class="ch c-pass">Passed</div><div class="ch c-wip">In Progress</div><div class="ch c-fail">Failed</div></div>
+          <div class="tc">
+            <div class="th2"><div class="tt">Manual Testing</div><div class="tc2">36 rows</div></div>
+            <table><thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Tester</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--c-text3)">1</td><td>Login with valid credentials</td><td><span class="tg pass">Passed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+              <tr><td style="color:var(--c-text3)">2</td><td>Password reset flow</td><td><span class="tg wip">In Progress</span></td><td><span class="badge">swati.m</span></td></tr>
+              <tr><td style="color:var(--c-text3)">3</td><td>Export to Excel validation</td><td><span class="tg fail">Failed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">3 — Malachite</div>
+  <div class="name-sub">Deep forest sidebar · Emerald teal accent</div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- THEME 4 — AMBER DARK             -->
+  <!-- ══════════════════════════════════ -->
+  <div>
+  <div class="frame" style="--sb:#451a03;--ac:#f59e0b;--acd:#d97706;--acl:rgba(245,158,11,0.12);--act:#92400e">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox">localhost:5173/DSP_E2E/</div></div>
+    <div class="app">
+      <div class="sb">
+        <div class="sb-logo"><div class="li">E</div><div><div class="lt1">E2E Hub</div><div class="lt2">Master Dashboard</div></div></div>
+        <div class="nav">
+          <div class="ns">Main</div>
+          <div class="ni active">⊞ Home</div>
+          <div class="ni">◈ DSP Sheet</div>
+          <div class="ni">⚇ Team</div>
+          <div class="ni">▤ Reports</div>
+          <div class="ns">Settings</div>
+          <div class="ni">✦ KT Sessions</div>
+          <div class="ni">⛨ Access</div>
+        </div>
+        <div class="sb-foot"><div class="ur"><div class="av">RS</div><div><div class="ur-name">Ritwik S.</div><div class="ur-role">Admin</div></div></div></div>
+      </div>
+      <div class="main">
+        <div class="hdr"><div class="ht">DSP Sheet</div><div class="pill">April 2026</div><div class="hs"></div><button class="ibtn">Export</button><button class="sbtn">Save Changes</button></div>
+        <div class="body">
+          <div class="sg">
+            <div class="sc t-ac"><div class="sl">Total</div><div class="sv v-ac">36</div><div class="sbr b-ac"><div class="sbf f-ac" style="width:100%"></div></div></div>
+            <div class="sc t-pass"><div class="sl">Passed</div><div class="sv v-pass">24</div><div class="sbr b-pass"><div class="sbf f-pass" style="width:67%"></div></div></div>
+            <div class="sc t-wip"><div class="sl">In Progress</div><div class="sv v-wip">8</div><div class="sbr b-wip"><div class="sbf f-wip" style="width:22%"></div></div></div>
+            <div class="sc t-fail"><div class="sl">Failed</div><div class="sv v-fail">4</div><div class="sbr b-fail"><div class="sbf f-fail" style="width:11%"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c-ac">All</div><div class="ch c-pass">Passed</div><div class="ch c-wip">In Progress</div><div class="ch c-fail">Failed</div></div>
+          <div class="tc">
+            <div class="th2"><div class="tt">Manual Testing</div><div class="tc2">36 rows</div></div>
+            <table><thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Tester</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--c-text3)">1</td><td>Login with valid credentials</td><td><span class="tg pass">Passed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+              <tr><td style="color:var(--c-text3)">2</td><td>Password reset flow</td><td><span class="tg wip">In Progress</span></td><td><span class="badge">swati.m</span></td></tr>
+              <tr><td style="color:var(--c-text3)">3</td><td>Export to Excel validation</td><td><span class="tg fail">Failed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">4 — Amber Dark</div>
+  <div class="name-sub">Dark brown/chocolate sidebar · Warm amber accent</div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- THEME 5 — CERULEAN SKY           -->
+  <!-- ══════════════════════════════════ -->
+  <div>
+  <div class="frame" style="--sb:#0c4a6e;--ac:#0ea5e9;--acd:#0284c7;--acl:rgba(14,165,233,0.12);--act:#0369a1">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox">localhost:5173/DSP_E2E/</div></div>
+    <div class="app">
+      <div class="sb">
+        <div class="sb-logo"><div class="li">E</div><div><div class="lt1">E2E Hub</div><div class="lt2">Master Dashboard</div></div></div>
+        <div class="nav">
+          <div class="ns">Main</div>
+          <div class="ni active">⊞ Home</div>
+          <div class="ni">◈ DSP Sheet</div>
+          <div class="ni">⚇ Team</div>
+          <div class="ni">▤ Reports</div>
+          <div class="ns">Settings</div>
+          <div class="ni">✦ KT Sessions</div>
+          <div class="ni">⛨ Access</div>
+        </div>
+        <div class="sb-foot"><div class="ur"><div class="av">RS</div><div><div class="ur-name">Ritwik S.</div><div class="ur-role">Admin</div></div></div></div>
+      </div>
+      <div class="main">
+        <div class="hdr"><div class="ht">DSP Sheet</div><div class="pill">April 2026</div><div class="hs"></div><button class="ibtn">Export</button><button class="sbtn">Save Changes</button></div>
+        <div class="body">
+          <div class="sg">
+            <div class="sc t-ac"><div class="sl">Total</div><div class="sv v-ac">36</div><div class="sbr b-ac"><div class="sbf f-ac" style="width:100%"></div></div></div>
+            <div class="sc t-pass"><div class="sl">Passed</div><div class="sv v-pass">24</div><div class="sbr b-pass"><div class="sbf f-pass" style="width:67%"></div></div></div>
+            <div class="sc t-wip"><div class="sl">In Progress</div><div class="sv v-wip">8</div><div class="sbr b-wip"><div class="sbf f-wip" style="width:22%"></div></div></div>
+            <div class="sc t-fail"><div class="sl">Failed</div><div class="sv v-fail">4</div><div class="sbr b-fail"><div class="sbf f-fail" style="width:11%"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c-ac">All</div><div class="ch c-pass">Passed</div><div class="ch c-wip">In Progress</div><div class="ch c-fail">Failed</div></div>
+          <div class="tc">
+            <div class="th2"><div class="tt">Manual Testing</div><div class="tc2">36 rows</div></div>
+            <table><thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Tester</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--c-text3)">1</td><td>Login with valid credentials</td><td><span class="tg pass">Passed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+              <tr><td style="color:var(--c-text3)">2</td><td>Password reset flow</td><td><span class="tg wip">In Progress</span></td><td><span class="badge">swati.m</span></td></tr>
+              <tr><td style="color:var(--c-text3)">3</td><td>Export to Excel validation</td><td><span class="tg fail">Failed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">5 — Cerulean Sky</div>
+  <div class="name-sub">Deep ocean blue sidebar · Sky blue accent</div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- THEME 6 — GRAPHITE + LIME        -->
+  <!-- ══════════════════════════════════ -->
+  <div>
+  <div class="frame" style="--sb:#18181b;--ac:#84cc16;--acd:#65a30d;--acl:rgba(132,204,22,0.12);--act:#3f6212">
+    <div class="bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox">localhost:5173/DSP_E2E/</div></div>
+    <div class="app">
+      <div class="sb">
+        <div class="sb-logo"><div class="li" style="color:#0f172a">E</div><div><div class="lt1">E2E Hub</div><div class="lt2">Master Dashboard</div></div></div>
+        <div class="nav">
+          <div class="ns">Main</div>
+          <div class="ni active">⊞ Home</div>
+          <div class="ni">◈ DSP Sheet</div>
+          <div class="ni">⚇ Team</div>
+          <div class="ni">▤ Reports</div>
+          <div class="ns">Settings</div>
+          <div class="ni">✦ KT Sessions</div>
+          <div class="ni">⛨ Access</div>
+        </div>
+        <div class="sb-foot"><div class="ur"><div class="av" style="color:#0f172a">RS</div><div><div class="ur-name">Ritwik S.</div><div class="ur-role">Admin</div></div></div></div>
+      </div>
+      <div class="main">
+        <div class="hdr"><div class="ht">DSP Sheet</div><div class="pill">April 2026</div><div class="hs"></div><button class="ibtn">Export</button><button class="sbtn" style="color:#0f172a">Save Changes</button></div>
+        <div class="body">
+          <div class="sg">
+            <div class="sc t-ac"><div class="sl">Total</div><div class="sv v-ac">36</div><div class="sbr b-ac"><div class="sbf f-ac" style="width:100%"></div></div></div>
+            <div class="sc t-pass"><div class="sl">Passed</div><div class="sv v-pass">24</div><div class="sbr b-pass"><div class="sbf f-pass" style="width:67%"></div></div></div>
+            <div class="sc t-wip"><div class="sl">In Progress</div><div class="sv v-wip">8</div><div class="sbr b-wip"><div class="sbf f-wip" style="width:22%"></div></div></div>
+            <div class="sc t-fail"><div class="sl">Failed</div><div class="sv v-fail">4</div><div class="sbr b-fail"><div class="sbf f-fail" style="width:11%"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c-ac" style="color:#0f172a">All</div><div class="ch c-pass">Passed</div><div class="ch c-wip">In Progress</div><div class="ch c-fail">Failed</div></div>
+          <div class="tc">
+            <div class="th2"><div class="tt">Manual Testing</div><div class="tc2">36 rows</div></div>
+            <table><thead><tr><th>#</th><th>Test Case</th><th>Status</th><th>Tester</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--c-text3)">1</td><td>Login with valid credentials</td><td><span class="tg pass">Passed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+              <tr><td style="color:var(--c-text3)">2</td><td>Password reset flow</td><td><span class="tg wip">In Progress</span></td><td><span class="badge">swati.m</span></td></tr>
+              <tr><td style="color:var(--c-text3)">3</td><td>Export to Excel validation</td><td><span class="tg fail">Failed</span></td><td><span class="badge">kalpana.r</span></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">6 — Graphite + Lime</div>
+  <div class="name-sub">Pure black sidebar · Lime green accent · High contrast</div>
+  </div>
+
+</div>
+
+<div class="mode-badge" id="modeBadge">☀ LIGHT MODE</div>
+
+<script>
+  function toggleMode() {
+    const isDark = document.body.classList.toggle('dark');
+    document.getElementById('toggleBtn').innerHTML = isDark ? '☀ Switch to Light' : '🌙 Switch to Dark';
+    document.getElementById('modeBadge').textContent = isDark ? '🌙 DARK MODE' : '☀ LIGHT MODE';
+  }
+</script>
+</body>
+</html>

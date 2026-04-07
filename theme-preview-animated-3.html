@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>E2E Dashboard — Themes Vol.3 — Extreme Edition</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',-apple-system,sans-serif;background:#05050d;min-height:100vh;transition:background .3s;}
+body.light{background:#edf0f7;}
+
+/* ── TOP BAR ── */
+.top-bar{position:sticky;top:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(5,5,13,0.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,0.05);}
+body.light .top-bar{background:rgba(237,240,247,0.96);border-bottom-color:rgba(0,0,0,0.07);}
+.tbr{display:flex;align-items:center;gap:14px;}
+.top-bar h1{font-size:18px;font-weight:900;letter-spacing:-.3px;}
+.top-bar p{font-size:11px;color:#475569;margin-top:2px;}
+body.light .top-bar p{color:#64748b;}
+.vol-tag{font-size:10px;font-weight:900;padding:3px 10px;border-radius:99px;letter-spacing:.6px;text-transform:uppercase;}
+.toggle-btn{background:rgba(255,255,255,0.07);color:#e2e8f0;border:1px solid rgba(255,255,255,0.1);padding:9px 20px;border-radius:99px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s;white-space:nowrap;}
+body.light .toggle-btn{background:#1e293b;color:#f1f5f9;border-color:#1e293b;}
+
+/* ── ANIMATIONS ── */
+@keyframes shiftGrad{0%{background-position:0%}100%{background-position:400%}}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes holo{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.96)}}
+@keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(800%)}}
+@keyframes scanH{0%{top:-2px}100%{top:102%}}
+@keyframes glow{0%,100%{box-shadow:0 0 10px var(--gc,#fff)}50%{box-shadow:0 0 28px var(--gc,#fff),0 0 55px var(--gc,#fff)}}
+@keyframes neonPulse{0%,100%{text-shadow:0 0 6px var(--nc),0 0 12px var(--nc)}50%{text-shadow:0 0 18px var(--nc),0 0 36px var(--nc),0 0 65px var(--nc)}}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes auroraWave{0%,100%{transform:translateX(0) scaleY(1)}50%{transform:translateX(18px) scaleY(1.15)}}
+@keyframes particleDrift{0%{transform:translate(0,0);opacity:.7}50%{opacity:1}100%{transform:translate(20px,-40px);opacity:0}}
+@keyframes crackGlow{0%,100%{opacity:.3}50%{opacity:.8}}
+@keyframes icePulse{0%,100%{box-shadow:0 0 0 0 rgba(120,200,255,0)}50%{box-shadow:0 0 0 4px rgba(120,200,255,0.15)}}
+@keyframes tokyoFlash{0%,100%{opacity:1}85%{opacity:1}86%{opacity:.2}87%{opacity:1}95%{opacity:1}96%{opacity:.4}97%{opacity:1}}
+@keyframes amberFlicker{0%,100%{opacity:1}90%{opacity:1}91%{opacity:.6}92%{opacity:1}98%{opacity:.8}99%{opacity:1}}
+@keyframes bioFloat{0%{transform:translate(0,0) scale(1);opacity:.5}33%{transform:translate(8px,-12px) scale(1.1);opacity:.8}66%{transform:translate(-5px,-20px) scale(.9);opacity:.6}100%{transform:translate(3px,-35px) scale(.7);opacity:0}}
+@keyframes spin180{0%{transform:rotate(0deg)}100%{transform:rotate(180deg)}}
+@keyframes borderDance{0%,100%{border-color:rgba(255,0,100,.3)}33%{border-color:rgba(0,200,255,.3)}66%{border-color:rgba(255,200,0,.3)}}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;max-width:1640px;margin:0 auto;padding:44px 40px 80px;}
+
+/* ── SHELL ── */
+.frame{border-radius:16px;overflow:hidden;position:relative;}
+.bar{height:36px;display:flex;align-items:center;padding:0 14px;gap:7px;}
+.dot{width:11px;height:11px;border-radius:50%;}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.urlbox{flex:1;height:20px;border-radius:5px;margin:0 12px;display:flex;align-items:center;padding:0 9px;font-size:10px;}
+.app{display:flex;height:580px;position:relative;}
+.sb{width:210px;display:flex;flex-direction:column;flex-shrink:0;position:relative;overflow:hidden;}
+.sb-logo{padding:16px 14px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid;}
+.li{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.lt1{font-size:12px;font-weight:800;line-height:1.2;}
+.lt2{font-size:9px;margin-top:1px;}
+.nav{padding:10px 8px;flex:1;display:flex;flex-direction:column;gap:3px;overflow:hidden;}
+.ni{height:37px;border-radius:8px;display:flex;align-items:center;gap:9px;padding:0 11px;font-size:12px;}
+.ns{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:10px 11px 4px;}
+.sb-foot{padding:10px 8px;border-top:1px solid;}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;}
+.ur{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.hdr{height:50px;display:flex;align-items:center;padding:0 18px;gap:11px;flex-shrink:0;border-bottom:1px solid;}
+.ht{font-size:14px;font-weight:900;}
+.hs{flex:1;}
+.pill{font-size:10px;font-weight:700;padding:3px 11px;border-radius:6px;}
+.sbtn{border:none;border-radius:8px;padding:6px 16px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;}
+.ibtn{border-radius:8px;padding:5px 13px;font-size:11px;cursor:pointer;border:1px solid;background:transparent;font-family:inherit;}
+.body{flex:1;padding:16px 18px;display:flex;flex-direction:column;gap:13px;overflow:hidden;}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.sc{border-radius:10px;padding:13px 15px;border:1px solid;position:relative;overflow:hidden;}
+.sl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.sv{font-size:25px;font-weight:900;line-height:1;}
+.sbr{height:3px;border-radius:99px;margin-top:7px;overflow:hidden;}
+.sbf{height:100%;border-radius:99px;animation:barGrow 1.2s ease forwards;}
+.cr{display:flex;gap:6px;}
+.ch{padding:4px 12px;border-radius:7px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid;}
+.tc{border-radius:10px;overflow:hidden;border:1px solid;}
+.th2{padding:10px 15px;border-bottom:1px solid;display:flex;align-items:center;justify-content:space-between;}
+.tt{font-size:12px;font-weight:800;}
+.tc2{font-size:10px;padding:2px 9px;border-radius:20px;border:1px solid;}
+table{width:100%;border-collapse:collapse;}
+thead th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:6px 13px;text-align:left;border-bottom:1px solid;}
+tbody td{padding:7px 13px;font-size:11px;border-bottom:1px solid;}
+.tg{display:inline-flex;padding:2px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid;}
+.name-label{font-size:13px;color:#c8d8e8;text-align:center;margin-top:16px;font-weight:800;}
+body.light .name-label{color:#1e2d40;}
+.name-sub{font-size:11px;color:#475569;text-align:center;margin-top:4px;}
+.style-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:2px 8px;border-radius:4px;margin:6px 2px 0;}
+
+/* ══════════════════════════════════════════════════════
+   1. BIOLUMINESCENT DEEP SEA
+   Particles float up, teal/cyan/violet organic glow
+══════════════════════════════════════════════════════ */
+.c1 .bar{background:#020810;}
+.c1 .urlbox{background:rgba(0,220,200,0.05);color:#115555;font-size:10px;}
+.c1 .app{background:radial-gradient(ellipse at 30% 80%,#01141a 0%,#020810 60%),radial-gradient(ellipse at 80% 20%,#010d18 0%,transparent 50%);}
+/* floating particles */
+.c1 .app::before,.c1 .app::after{content:'✦ ○ · ✦ ○';position:absolute;font-size:8px;color:rgba(0,255,200,0.5);white-space:pre;pointer-events:none;}
+.c1 .app::before{left:50px;bottom:60px;animation:bioFloat 6s ease infinite;}
+.c1 .app::after{left:140px;bottom:100px;animation:bioFloat 8s ease infinite 3s;font-size:6px;color:rgba(100,200,255,0.4);}
+.c1 .sb{background:rgba(2,8,16,0.9);border-right:1px solid rgba(0,220,180,0.1);backdrop-filter:blur(12px);}
+.c1 .sb-logo{border-bottom-color:rgba(0,220,180,0.1);}
+.c1 .li{background:radial-gradient(circle at 40% 40%,#00ffcc,#00aaff);color:#020810;animation:pulse 3s ease infinite;}
+.c1 .lt1{color:#b0ffe8;}
+.c1 .lt2{color:rgba(0,220,180,0.4);}
+.c1 .ni{color:rgba(150,240,220,0.28);}
+.c1 .ni.active{background:rgba(0,220,180,0.1);color:#00ffcc;border-left:3px solid #00ffcc;padding-left:8px;--nc:#00ffcc;animation:neonPulse 2.5s ease infinite;}
+.c1 .ns{color:rgba(0,180,160,0.2);opacity:1;}
+.c1 .sb-foot{border-top-color:rgba(0,220,180,0.1);}
+.c1 .av{background:radial-gradient(circle,#00ffcc,#00aaff);color:#020810;}
+.c1 .ur{background:rgba(0,220,180,0.05);}
+.c1 .ur .lt1{color:#a0f0d8;font-size:11px;}
+.c1 .ur .lt2{color:rgba(0,200,170,0.35);font-size:9px;}
+.c1 .hdr{background:rgba(2,8,16,0.88);backdrop-filter:blur(10px);border-bottom-color:rgba(0,220,180,0.09);}
+.c1 .ht{background:linear-gradient(90deg,#00ffcc,#00aaff,#aa88ff,#00ffcc);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shiftGrad 5s linear infinite;}
+.c1 .pill{background:rgba(0,220,180,0.1);color:#00ffcc;border:1px solid rgba(0,220,180,0.25);}
+.c1 .ibtn{color:rgba(150,240,220,0.28);border-color:rgba(0,220,180,0.12);}
+.c1 .sbtn{background:linear-gradient(90deg,#00ffcc,#00aaff);color:#020810;font-weight:900;box-shadow:0 0 20px rgba(0,255,200,0.5),0 0 45px rgba(0,170,255,0.2);animation:glow 2.5s ease infinite;--gc:rgba(0,255,200,.45);}
+.c1 .sc{background:rgba(0,200,180,0.04);border-color:rgba(0,200,180,0.1);}
+.c1 .sc::after{content:'';position:absolute;inset:-1px;border-radius:10px;border:1px solid transparent;background:linear-gradient(135deg,rgba(0,255,200,.15),rgba(0,170,255,.1),transparent) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;animation:rotate 6s linear infinite;}
+.c1 .sl{color:rgba(0,200,170,0.38);}
+.c1 .sc:nth-child(1) .sv{color:#00ffcc;--nc:#00ffcc;animation:neonPulse 3s ease infinite;}
+.c1 .sc:nth-child(2) .sv{color:#00ccff;}
+.c1 .sc:nth-child(3) .sv{color:#88aaff;}
+.c1 .sc:nth-child(4) .sv{color:#ff88aa;}
+.c1 .sbr{background:rgba(0,200,180,0.08);}
+.c1 .sbf{background:linear-gradient(90deg,#00ffcc,#00aaff,#aa88ff);background-size:200%;animation:gradShift 2s ease infinite,barGrow 1.2s ease forwards;}
+.c1 .ch{background:rgba(0,200,180,0.06);border-color:rgba(0,200,180,0.16);color:rgba(0,200,170,.5);}
+.c1 .ch.active{background:rgba(0,200,180,0.16);border-color:#00ffcc;color:#00ffcc;box-shadow:0 0 10px rgba(0,255,200,.2);}
+.c1 .tc{background:rgba(0,200,180,0.02);border-color:rgba(0,200,180,0.08);}
+.c1 .th2{background:rgba(0,200,180,0.04);border-bottom-color:rgba(0,200,180,0.08);}
+.c1 .tt{background:linear-gradient(90deg,#00ffcc,#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.c1 .tc2{background:transparent;border-color:rgba(0,200,180,0.16);color:rgba(0,200,170,.34);}
+.c1 thead th{color:rgba(0,200,170,.34);border-bottom-color:rgba(0,200,180,.08);}
+.c1 tbody td{color:#a8e8d8;border-bottom-color:rgba(0,200,180,.05);}
+.c1 .tg.pass{background:rgba(0,255,200,.1);color:#00ffcc;border-color:rgba(0,255,200,.3);}
+.c1 .tg.wip{background:rgba(150,160,255,.1);color:#aabbff;border-color:rgba(150,160,255,.28);}
+.c1 .tg.fail{background:rgba(255,100,150,.1);color:#ff88aa;border-color:rgba(255,100,150,.28);}
+/* c1 light */
+body.light .c1 .bar{background:#e0faf5;}
+body.light .c1 .urlbox{background:rgba(0,160,140,.07);color:#006655;}
+body.light .c1 .app{background:linear-gradient(135deg,#e8fdf8,#eaf6ff);}
+body.light .c1 .app::before{color:rgba(0,160,140,.5);}
+body.light .c1 .app::after{color:rgba(0,120,200,.4);}
+body.light .c1 .hdr{background:#fff;border-bottom-color:rgba(0,180,160,.12);}
+body.light .c1 .pill{background:rgba(0,180,160,.08);color:#006655;border-color:rgba(0,180,160,.22);}
+body.light .c1 .ibtn{color:#44aaaa;border-color:rgba(0,180,160,.18);}
+body.light .c1 .sbtn{box-shadow:0 4px 16px rgba(0,180,160,.3);animation:none;}
+body.light .c1 .sc{background:#fff;border-color:rgba(0,180,160,.13);}
+body.light .c1 .sc::after{display:none;}
+body.light .c1 .sl{color:#66bbaa;}
+body.light .c1 .sc:nth-child(1) .sv{color:#006655;animation:none;text-shadow:none;}
+body.light .c1 .sc:nth-child(2) .sv{color:#0077aa;}
+body.light .c1 .sc:nth-child(3) .sv{color:#5544aa;}
+body.light .c1 .sc:nth-child(4) .sv{color:#aa3366;}
+body.light .c1 .sbr{background:rgba(0,180,160,.1);}
+body.light .c1 .sbf{background:linear-gradient(90deg,#00bb99,#0088cc);}
+body.light .c1 .ch{background:#fff;border-color:rgba(0,180,160,.16);color:#66bbaa;}
+body.light .c1 .ch.active{background:rgba(0,180,160,.1);border-color:#00aa88;color:#006655;box-shadow:none;}
+body.light .c1 .tc{background:#fff;border-color:rgba(0,180,160,.1);}
+body.light .c1 .th2{background:#f0fdf9;border-bottom-color:rgba(0,180,160,.1);}
+body.light .c1 .tt{background:linear-gradient(90deg,#006655,#0077aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body.light .c1 .tc2{background:#fff;border-color:rgba(0,180,160,.16);color:#66bbaa;}
+body.light .c1 thead th{color:#66bbaa;border-bottom-color:rgba(0,180,160,.1);}
+body.light .c1 tbody td{color:#001a15;border-bottom-color:rgba(0,180,160,.06);}
+body.light .c1 .tg.pass{background:rgba(0,160,120,.1);color:#005544;border-color:rgba(0,160,120,.28);}
+body.light .c1 .tg.wip{background:rgba(80,80,200,.08);color:#3333aa;border-color:rgba(80,80,200,.22);}
+body.light .c1 .tg.fail{background:rgba(180,30,80,.1);color:#880033;border-color:rgba(180,30,80,.25);}
+
+/* ══════════════════════════════════════════════════════
+   2. AURORA NIGHT — sweeping northern lights
+══════════════════════════════════════════════════════ */
+.c2 .bar{background:#020812;}
+.c2 .urlbox{background:rgba(80,220,120,.05);color:#1a4422;}
+.c2 .app{background:#020812;position:relative;overflow:hidden;}
+/* aurora bands */
+.c2 .app::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(50,220,100,.07) 50%,rgba(60,100,255,.08) 60%,rgba(180,50,255,.05) 70%,transparent 85%);animation:auroraWave 7s ease infinite;pointer-events:none;z-index:1;}
+.c2 .app::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(100,255,160,.04) 45%,rgba(80,160,255,.06) 55%,transparent 70%);animation:auroraWave 9s ease infinite 3.5s;pointer-events:none;z-index:1;}
+.c2 .sb{background:rgba(2,8,18,0.92);border-right:1px solid rgba(80,220,120,.1);backdrop-filter:blur(12px);z-index:2;}
+.c2 .sb-logo{border-bottom-color:rgba(80,220,120,.1);}
+.c2 .li{background:linear-gradient(135deg,#32dc64,#3264ff,#b400ff);background-size:200%;animation:gradShift 4s ease infinite;color:#fff;}
+.c2 .lt1{color:#c0f8d0;}
+.c2 .lt2{color:rgba(80,220,120,.4);}
+.c2 .ni{color:rgba(160,240,180,.28);}
+.c2 .ni.active{background:rgba(60,220,100,.1);color:#40ee80;border-left:3px solid #32dc64;padding-left:8px;--nc:#32dc64;animation:neonPulse 3s ease infinite;}
+.c2 .ns{color:rgba(60,200,100,.2);opacity:1;}
+.c2 .sb-foot{border-top-color:rgba(80,220,120,.1);}
+.c2 .av{background:linear-gradient(135deg,#32dc64,#3264ff);color:#fff;}
+.c2 .ur{background:rgba(60,220,100,.05);}
+.c2 .ur .lt1{color:#a0f0b8;font-size:11px;}
+.c2 .ur .lt2{color:rgba(60,200,100,.35);font-size:9px;}
+.c2 .hdr{background:rgba(2,8,18,.88);backdrop-filter:blur(10px);border-bottom-color:rgba(80,220,120,.08);z-index:2;position:relative;}
+.c2 .ht{background:linear-gradient(90deg,#32dc64,#3264ff,#b400ff,#32dc64);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shiftGrad 5s linear infinite;}
+.c2 .main{z-index:2;position:relative;}
+.c2 .pill{background:rgba(50,220,100,.1);color:#40ee80;border:1px solid rgba(50,220,100,.25);}
+.c2 .ibtn{color:rgba(160,240,180,.28);border-color:rgba(80,220,120,.12);}
+.c2 .sbtn{background:linear-gradient(90deg,#32dc64,#3264ff,#b400ff);background-size:200%;animation:gradShift 2.5s ease infinite;color:#fff;font-weight:900;box-shadow:0 4px 22px rgba(50,220,100,.45);}
+.c2 .sc{background:rgba(60,220,100,.03);border-color:rgba(60,220,100,.09);}
+.c2 .sl{color:rgba(100,220,140,.36);}
+.c2 .sc:nth-child(1) .sv{color:#40ee80;--nc:#32dc64;animation:neonPulse 3s ease infinite;}
+.c2 .sc:nth-child(2) .sv{color:#60a0ff;}
+.c2 .sc:nth-child(3) .sv{color:#d480ff;}
+.c2 .sc:nth-child(4) .sv{color:#ff8888;}
+.c2 .sbr{background:rgba(60,220,100,.07);}
+.c2 .sbf{background:linear-gradient(90deg,#32dc64,#3264ff,#b400ff);background-size:200%;animation:gradShift 2.5s ease infinite,barGrow 1.2s ease forwards;}
+.c2 .ch{background:rgba(60,220,100,.06);border-color:rgba(60,220,100,.16);color:rgba(100,220,140,.5);}
+.c2 .ch.active{background:rgba(60,220,100,.16);border-color:#32dc64;color:#40ee80;box-shadow:0 0 10px rgba(50,220,100,.25);}
+.c2 .tc{background:rgba(60,220,100,.02);border-color:rgba(60,220,100,.08);}
+.c2 .th2{background:rgba(60,220,100,.03);border-bottom-color:rgba(60,220,100,.07);}
+.c2 .tt{background:linear-gradient(90deg,#40ee80,#60a0ff,#d480ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.c2 .tc2{background:transparent;border-color:rgba(60,220,100,.16);color:rgba(100,220,140,.34);}
+.c2 thead th{color:rgba(100,220,140,.34);border-bottom-color:rgba(60,220,100,.07);}
+.c2 tbody td{color:#b0e8c0;border-bottom-color:rgba(60,220,100,.04);}
+.c2 .tg.pass{background:rgba(50,220,100,.12);color:#40ee80;border-color:rgba(50,220,100,.3);}
+.c2 .tg.wip{background:rgba(100,160,255,.1);color:#80aaff;border-color:rgba(100,160,255,.28);}
+.c2 .tg.fail{background:rgba(255,100,100,.1);color:#ff8888;border-color:rgba(255,100,100,.28);}
+/* c2 light */
+body.light .c2 .bar{background:#edfff4;}
+body.light .c2 .app{background:linear-gradient(160deg,#edfff4,#edf4ff,#f8eeff);}
+body.light .c2 .app::before{background:linear-gradient(180deg,transparent 20%,rgba(0,180,80,.05) 50%,rgba(50,80,200,.04) 65%,transparent 80%);}
+body.light .c2 .app::after{background:linear-gradient(180deg,transparent 15%,rgba(0,200,100,.03) 45%,transparent 65%);}
+body.light .c2 .hdr{background:#fff;border-bottom-color:rgba(0,180,80,.1);}
+body.light .c2 .pill{background:rgba(0,180,80,.08);color:#005522;border-color:rgba(0,180,80,.2);}
+body.light .c2 .ibtn{color:#44aa66;border-color:rgba(0,180,80,.16);}
+body.light .c2 .sbtn{box-shadow:0 4px 16px rgba(0,180,80,.28);}
+body.light .c2 .sc{background:#fff;border-color:rgba(0,180,80,.12);}
+body.light .c2 .sl{color:#66bb88;}
+body.light .c2 .sc:nth-child(1) .sv{color:#005522;animation:none;text-shadow:none;}
+body.light .c2 .sc:nth-child(2) .sv{color:#1133bb;}
+body.light .c2 .sc:nth-child(3) .sv{color:#770099;}
+body.light .c2 .sc:nth-child(4) .sv{color:#aa2222;}
+body.light .c2 .sbr{background:rgba(0,180,80,.1);}
+body.light .c2 .ch{background:#fff;border-color:rgba(0,180,80,.15);color:#66bb88;}
+body.light .c2 .ch.active{background:rgba(0,180,80,.1);border-color:#00aa55;color:#005522;box-shadow:none;}
+body.light .c2 .tc{background:#fff;border-color:rgba(0,180,80,.1);}
+body.light .c2 .th2{background:#f0fff6;border-bottom-color:rgba(0,180,80,.1);}
+body.light .c2 .tt{background:linear-gradient(90deg,#005522,#1133bb,#770099);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body.light .c2 .tc2{background:#fff;border-color:rgba(0,180,80,.15);color:#66bb88;}
+body.light .c2 thead th{color:#66bb88;border-bottom-color:rgba(0,180,80,.1);}
+body.light .c2 tbody td{color:#001a0a;border-bottom-color:rgba(0,180,80,.06);}
+body.light .c2 .tg.pass{background:rgba(0,160,70,.1);color:#004422;border-color:rgba(0,160,70,.28);}
+body.light .c2 .tg.wip{background:rgba(40,70,200,.08);color:#223399;border-color:rgba(40,70,200,.22);}
+body.light .c2 .tg.fail{background:rgba(180,20,20,.1);color:#881111;border-color:rgba(180,20,20,.25);}
+
+/* ══════════════════════════════════════════════════════
+   3. TOKYO NEON NIGHTS — Japanese city aesthetic
+══════════════════════════════════════════════════════ */
+.c3 .bar{background:#080008;}
+.c3 .urlbox{background:rgba(255,20,100,.06);color:#660033;font-family:'Courier New',monospace;font-size:9px;}
+.c3 .app{background:#080008;position:relative;}
+.c3 .app::before{content:'';position:absolute;left:0;top:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ff1464,#ff6600,#ff1464,transparent);animation:shiftGrad 1.8s linear infinite;background-size:200%;pointer-events:none;}
+.c3 .app::after{content:'';position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,#00e5ff,#ff1464,transparent);animation:shiftGrad 3s linear infinite;background-size:200%;pointer-events:none;}
+.c3 .sb{background:rgba(8,0,8,.95);border-right:2px solid #ff1464;}
+.c3 .sb-logo{border-bottom:2px solid rgba(255,20,100,.3);}
+.c3 .li{background:linear-gradient(135deg,#ff1464,#ff6600);color:#fff;border-radius:6px;animation:tokyoFlash 6s ease infinite;}
+.c3 .lt1{color:#ff88bb;font-weight:900;animation:tokyoFlash 8s ease infinite;}
+.c3 .lt2{color:rgba(255,80,140,.4);}
+.c3 .ni{color:rgba(255,120,160,.28);}
+.c3 .ni.active{background:rgba(255,20,100,.12);color:#ff1464;border-left:3px solid #ff1464;padding-left:8px;--nc:#ff1464;animation:neonPulse 2s ease infinite;}
+.c3 .ns{color:rgba(255,20,100,.22);opacity:1;}
+.c3 .sb-foot{border-top:2px solid rgba(255,20,100,.3);}
+.c3 .av{background:linear-gradient(135deg,#ff1464,#ff6600);color:#fff;}
+.c3 .ur{background:rgba(255,20,100,.07);border:1px solid rgba(255,20,100,.18);}
+.c3 .ur .lt1{color:#ff88bb;font-size:11px;}
+.c3 .ur .lt2{color:rgba(255,80,140,.35);font-size:9px;}
+.c3 .hdr{background:rgba(8,0,8,.88);border-bottom:1px solid rgba(255,20,100,.15);}
+.c3 .ht{background:linear-gradient(90deg,#ff1464,#ff6600,#00e5ff,#ff1464);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shiftGrad 3s linear infinite;}
+.c3 .pill{background:rgba(255,20,100,.1);color:#ff1464;border:1px solid rgba(255,20,100,.3);}
+.c3 .ibtn{color:rgba(255,120,160,.3);border-color:rgba(255,20,100,.15);}
+.c3 .sbtn{background:linear-gradient(90deg,#ff1464,#ff6600);color:#fff;font-weight:900;box-shadow:0 0 18px rgba(255,20,100,.55),0 0 40px rgba(255,100,0,.2);animation:glow 2s ease infinite;--gc:rgba(255,20,100,.5);}
+.c3 .sc{background:rgba(255,20,100,.04);border-color:rgba(255,20,100,.12);}
+.c3 .sl{color:rgba(255,100,150,.38);}
+.c3 .sc:nth-child(1) .sv{color:#ff1464;--nc:#ff1464;animation:neonPulse 2.5s ease infinite;}
+.c3 .sc:nth-child(2) .sv{color:#ff6600;}
+.c3 .sc:nth-child(3) .sv{color:#00e5ff;}
+.c3 .sc:nth-child(4) .sv{color:#ffdd00;}
+.c3 .sbr{background:rgba(255,20,100,.1);}
+.c3 .sbf{background:linear-gradient(90deg,#ff1464,#ff6600,#00e5ff);background-size:200%;animation:gradShift 2s ease infinite,barGrow 1.2s ease forwards;}
+.c3 .ch{background:rgba(255,20,100,.06);border-color:rgba(255,20,100,.2);color:rgba(255,100,150,.5);}
+.c3 .ch.active{background:rgba(255,20,100,.16);border-color:#ff1464;color:#ff1464;box-shadow:0 0 10px rgba(255,20,100,.3);}
+.c3 .tc{background:rgba(255,20,100,.02);border-color:rgba(255,20,100,.1);}
+.c3 .th2{background:rgba(255,20,100,.04);border-bottom-color:rgba(255,20,100,.1);}
+.c3 .tt{background:linear-gradient(90deg,#ff1464,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.c3 .tc2{background:transparent;border-color:rgba(255,20,100,.2);color:rgba(255,100,150,.35);}
+.c3 thead th{color:rgba(255,100,150,.35);border-bottom-color:rgba(255,20,100,.08);}
+.c3 tbody td{color:#e8b8c8;border-bottom-color:rgba(255,20,100,.05);}
+.c3 .tg.pass{background:rgba(0,229,255,.1);color:#00e5ff;border-color:rgba(0,229,255,.28);}
+.c3 .tg.wip{background:rgba(255,221,0,.1);color:#ffdd00;border-color:rgba(255,221,0,.28);}
+.c3 .tg.fail{background:rgba(255,20,100,.12);color:#ff1464;border-color:rgba(255,20,100,.3);}
+/* c3 light */
+body.light .c3 .bar{background:#fff0f5;}
+body.light .c3 .urlbox{background:rgba(200,10,80,.07);color:#880033;}
+body.light .c3 .app{background:linear-gradient(135deg,#fff0f5,#fff5f0);}
+body.light .c3 .app::before{background:linear-gradient(90deg,transparent,rgba(200,10,80,.4),rgba(200,80,0,.4),transparent);}
+body.light .c3 .app::after{background:linear-gradient(180deg,transparent,rgba(0,160,200,.4),rgba(200,10,80,.3),transparent);}
+body.light .c3 .hdr{background:#fff;border-bottom-color:rgba(200,10,80,.12);}
+body.light .c3 .ht{background:linear-gradient(90deg,#cc0050,#cc5500,#0099bb,#cc0050);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body.light .c3 .pill{background:rgba(200,10,80,.08);color:#880033;border-color:rgba(200,10,80,.22);}
+body.light .c3 .ibtn{color:#cc6688;border-color:rgba(200,10,80,.16);}
+body.light .c3 .sbtn{animation:none;box-shadow:0 4px 16px rgba(200,10,80,.3);}
+body.light .c3 .sc{background:#fff;border-color:rgba(200,10,80,.13);}
+body.light .c3 .sl{color:#cc8899;}
+body.light .c3 .sc:nth-child(1) .sv{color:#aa0040;animation:none;text-shadow:none;}
+body.light .c3 .sc:nth-child(2) .sv{color:#994400;}
+body.light .c3 .sc:nth-child(3) .sv{color:#006688;}
+body.light .c3 .sc:nth-child(4) .sv{color:#887700;}
+body.light .c3 .sbr{background:rgba(200,10,80,.1);}
+body.light .c3 .sbf{background:linear-gradient(90deg,#cc0050,#cc5500,#0099bb);}
+body.light .c3 .ch{background:#fff;border-color:rgba(200,10,80,.15);color:#cc8899;}
+body.light .c3 .ch.active{background:rgba(200,10,80,.1);border-color:#aa0040;color:#880033;box-shadow:none;}
+body.light .c3 .tc{background:#fff;border-color:rgba(200,10,80,.1);}
+body.light .c3 .th2{background:#fff5f7;border-bottom-color:rgba(200,10,80,.1);}
+body.light .c3 .tt{background:linear-gradient(90deg,#aa0040,#006688);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body.light .c3 .tc2{background:#fff;border-color:rgba(200,10,80,.16);color:#cc8899;}
+body.light .c3 thead th{color:#cc8899;border-bottom-color:rgba(200,10,80,.08);}
+body.light .c3 tbody td{color:#1a0008;border-bottom-color:rgba(200,10,80,.05);}
+body.light .c3 .tg.pass{background:rgba(0,140,180,.1);color:#005577;border-color:rgba(0,140,180,.28);}
+body.light .c3 .tg.wip{background:rgba(160,130,0,.1);color:#665500;border-color:rgba(160,130,0,.25);}
+body.light .c3 .tg.fail{background:rgba(180,10,70,.1);color:#880033;border-color:rgba(180,10,70,.25);}
+
+/* ══════════════════════════════════════════════════════
+   4. AMBER TERMINAL — warm phosphor CRT screen
+══════════════════════════════════════════════════════ */
+.c4 .bar{background:#0a0600;}
+.c4 .urlbox{background:rgba(255,160,0,.06);color:#664400;font-family:'Courier New',monospace;}
+.c4 .app{background:#0a0600;position:relative;overflow:hidden;}
+/* horizontal scanline sweep */
+.c4 .app::before{content:'';position:absolute;left:0;right:0;height:2px;background:rgba(255,180,0,.06);animation:scanH 4s linear infinite;pointer-events:none;}
+/* CRT vignette */
+.c4 .app::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(0,0,0,.5) 100%);pointer-events:none;}
+.c4 .sb{background:#050300;border-right:1px solid rgba(255,160,0,.18);}
+.c4 .sb-logo{border-bottom-color:rgba(255,160,0,.15);}
+.c4 .li{background:#ffaa00;color:#000;border-radius:4px;font-family:'Courier New',monospace;font-weight:900;}
+.c4 .lt1{color:#ffaa00;font-family:'Courier New',monospace;animation:amberFlicker 6s ease infinite;}
+.c4 .lt2{color:rgba(200,120,0,.4);font-family:'Courier New',monospace;}
+.c4 .ni{color:rgba(200,120,0,.3);font-family:'Courier New',monospace;font-size:11px;}
+.c4 .ni.active{background:rgba(255,160,0,.1);color:#ffaa00;border-left:3px solid #ffaa00;padding-left:8px;--nc:#ffaa00;animation:neonPulse 3s ease infinite;}
+.c4 .ns{color:rgba(180,100,0,.22);opacity:1;font-family:'Courier New',monospace;}
+.c4 .sb-foot{border-top-color:rgba(255,160,0,.15);}
+.c4 .av{background:#ffaa00;color:#000;font-family:'Courier New',monospace;border-radius:4px;}
+.c4 .ur{background:rgba(255,160,0,.06);border:1px solid rgba(255,160,0,.15);}
+.c4 .ur .lt1{color:#ffaa00;font-size:11px;}
+.c4 .ur .lt2{color:rgba(200,120,0,.35);font-size:9px;}
+.c4 .hdr{background:#0a0600;border-bottom:1px solid rgba(255,160,0,.14);}
+.c4 .ht{color:#ffaa00;font-family:'Courier New',monospace;--nc:#ffaa00;animation:amberFlicker 8s ease infinite;}
+.c4 .pill{background:rgba(255,160,0,.1);color:#ffaa00;border:1px solid rgba(255,160,0,.28);font-family:'Courier New',monospace;}
+.c4 .ibtn{color:rgba(200,120,0,.3);border-color:rgba(255,160,0,.14);}
+.c4 .sbtn{background:#ffaa00;color:#000;font-family:'Courier New',monospace;font-weight:900;box-shadow:0 0 18px rgba(255,160,0,.5),0 0 40px rgba(255,160,0,.2);}
+.c4 .sc{background:rgba(255,160,0,.03);border-color:rgba(255,160,0,.12);border-radius:4px;}
+.c4 .sl{color:rgba(200,130,0,.38);font-family:'Courier New',monospace;}
+.c4 .sc:nth-child(1) .sv{color:#ffaa00;font-family:'Courier New',monospace;animation:amberFlicker 5s ease infinite;}
+.c4 .sc:nth-child(2) .sv{color:#ddcc00;font-family:'Courier New',monospace;}
+.c4 .sc:nth-child(3) .sv{color:#ff8800;font-family:'Courier New',monospace;}
+.c4 .sc:nth-child(4) .sv{color:#ff4400;font-family:'Courier New',monospace;}
+.c4 .sbr{background:rgba(255,160,0,.08);border-radius:0;}
+.c4 .sbf{background:#ffaa00;border-radius:0;}
+.c4 .ch{background:rgba(255,160,0,.06);border-color:rgba(255,160,0,.18);color:rgba(200,130,0,.5);font-family:'Courier New',monospace;}
+.c4 .ch.active{background:rgba(255,160,0,.15);border-color:#ffaa00;color:#ffaa00;}
+.c4 .tc{background:rgba(255,160,0,.02);border-color:rgba(255,160,0,.1);}
+.c4 .th2{background:rgba(255,160,0,.04);border-bottom-color:rgba(255,160,0,.1);}
+.c4 .tt{color:#ffaa00;font-family:'Courier New',monospace;animation:amberFlicker 7s ease infinite;}
+.c4 .tc2{background:transparent;border-color:rgba(255,160,0,.16);color:rgba(200,130,0,.35);font-family:'Courier New',monospace;}
+.c4 thead th{color:rgba(200,130,0,.35);border-bottom-color:rgba(255,160,0,.08);font-family:'Courier New',monospace;}
+.c4 tbody td{color:#c89050;border-bottom-color:rgba(255,160,0,.05);}
+.c4 .tg.pass{background:rgba(200,200,0,.1);color:#ddcc00;border-color:rgba(200,200,0,.3);font-family:'Courier New',monospace;}
+.c4 .tg.wip{background:rgba(255,140,0,.1);color:#ff8800;border-color:rgba(255,140,0,.28);}
+.c4 .tg.fail{background:rgba(255,50,0,.12);color:#ff4400;border-color:rgba(255,50,0,.3);}
+/* c4 light */
+body.light .c4 .bar{background:#fff8e0;}
+body.light .c4 .app{background:#fff8e0;}
+body.light .c4 .app::before{background:rgba(180,120,0,.04);}
+body.light .c4 .app::after{background:radial-gradient(ellipse at 50% 50%,transparent 70%,rgba(200,160,0,.05) 100%);}
+body.light .c4 .sb{background:#fff3cc;border-right-color:rgba(180,120,0,.2);}
+body.light .c4 .sb-logo{border-bottom-color:rgba(180,120,0,.15);}
+body.light .c4 .li{box-shadow:0 0 6px rgba(200,140,0,.3);}
+body.light .c4 .lt1{color:#664400;animation:none;}
+body.light .c4 .lt2{color:rgba(120,80,0,.5);}
+body.light .c4 .ni{color:rgba(120,80,0,.45);}
+body.light .c4 .ni.active{background:rgba(180,120,0,.1);color:#664400;animation:none;text-shadow:none;}
+body.light .c4 .sb-foot{border-top-color:rgba(180,120,0,.15);}
+body.light .c4 .ur{background:rgba(180,120,0,.07);border-color:rgba(180,120,0,.14);}
+body.light .c4 .ur .lt1{color:#664400;}
+body.light .c4 .ur .lt2{color:rgba(120,80,0,.4);}
+body.light .c4 .hdr{background:#fff8e0;border-bottom-color:rgba(180,120,0,.14);}
+body.light .c4 .ht{color:#664400;animation:none;}
+body.light .c4 .pill{background:rgba(180,120,0,.08);color:#664400;border-color:rgba(180,120,0,.22);}
+body.light .c4 .ibtn{color:#aa8844;border-color:rgba(180,120,0,.18);}
+body.light .c4 .sbtn{background:#cc8800;color:#fff;box-shadow:none;}
+body.light .c4 .sc{background:#fff;border-color:rgba(180,120,0,.15);}
+body.light .c4 .sl{color:#aa8844;}
+body.light .c4 .sc:nth-child(1) .sv{color:#664400;animation:none;}
+body.light .c4 .sc:nth-child(2) .sv{color:#776600;}
+body.light .c4 .sc:nth-child(3) .sv{color:#884400;}
+body.light .c4 .sc:nth-child(4) .sv{color:#aa2200;}
+body.light .c4 .sbr{background:rgba(180,120,0,.1);border-radius:99px;}
+body.light .c4 .sbf{background:#cc8800;border-radius:99px;}
+body.light .c4 .ch{background:#fff;border-color:rgba(180,120,0,.16);color:#aa8844;}
+body.light .c4 .ch.active{background:rgba(180,120,0,.1);border-color:#cc8800;color:#664400;}
+body.light .c4 .tc{background:#fff;border-color:rgba(180,120,0,.12);}
+body.light .c4 .th2{background:#fff8e0;border-bottom-color:rgba(180,120,0,.12);}
+body.light .c4 .tt{color:#664400;animation:none;}
+body.light .c4 .tc2{background:#fff;border-color:rgba(180,120,0,.16);color:#aa8844;}
+body.light .c4 thead th{color:#aa8844;border-bottom-color:rgba(180,120,0,.1);}
+body.light .c4 tbody td{color:#1a0e00;border-bottom-color:rgba(180,120,0,.07);}
+body.light .c4 .tg.pass{background:rgba(100,140,0,.1);color:#3a5500;border-color:rgba(100,140,0,.25);}
+body.light .c4 .tg.wip{background:rgba(160,100,0,.1);color:#664400;border-color:rgba(160,100,0,.25);}
+body.light .c4 .tg.fail{background:rgba(180,40,0,.1);color:#882200;border-color:rgba(180,40,0,.25);}
+
+/* ══════════════════════════════════════════════════════
+   5. CRYSTAL ICE — ultra clean arctic white + ice blue
+══════════════════════════════════════════════════════ */
+.c5 .bar{background:#f5faff;}
+.c5 .urlbox{background:rgba(80,160,255,.07);color:#5588bb;}
+.c5 .app{background:linear-gradient(160deg,#f8fbff,#eef6ff);}
+.c5 .sb{
+  background:linear-gradient(160deg,#1a3a5c,#0f2844);
+  border-right:none;
+}
+.c5 .sb-logo{border-bottom-color:rgba(120,200,255,.15);}
+.c5 .li{background:linear-gradient(135deg,#78c8ff,#b0e8ff);color:#0f2844;animation:icePulse 3s ease infinite;}
+.c5 .lt1{color:#d8eeff;}
+.c5 .lt2{color:rgba(120,200,255,.45);}
+.c5 .ni{color:rgba(180,220,255,.35);}
+.c5 .ni.active{background:rgba(120,200,255,.15);color:#78c8ff;border-left:3px solid #78c8ff;padding-left:8px;font-weight:700;}
+.c5 .ns{color:rgba(120,200,255,.28);opacity:1;}
+.c5 .sb-foot{border-top-color:rgba(120,200,255,.15);}
+.c5 .av{background:linear-gradient(135deg,#78c8ff,#b0e8ff);color:#0f2844;}
+.c5 .ur{background:rgba(120,200,255,.1);}
+.c5 .ur .lt1{color:#d8eeff;font-size:11px;}
+.c5 .ur .lt2{color:rgba(120,200,255,.4);font-size:9px;}
+.c5 .hdr{background:rgba(248,251,255,.96);backdrop-filter:blur(10px);border-bottom-color:#d8eeff;}
+.c5 .ht{color:#1a3a5c;font-weight:900;}
+.c5 .pill{background:#ddeeff;color:#1a5080;border:1px solid #c0ddf0;}
+.c5 .ibtn{color:#5588bb;border-color:#c8dff0;}
+.c5 .sbtn{background:linear-gradient(135deg,#1a3a5c,#2a5a8c);color:#fff;box-shadow:0 4px 18px rgba(30,60,120,.2),0 0 0 1px rgba(120,200,255,.2);}
+.c5 .body{background:rgba(248,251,255,.98);backdrop-filter:blur(8px);}
+.c5 .sc{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-color:#ddeeff;box-shadow:0 2px 12px rgba(80,160,255,.07),inset 0 1px 0 rgba(255,255,255,.8);}
+.c5 .sl{color:#88aac8;}
+.c5 .sc:nth-child(1) .sv{color:#1a3a5c;}
+.c5 .sc:nth-child(2) .sv{color:#0077aa;}
+.c5 .sc:nth-child(3) .sv{color:#1155cc;}
+.c5 .sc:nth-child(4) .sv{color:#cc3355;}
+.c5 .sbr{background:#ddeeff;}
+.c5 .sbf{background:linear-gradient(90deg,#78c8ff,#1a5080);}
+.c5 .ch{background:rgba(255,255,255,.8);border-color:#c8dff0;color:#5588bb;backdrop-filter:blur(4px);}
+.c5 .ch.active{background:linear-gradient(135deg,#1a3a5c,#2a5a8c);border-color:transparent;color:#fff;}
+.c5 .tc{background:rgba(255,255,255,.8);border-color:#ddeeff;backdrop-filter:blur(6px);}
+.c5 .th2{background:rgba(240,248,255,.9);border-bottom-color:#ddeeff;}
+.c5 .tt{color:#1a3a5c;}
+.c5 .tc2{background:#fff;border-color:#c8dff0;color:#88aac8;}
+.c5 thead{background:rgba(240,248,255,.8);}
+.c5 thead th{color:#88aac8;border-bottom-color:#ddeeff;}
+.c5 tbody td{color:#1a2a3a;border-bottom-color:#eef6ff;}
+.c5 .tg.pass{background:#dcf5ff;color:#005577;border-color:#b0ddf0;}
+.c5 .tg.wip{background:#fff4d8;color:#774400;border-color:#f0d888;}
+.c5 .tg.fail{background:#fde8ee;color:#aa1133;border-color:#f0b8c8;}
+/* c5 dark */
+body.light .c5 .bar{background:#f5faff;}
+body.light .c5 .app{background:linear-gradient(160deg,#f8fbff,#eef6ff);}  /* already light — great! */
+/* c5 dark override when NOT in light mode is the default above */
+
+/* ══════════════════════════════════════════════════════
+   6. VOLCANIC MAGMA — dark rock + glowing lava cracks
+══════════════════════════════════════════════════════ */
+.c6 .bar{background:#0a0200;}
+.c6 .urlbox{background:rgba(255,80,0,.06);color:#5a2000;}
+.c6 .app{background:#0a0200;position:relative;overflow:hidden;}
+/* lava crack lines */
+.c6 .app::before{content:'';position:absolute;left:65%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent 10%,rgba(255,80,0,.15) 30%,rgba(255,120,0,.3) 50%,rgba(255,80,0,.15) 70%,transparent 90%);animation:crackGlow 3s ease infinite;pointer-events:none;}
+.c6 .app::after{content:'';position:absolute;left:80%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent 20%,rgba(255,60,0,.1) 40%,rgba(255,100,0,.2) 60%,transparent 80%);animation:crackGlow 4s ease infinite 1.5s;pointer-events:none;}
+.c6 .sb{background:rgba(10,2,0,.94);border-right:2px solid rgba(255,80,0,.25);}
+.c6 .sb-logo{border-bottom:1px solid rgba(255,80,0,.2);}
+.c6 .li{background:linear-gradient(135deg,#ff4500,#ff8c00,#ff2200);background-size:200%;animation:gradShift 3s ease infinite;color:#fff;border-radius:6px;}
+.c6 .lt1{color:#ffccaa;}
+.c6 .lt2{color:rgba(255,80,0,.4);}
+.c6 .ni{color:rgba(255,150,80,.28);}
+.c6 .ni.active{background:rgba(255,80,0,.12);color:#ff8855;border-left:3px solid #ff4500;padding-left:8px;--nc:#ff4500;animation:neonPulse 2.5s ease infinite;}
+.c6 .ns{color:rgba(255,60,0,.2);opacity:1;}
+.c6 .sb-foot{border-top:1px solid rgba(255,80,0,.2);}
+.c6 .av{background:linear-gradient(135deg,#ff4500,#ff8c00);color:#fff;}
+.c6 .ur{background:rgba(255,80,0,.07);}
+.c6 .ur .lt1{color:#ffbbaa;font-size:11px;}
+.c6 .ur .lt2{color:rgba(255,80,0,.35);font-size:9px;}
+.c6 .hdr{background:rgba(10,2,0,.9);border-bottom:1px solid rgba(255,80,0,.2);}
+.c6 .ht{background:linear-gradient(90deg,#ff6633,#ff8c00,#ff2200,#ff6633);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shiftGrad 3s linear infinite;}
+.c6 .pill{background:rgba(255,80,0,.12);color:#ff8855;border:1px solid rgba(255,80,0,.28);}
+.c6 .ibtn{color:rgba(255,150,80,.28);border-color:rgba(255,80,0,.14);}
+.c6 .sbtn{background:linear-gradient(90deg,#ff4500,#ff8c00);color:#fff;font-weight:900;box-shadow:0 4px 22px rgba(255,70,0,.55),0 0 50px rgba(255,100,0,.2);animation:glow 2s ease infinite;--gc:rgba(255,80,0,.45);}
+.c6 .sc{background:rgba(255,80,0,.04);border-color:rgba(255,80,0,.12);}
+.c6 .sl{color:rgba(255,130,60,.37);}
+.c6 .sc:nth-child(1) .sv{color:#ff8855;--nc:#ff4500;animation:neonPulse 3s ease infinite;}
+.c6 .sc:nth-child(2) .sv{color:#ff6633;}
+.c6 .sc:nth-child(3) .sv{color:#ffcc00;}
+.c6 .sc:nth-child(4) .sv{color:#ff3300;}
+.c6 .sbr{background:rgba(255,80,0,.1);}
+.c6 .sbf{background:linear-gradient(90deg,#ff2200,#ff8c00,#ffcc00);background-size:200%;animation:gradShift 2s ease infinite,barGrow 1.2s ease forwards;}
+.c6 .ch{background:rgba(255,80,0,.06);border-color:rgba(255,80,0,.18);color:rgba(255,130,60,.5);}
+.c6 .ch.active{background:rgba(255,80,0,.17);border-color:#ff4500;color:#ff8855;box-shadow:0 0 10px rgba(255,60,0,.28);}
+.c6 .tc{background:rgba(255,80,0,.02);border-color:rgba(255,80,0,.1);}
+.c6 .th2{background:rgba(255,80,0,.04);border-bottom-color:rgba(255,80,0,.1);}
+.c6 .tt{background:linear-gradient(90deg,#ff8855,#ffcc00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.c6 .tc2{background:transparent;border-color:rgba(255,80,0,.18);color:rgba(255,130,60,.34);}
+.c6 thead th{color:rgba(255,130,60,.34);border-bottom-color:rgba(255,80,0,.08);}
+.c6 tbody td{color:#e8c0a0;border-bottom-color:rgba(255,80,0,.05);}
+.c6 .tg.pass{background:rgba(80,200,80,.1);color:#66cc55;border-color:rgba(80,200,80,.28);}
+.c6 .tg.wip{background:rgba(255,200,0,.1);color:#ffcc00;border-color:rgba(255,200,0,.28);}
+.c6 .tg.fail{background:rgba(255,30,0,.12);color:#ff3300;border-color:rgba(255,30,0,.3);}
+/* c6 light */
+body.light .c6 .bar{background:#fff4ee;}
+body.light .c6 .urlbox{background:rgba(180,60,0,.07);color:#7a2800;}
+body.light .c6 .app{background:linear-gradient(135deg,#fff3ee,#fff8f3);}
+body.light .c6 .app::before{background:linear-gradient(180deg,transparent 10%,rgba(200,60,0,.08) 30%,rgba(220,90,0,.15) 50%,rgba(200,60,0,.08) 70%,transparent 90%);}
+body.light .c6 .app::after{background:linear-gradient(180deg,transparent 20%,rgba(180,40,0,.06) 40%,rgba(200,70,0,.1) 60%,transparent 80%);}
+body.light .c6 .hdr{background:#fffaf7;border-bottom-color:rgba(180,60,0,.12);}
+body.light .c6 .ht{background:linear-gradient(90deg,#aa3300,#cc7700,#990000,#aa3300);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body.light .c6 .pill{background:rgba(180,60,0,.08);color:#7a2800;border-color:rgba(180,60,0,.22);}
+body.light .c6 .ibtn{color:#cc7755;border-color:rgba(180,60,0,.16);}
+body.light .c6 .sbtn{animation:none;box-shadow:0 4px 16px rgba(180,60,0,.3);}
+body.light .c6 .sc{background:#fff;border-color:rgba(180,60,0,.13);}
+body.light .c6 .sl{color:#cc9977;}
+body.light .c6 .sc:nth-child(1) .sv{color:#882200;animation:none;text-shadow:none;}
+body.light .c6 .sc:nth-child(2) .sv{color:#aa4400;}
+body.light .c6 .sc:nth-child(3) .sv{color:#885500;}
+body.light .c6 .sc:nth-child(4) .sv{color:#aa1100;}
+body.light .c6 .sbr{background:rgba(180,60,0,.1);}
+body.light .c6 .sbf{background:linear-gradient(90deg,#aa2200,#cc7700,#aaaa00);}
+body.light .c6 .ch{background:#fff;border-color:rgba(180,60,0,.15);color:#cc9977;}
+body.light .c6 .ch.active{background:rgba(180,60,0,.1);border-color:#aa3300;color:#7a2800;box-shadow:none;}
+body.light .c6 .tc{background:#fff;border-color:rgba(180,60,0,.1);}
+body.light .c6 .th2{background:#fff8f4;border-bottom-color:rgba(180,60,0,.1);}
+body.light .c6 .tt{background:linear-gradient(90deg,#882200,#885500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body.light .c6 .tc2{background:#fff;border-color:rgba(180,60,0,.16);color:#cc9977;}
+body.light .c6 thead th{color:#cc9977;border-bottom-color:rgba(180,60,0,.08);}
+body.light .c6 tbody td{color:#1a0800;border-bottom-color:rgba(180,60,0,.05);}
+body.light .c6 .tg.pass{background:rgba(40,150,50,.1);color:#1a5522;border-color:rgba(40,150,50,.25);}
+body.light .c6 .tg.wip{background:rgba(160,130,0,.1);color:#6a5000;border-color:rgba(160,130,0,.25);}
+body.light .c6 .tg.fail{background:rgba(180,20,0,.12);color:#881100;border-color:rgba(180,20,0,.28);}
+
+/* c5 needs a dark override too */
+body:not(.light) .c5 .bar{background:#0a1a2a;}
+body:not(.light) .c5 .app{background:radial-gradient(ellipse at 40% 30%,#0f2844 0%,#06121e 70%);}
+body:not(.light) .c5 .hdr{background:rgba(10,26,42,.9);border-bottom-color:rgba(120,200,255,.12);}
+body:not(.light) .c5 .ht{background:linear-gradient(90deg,#78c8ff,#b0e8ff,#78c8ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradShift 4s ease infinite;}
+body:not(.light) .c5 .pill{background:rgba(120,200,255,.1);color:#78c8ff;border-color:rgba(120,200,255,.25);}
+body:not(.light) .c5 .ibtn{color:rgba(180,220,255,.3);border-color:rgba(120,200,255,.15);}
+body:not(.light) .c5 .body{background:transparent;}
+body:not(.light) .c5 .sc{background:rgba(120,200,255,.04);border-color:rgba(120,200,255,.12);box-shadow:none;}
+body:not(.light) .c5 .sc::after{display:none;}
+body:not(.light) .c5 .sl{color:rgba(120,200,255,.38);}
+body:not(.light) .c5 .sc:nth-child(1) .sv{color:#78c8ff;}
+body:not(.light) .c5 .sc:nth-child(2) .sv{color:#44aaee;}
+body:not(.light) .c5 .sc:nth-child(3) .sv{color:#6688ff;}
+body:not(.light) .c5 .sc:nth-child(4) .sv{color:#ff6688;}
+body:not(.light) .c5 .sbr{background:rgba(120,200,255,.1);}
+body:not(.light) .c5 .sbf{background:linear-gradient(90deg,#78c8ff,#1a5080);}
+body:not(.light) .c5 .ch{background:rgba(120,200,255,.06);border-color:rgba(120,200,255,.18);color:rgba(120,200,255,.5);backdrop-filter:none;}
+body:not(.light) .c5 .ch.active{background:rgba(120,200,255,.16);border-color:#78c8ff;color:#78c8ff;}
+body:not(.light) .c5 .tc{background:rgba(120,200,255,.02);border-color:rgba(120,200,255,.1);backdrop-filter:none;}
+body:not(.light) .c5 .th2{background:rgba(120,200,255,.04);border-bottom-color:rgba(120,200,255,.1);}
+body:not(.light) .c5 .tt{color:#78c8ff;}
+body:not(.light) .c5 .tc2{background:transparent;border-color:rgba(120,200,255,.16);color:rgba(120,200,255,.35);}
+body:not(.light) .c5 thead{background:rgba(120,200,255,.02);}
+body:not(.light) .c5 thead th{color:rgba(120,200,255,.35);border-bottom-color:rgba(120,200,255,.08);}
+body:not(.light) .c5 tbody td{color:#a8d8f0;border-bottom-color:rgba(120,200,255,.05);}
+body:not(.light) .c5 .urlbox{background:rgba(120,200,255,.06);color:#2266aa;}
+body:not(.light) .c5 .tg.pass{background:rgba(80,200,255,.1);color:#44aadd;border-color:rgba(80,200,255,.28);}
+body:not(.light) .c5 .tg.wip{background:rgba(180,200,255,.08);color:#8899ff;border-color:rgba(180,200,255,.22);}
+body:not(.light) .c5 .tg.fail{background:rgba(255,80,120,.1);color:#ff6688;border-color:rgba(255,80,120,.28);}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tbr">
+    <div>
+      <h1 style="background:linear-gradient(90deg,#00ffcc,#3264ff,#ff1464,#ffaa00,#78c8ff,#ff4500);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shiftGrad 5s linear infinite;">⚡ Extreme Theme Edition — Vol.3</h1>
+      <p>Bioluminescent · Aurora Night · Tokyo Neon · Amber CRT · Crystal Ice · Volcanic Magma</p>
+    </div>
+    <span class="vol-tag" style="background:linear-gradient(90deg,#ff1464,#ff8c00);color:#fff;">VOL.3</span>
+  </div>
+  <button class="toggle-btn" id="toggleBtn" onclick="toggleMode()">☀ Light Mode</button>
+</div>
+
+<div class="grid">
+
+  <!-- ══ 1. BIOLUMINESCENT ══ -->
+  <div>
+  <div class="frame c1" style="box-shadow:0 20px 80px rgba(0,220,180,.28);">
+    <div class="bar c1"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox c1">localhost:5173/DSP_E2E/</div></div>
+    <div class="app c1">
+      <div class="sb c1">
+        <div class="sb-logo c1"><div class="li c1">E</div><div><div class="lt1 c1">E2E Hub</div><div class="lt2 c1">Dashboard</div></div></div>
+        <div class="nav c1">
+          <div class="ns c1">Main</div><div class="ni c1 active">⊞ Home</div><div class="ni c1">◈ DSP Sheet</div><div class="ni c1">⚇ Team</div><div class="ni c1">▤ Reports</div>
+          <div class="ns c1">Settings</div><div class="ni c1">✦ KT Sessions</div>
+        </div>
+        <div class="sb-foot c1"><div class="ur c1"><div class="av c1">RS</div><div><div class="lt1 c1" style="font-size:11px">Ritwik S.</div><div class="lt2 c1" style="font-size:9px">Admin</div></div></div></div>
+      </div>
+      <div class="main c1">
+        <div class="hdr c1"><div class="ht c1">DSP Sheet</div><div class="pill c1">April 2026</div><div class="hs"></div><button class="ibtn c1">Export</button><button class="sbtn c1">Save</button></div>
+        <div class="body c1">
+          <div class="sg">
+            <div class="sc c1"><div class="sl c1">Total</div><div class="sv c1">36</div><div class="sbr c1"><div class="sbf c1" style="--w:100%"></div></div></div>
+            <div class="sc c1"><div class="sl c1">Passed</div><div class="sv c1" style="color:#00ccff">24</div><div class="sbr c1"><div class="sbf c1" style="--w:67%;background:#00ccff"></div></div></div>
+            <div class="sc c1"><div class="sl c1">Progress</div><div class="sv c1" style="color:#88aaff">8</div><div class="sbr c1"><div class="sbf c1" style="--w:22%;background:#88aaff"></div></div></div>
+            <div class="sc c1"><div class="sl c1">Failed</div><div class="sv c1" style="color:#ff88aa">4</div><div class="sbr c1"><div class="sbf c1" style="--w:11%;background:#ff88aa"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c1 active">All</div><div class="ch c1">Passed</div><div class="ch c1">Progress</div><div class="ch c1">Failed</div></div>
+          <div class="tc c1">
+            <div class="th2 c1"><div class="tt c1">Manual Testing</div><div class="tc2 c1">36 rows</div></div>
+            <table><thead><tr><th class="c1">#</th><th class="c1">Test Case</th><th class="c1">Status</th><th class="c1">Tester</th></tr></thead>
+            <tbody>
+              <tr><td class="c1" style="color:#011810">1</td><td class="c1">Login with valid creds</td><td class="c1"><span class="tg pass c1">Passed</span></td><td class="c1">kalpana.r</td></tr>
+              <tr><td class="c1" style="color:#011810">2</td><td class="c1">Password reset flow</td><td class="c1"><span class="tg wip c1">In Progress</span></td><td class="c1">swati.m</td></tr>
+              <tr><td class="c1" style="color:#011810">3</td><td class="c1">Export to Excel</td><td class="c1"><span class="tg fail c1">Failed</span></td><td class="c1">kalpana.r</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">1 — Bioluminescent Deep Sea</div>
+  <div class="name-sub">Floating particle glows · Rotating card borders · Teal/Violet/Cyan organic light</div>
+  <div style="text-align:center;margin-top:6px">
+    <span class="style-tag" style="background:#00ffcc22;color:#009977;border:1px solid #00ffcc44">Bio Particles</span>
+    <span class="style-tag" style="background:#00aaff22;color:#005588;border:1px solid #00aaff44">Rotating Border</span>
+  </div>
+  </div>
+
+  <!-- ══ 2. AURORA NIGHT ══ -->
+  <div>
+  <div class="frame c2" style="box-shadow:0 20px 80px rgba(50,220,100,.22);">
+    <div class="bar c2"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox c2">localhost:5173/DSP_E2E/</div></div>
+    <div class="app c2">
+      <div class="sb c2">
+        <div class="sb-logo c2"><div class="li c2">E</div><div><div class="lt1 c2">E2E Hub</div><div class="lt2 c2">Dashboard</div></div></div>
+        <div class="nav c2">
+          <div class="ns c2">Main</div><div class="ni c2 active">⊞ Home</div><div class="ni c2">◈ DSP Sheet</div><div class="ni c2">⚇ Team</div><div class="ni c2">▤ Reports</div>
+          <div class="ns c2">Settings</div><div class="ni c2">✦ KT Sessions</div>
+        </div>
+        <div class="sb-foot c2"><div class="ur c2"><div class="av c2">RS</div><div><div class="lt1 c2" style="font-size:11px">Ritwik S.</div><div class="lt2 c2" style="font-size:9px">Admin</div></div></div></div>
+      </div>
+      <div class="main c2">
+        <div class="hdr c2"><div class="ht c2">DSP Sheet</div><div class="pill c2">April 2026</div><div class="hs"></div><button class="ibtn c2">Export</button><button class="sbtn c2">Save</button></div>
+        <div class="body c2">
+          <div class="sg">
+            <div class="sc c2"><div class="sl c2">Total</div><div class="sv c2">36</div><div class="sbr c2"><div class="sbf c2" style="--w:100%"></div></div></div>
+            <div class="sc c2"><div class="sl c2">Passed</div><div class="sv c2" style="color:#60a0ff">24</div><div class="sbr c2"><div class="sbf c2" style="--w:67%;background:#60a0ff"></div></div></div>
+            <div class="sc c2"><div class="sl c2">Progress</div><div class="sv c2" style="color:#d480ff">8</div><div class="sbr c2"><div class="sbf c2" style="--w:22%;background:#d480ff"></div></div></div>
+            <div class="sc c2"><div class="sl c2">Failed</div><div class="sv c2" style="color:#ff8888">4</div><div class="sbr c2"><div class="sbf c2" style="--w:11%;background:#ff8888"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c2 active">All</div><div class="ch c2">Passed</div><div class="ch c2">Progress</div><div class="ch c2">Failed</div></div>
+          <div class="tc c2">
+            <div class="th2 c2"><div class="tt c2">Manual Testing</div><div class="tc2 c2">36 rows</div></div>
+            <table><thead><tr><th class="c2">#</th><th class="c2">Test Case</th><th class="c2">Status</th><th class="c2">Tester</th></tr></thead>
+            <tbody>
+              <tr><td class="c2" style="color:#010e06">1</td><td class="c2">Login with valid creds</td><td class="c2"><span class="tg pass c2">Passed</span></td><td class="c2">kalpana.r</td></tr>
+              <tr><td class="c2" style="color:#010e06">2</td><td class="c2">Password reset flow</td><td class="c2"><span class="tg wip c2">In Progress</span></td><td class="c2">swati.m</td></tr>
+              <tr><td class="c2" style="color:#010e06">3</td><td class="c2">Export to Excel</td><td class="c2"><span class="tg fail c2">Failed</span></td><td class="c2">kalpana.r</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">2 — Aurora Night</div>
+  <div class="name-sub">Twin sweeping northern light bands · Green/Blue/Violet spectrum · Deep arctic sky</div>
+  <div style="text-align:center;margin-top:6px">
+    <span class="style-tag" style="background:#32dc6422;color:#0a7733;border:1px solid #32dc6444">Aurora Wave</span>
+    <span class="style-tag" style="background:#b400ff22;color:#770099;border:1px solid #b400ff44">Sky Spectrum</span>
+  </div>
+  </div>
+
+  <!-- ══ 3. TOKYO NEON NIGHTS ══ -->
+  <div>
+  <div class="frame c3" style="box-shadow:0 20px 80px rgba(255,20,100,.28);">
+    <div class="bar c3"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox c3">localhost:5173/DSP_E2E/</div></div>
+    <div class="app c3">
+      <div class="sb c3">
+        <div class="sb-logo c3"><div class="li c3">E</div><div><div class="lt1 c3">E2E Hub</div><div class="lt2 c3">Dashboard</div></div></div>
+        <div class="nav c3">
+          <div class="ns c3">Main</div><div class="ni c3 active">⊞ Home</div><div class="ni c3">◈ DSP Sheet</div><div class="ni c3">⚇ Team</div><div class="ni c3">▤ Reports</div>
+          <div class="ns c3">Settings</div><div class="ni c3">✦ KT Sessions</div>
+        </div>
+        <div class="sb-foot c3"><div class="ur c3"><div class="av c3">RS</div><div><div class="lt1 c3" style="font-size:11px">Ritwik S.</div><div class="lt2 c3" style="font-size:9px">Admin</div></div></div></div>
+      </div>
+      <div class="main c3">
+        <div class="hdr c3"><div class="ht c3">DSP Sheet</div><div class="pill c3">April 2026</div><div class="hs"></div><button class="ibtn c3">Export</button><button class="sbtn c3">Save</button></div>
+        <div class="body c3" style="background:#080008">
+          <div class="sg">
+            <div class="sc c3"><div class="sl c3">Total</div><div class="sv c3">36</div><div class="sbr c3"><div class="sbf c3" style="--w:100%"></div></div></div>
+            <div class="sc c3"><div class="sl c3">Passed</div><div class="sv c3" style="color:#00e5ff">24</div><div class="sbr c3"><div class="sbf c3" style="--w:67%;background:#00e5ff"></div></div></div>
+            <div class="sc c3"><div class="sl c3">Progress</div><div class="sv c3" style="color:#ffdd00">8</div><div class="sbr c3"><div class="sbf c3" style="--w:22%;background:#ffdd00"></div></div></div>
+            <div class="sc c3"><div class="sl c3">Failed</div><div class="sv c3" style="color:#ff1464">4</div><div class="sbr c3"><div class="sbf c3" style="--w:11%;background:#ff1464"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c3 active">All</div><div class="ch c3">Passed</div><div class="ch c3">Progress</div><div class="ch c3">Failed</div></div>
+          <div class="tc c3">
+            <div class="th2 c3"><div class="tt c3">Manual Testing</div><div class="tc2 c3">36 rows</div></div>
+            <table><thead><tr><th class="c3">#</th><th class="c3">Test Case</th><th class="c3">Status</th><th class="c3">Tester</th></tr></thead>
+            <tbody>
+              <tr><td class="c3" style="color:#1a0010">1</td><td class="c3">Login with valid creds</td><td class="c3"><span class="tg pass c3">Passed</span></td><td class="c3">kalpana.r</td></tr>
+              <tr><td class="c3" style="color:#1a0010">2</td><td class="c3">Password reset flow</td><td class="c3"><span class="tg wip c3">In Progress</span></td><td class="c3">swati.m</td></tr>
+              <tr><td class="c3" style="color:#1a0010">3</td><td class="c3">Export to Excel</td><td class="c3"><span class="tg fail c3">Failed</span></td><td class="c3">kalpana.r</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">3 — Tokyo Neon Nights</div>
+  <div class="name-sub">Animated neon edge lines · Red/Cyan/Gold · Flickering sign effect · Urban grid</div>
+  <div style="text-align:center;margin-top:6px">
+    <span class="style-tag" style="background:#ff146422;color:#aa0033;border:1px solid #ff146444">Neon Flash</span>
+    <span class="style-tag" style="background:#00e5ff22;color:#007799;border:1px solid #00e5ff44">Edge Lines</span>
+  </div>
+  </div>
+
+  <!-- ══ 4. AMBER TERMINAL ══ -->
+  <div>
+  <div class="frame c4" style="box-shadow:0 20px 80px rgba(255,160,0,.2);">
+    <div class="bar c4"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox c4">localhost:5173/DSP_E2E/</div></div>
+    <div class="app c4">
+      <div class="sb c4">
+        <div class="sb-logo c4"><div class="li c4">E</div><div><div class="lt1 c4">E2E Hub</div><div class="lt2 c4">Dashboard</div></div></div>
+        <div class="nav c4">
+          <div class="ns c4">Main</div><div class="ni c4 active">⊞ Home</div><div class="ni c4">◈ DSP Sheet</div><div class="ni c4">⚇ Team</div><div class="ni c4">▤ Reports</div>
+          <div class="ns c4">Settings</div><div class="ni c4">✦ KT Sessions</div>
+        </div>
+        <div class="sb-foot c4"><div class="ur c4"><div class="av c4">RS</div><div><div class="lt1 c4" style="font-size:11px">Ritwik S.</div><div class="lt2 c4" style="font-size:9px">Admin</div></div></div></div>
+      </div>
+      <div class="main c4">
+        <div class="hdr c4"><div class="ht c4">DSP Sheet</div><div class="pill c4">April 2026</div><div class="hs"></div><button class="ibtn c4">Export</button><button class="sbtn c4">Save</button></div>
+        <div class="body c4" style="background:#0a0600">
+          <div class="sg">
+            <div class="sc c4"><div class="sl c4">Total</div><div class="sv c4">36</div><div class="sbr c4"><div class="sbf c4" style="--w:100%"></div></div></div>
+            <div class="sc c4"><div class="sl c4">Passed</div><div class="sv c4" style="color:#ddcc00">24</div><div class="sbr c4"><div class="sbf c4" style="--w:67%;background:#ddcc00"></div></div></div>
+            <div class="sc c4"><div class="sl c4">Progress</div><div class="sv c4" style="color:#ff8800">8</div><div class="sbr c4"><div class="sbf c4" style="--w:22%;background:#ff8800"></div></div></div>
+            <div class="sc c4"><div class="sl c4">Failed</div><div class="sv c4" style="color:#ff4400">4</div><div class="sbr c4"><div class="sbf c4" style="--w:11%;background:#ff4400"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c4 active">All</div><div class="ch c4">Passed</div><div class="ch c4">Progress</div><div class="ch c4">Failed</div></div>
+          <div class="tc c4">
+            <div class="th2 c4"><div class="tt c4">Manual Testing</div><div class="tc2 c4">36 rows</div></div>
+            <table><thead><tr><th class="c4">#</th><th class="c4">Test Case</th><th class="c4">Status</th><th class="c4">Tester</th></tr></thead>
+            <tbody>
+              <tr><td class="c4" style="color:#1a0e00">1</td><td class="c4">Login with valid creds</td><td class="c4"><span class="tg pass c4">Passed</span></td><td class="c4">kalpana.r</td></tr>
+              <tr><td class="c4" style="color:#1a0e00">2</td><td class="c4">Password reset flow</td><td class="c4"><span class="tg wip c4">In Progress</span></td><td class="c4">swati.m</td></tr>
+              <tr><td class="c4" style="color:#1a0e00">3</td><td class="c4">Export to Excel</td><td class="c4"><span class="tg fail c4">Failed</span></td><td class="c4">kalpana.r</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">4 — Amber Terminal CRT</div>
+  <div class="name-sub">Horizontal scanline sweep · CRT vignette · Phosphor flicker · Warm amber glow</div>
+  <div style="text-align:center;margin-top:6px">
+    <span class="style-tag" style="background:#ffaa0022;color:#886600;border:1px solid #ffaa0044">CRT Scanline</span>
+    <span class="style-tag" style="background:#ff880022;color:#774400;border:1px solid #ff880044">Amber Flicker</span>
+  </div>
+  </div>
+
+  <!-- ══ 5. CRYSTAL ICE ══ -->
+  <div>
+  <div class="frame c5" style="box-shadow:0 20px 80px rgba(80,160,255,.2);">
+    <div class="bar c5"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox c5">localhost:5173/DSP_E2E/</div></div>
+    <div class="app c5">
+      <div class="sb c5">
+        <div class="sb-logo c5"><div class="li c5">E</div><div><div class="lt1 c5">E2E Hub</div><div class="lt2 c5">Dashboard</div></div></div>
+        <div class="nav c5">
+          <div class="ns c5">Main</div><div class="ni c5 active">⊞ Home</div><div class="ni c5">◈ DSP Sheet</div><div class="ni c5">⚇ Team</div><div class="ni c5">▤ Reports</div>
+          <div class="ns c5">Settings</div><div class="ni c5">✦ KT Sessions</div>
+        </div>
+        <div class="sb-foot c5"><div class="ur c5"><div class="av c5">RS</div><div><div class="lt1 c5" style="font-size:11px">Ritwik S.</div><div class="lt2 c5" style="font-size:9px">Admin</div></div></div></div>
+      </div>
+      <div class="main c5">
+        <div class="hdr c5"><div class="ht c5">DSP Sheet</div><div class="pill c5">April 2026</div><div class="hs"></div><button class="ibtn c5">Export</button><button class="sbtn c5">Save</button></div>
+        <div class="body c5">
+          <div class="sg">
+            <div class="sc c5"><div class="sl c5">Total</div><div class="sv c5">36</div><div class="sbr c5"><div class="sbf c5" style="--w:100%"></div></div></div>
+            <div class="sc c5"><div class="sl c5">Passed</div><div class="sv c5" style="color:#0077aa">24</div><div class="sbr c5"><div class="sbf c5" style="--w:67%;background:#0077aa"></div></div></div>
+            <div class="sc c5"><div class="sl c5">Progress</div><div class="sv c5" style="color:#1155cc">8</div><div class="sbr c5"><div class="sbf c5" style="--w:22%;background:#1155cc"></div></div></div>
+            <div class="sc c5"><div class="sl c5">Failed</div><div class="sv c5" style="color:#cc3355">4</div><div class="sbr c5"><div class="sbf c5" style="--w:11%;background:#cc3355"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c5 active">All</div><div class="ch c5">Passed</div><div class="ch c5">Progress</div><div class="ch c5">Failed</div></div>
+          <div class="tc c5">
+            <div class="th2 c5"><div class="tt c5">Manual Testing</div><div class="tc2 c5">36 rows</div></div>
+            <table><thead><tr><th class="c5">#</th><th class="c5">Test Case</th><th class="c5">Status</th><th class="c5">Tester</th></tr></thead>
+            <tbody>
+              <tr><td class="c5" style="color:#aac8e0">1</td><td class="c5">Login with valid creds</td><td class="c5"><span class="tg pass c5">Passed</span></td><td class="c5">kalpana.r</td></tr>
+              <tr><td class="c5" style="color:#aac8e0">2</td><td class="c5">Password reset flow</td><td class="c5"><span class="tg wip c5">In Progress</span></td><td class="c5">swati.m</td></tr>
+              <tr><td class="c5" style="color:#aac8e0">3</td><td class="c5">Export to Excel</td><td class="c5"><span class="tg fail c5">Failed</span></td><td class="c5">kalpana.r</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">5 — Crystal Ice</div>
+  <div class="name-sub">Frosted glass cards · Dark navy sidebar · Ice blue backdrop blur · Pulsing border</div>
+  <div style="text-align:center;margin-top:6px">
+    <span class="style-tag" style="background:#78c8ff22;color:#1155aa;border:1px solid #78c8ff44">Frosted Glass</span>
+    <span class="style-tag" style="background:#1a3a5c22;color:#1a3a5c;border:1px solid #1a3a5c44">Ice Pulse</span>
+  </div>
+  </div>
+
+  <!-- ══ 6. VOLCANIC MAGMA ══ -->
+  <div>
+  <div class="frame c6" style="box-shadow:0 20px 80px rgba(255,60,0,.28);">
+    <div class="bar c6"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="urlbox c6">localhost:5173/DSP_E2E/</div></div>
+    <div class="app c6">
+      <div class="sb c6">
+        <div class="sb-logo c6"><div class="li c6">E</div><div><div class="lt1 c6">E2E Hub</div><div class="lt2 c6">Dashboard</div></div></div>
+        <div class="nav c6">
+          <div class="ns c6">Main</div><div class="ni c6 active">⊞ Home</div><div class="ni c6">◈ DSP Sheet</div><div class="ni c6">⚇ Team</div><div class="ni c6">▤ Reports</div>
+          <div class="ns c6">Settings</div><div class="ni c6">✦ KT Sessions</div>
+        </div>
+        <div class="sb-foot c6"><div class="ur c6"><div class="av c6">RS</div><div><div class="lt1 c6" style="font-size:11px">Ritwik S.</div><div class="lt2 c6" style="font-size:9px">Admin</div></div></div></div>
+      </div>
+      <div class="main c6">
+        <div class="hdr c6"><div class="ht c6">DSP Sheet</div><div class="pill c6">April 2026</div><div class="hs"></div><button class="ibtn c6">Export</button><button class="sbtn c6">Save</button></div>
+        <div class="body c6" style="background:#0a0200">
+          <div class="sg">
+            <div class="sc c6"><div class="sl c6">Total</div><div class="sv c6">36</div><div class="sbr c6"><div class="sbf c6" style="--w:100%"></div></div></div>
+            <div class="sc c6"><div class="sl c6">Passed</div><div class="sv c6" style="color:#66cc55">24</div><div class="sbr c6"><div class="sbf c6" style="--w:67%;background:#66cc55"></div></div></div>
+            <div class="sc c6"><div class="sl c6">Progress</div><div class="sv c6" style="color:#ffcc00">8</div><div class="sbr c6"><div class="sbf c6" style="--w:22%;background:#ffcc00"></div></div></div>
+            <div class="sc c6"><div class="sl c6">Failed</div><div class="sv c6" style="color:#ff3300">4</div><div class="sbr c6"><div class="sbf c6" style="--w:11%;background:#ff3300"></div></div></div>
+          </div>
+          <div class="cr"><div class="ch c6 active">All</div><div class="ch c6">Passed</div><div class="ch c6">Progress</div><div class="ch c6">Failed</div></div>
+          <div class="tc c6">
+            <div class="th2 c6"><div class="tt c6">Manual Testing</div><div class="tc2 c6">36 rows</div></div>
+            <table><thead><tr><th class="c6">#</th><th class="c6">Test Case</th><th class="c6">Status</th><th class="c6">Tester</th></tr></thead>
+            <tbody>
+              <tr><td class="c6" style="color:#1a0600">1</td><td class="c6">Login with valid creds</td><td class="c6"><span class="tg pass c6">Passed</span></td><td class="c6">kalpana.r</td></tr>
+              <tr><td class="c6" style="color:#1a0600">2</td><td class="c6">Password reset flow</td><td class="c6"><span class="tg wip c6">In Progress</span></td><td class="c6">swati.m</td></tr>
+              <tr><td class="c6" style="color:#1a0600">3</td><td class="c6">Export to Excel</td><td class="c6"><span class="tg fail c6">Failed</span></td><td class="c6">kalpana.r</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">6 — Volcanic Magma</div>
+  <div class="name-sub">Glowing lava crack lines · Red/Orange/Gold · Ember glow pulse · Deep rock dark</div>
+  <div style="text-align:center;margin-top:6px">
+    <span class="style-tag" style="background:#ff450022;color:#992200;border:1px solid #ff450044">Lava Cracks</span>
+    <span class="style-tag" style="background:#ffcc0022;color:#886600;border:1px solid #ffcc0044">Ember Glow</span>
+  </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;padding-bottom:60px;font-size:12px;color:#334;">
+  Say <strong style="color:#888">"apply 1"</strong> through <strong style="color:#888">"apply 6"</strong> to apply any theme to the actual app.
+</p>
+
+<script>
+  function toggleMode() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('toggleBtn').innerHTML = isLight ? '🌙 Dark Mode' : '☀ Light Mode';
+  }
+</script>
+</body>
+</html>

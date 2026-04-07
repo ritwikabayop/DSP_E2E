@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>E2E Dashboard — More Theme Suggestions</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #e8e8ec; padding: 48px 32px 80px; }
+  h1 { text-align: center; font-size: 22px; color: #1a1a2e; margin-bottom: 6px; font-weight: 800; }
+  .sub { text-align: center; color: #888; font-size: 13px; margin-bottom: 44px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1600px; margin: 0 auto; }
+
+  /* ---- BROWSER FRAME ---- */
+  .frame { border-radius: 14px; box-shadow: 0 16px 64px rgba(0,0,0,0.18); overflow: hidden; }
+  .bar { height: 36px; display: flex; align-items: center; padding: 0 14px; gap: 7px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .urlbox { flex:1; height: 20px; border-radius: 5px; margin: 0 12px; display:flex; align-items:center; padding: 0 8px; font-size:10px; }
+
+  /* ---- SHARED APP SHELL ---- */
+  .app { display: flex; height: 560px; }
+  .sb { width: 200px; display: flex; flex-direction: column; flex-shrink: 0; }
+  .sb-logo { padding: 14px 12px 12px; display: flex; align-items: center; gap: 9px; border-bottom-width: 1px; border-bottom-style: solid; }
+  .li { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0; }
+  .lt1 { font-size:12px; font-weight:800; line-height:1.2; }
+  .lt2 { font-size:9px; opacity:.6; }
+  .nav { padding: 8px 6px; flex:1; display:flex; flex-direction:column; gap:2px; }
+  .ni { height:36px; border-radius:7px; display:flex; align-items:center; gap:8px; padding:0 10px; font-size:12px; cursor:pointer; }
+  .ns { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:10px 10px 3px; opacity:.5; }
+  .sb-foot { padding:10px 6px; border-top-width:1px; border-top-style:solid; }
+  .av { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+  .ur { display:flex; align-items:center; gap:7px; padding:6px 8px; border-radius:7px; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .hdr { height:48px; display:flex; align-items:center; padding:0 16px; gap:10px; flex-shrink:0; border-bottom-width:1px; border-bottom-style:solid; }
+  .ht { font-size:14px; font-weight:800; }
+  .hs { flex:1; }
+  .pill { font-size:10px; font-weight:700; padding:3px 10px; border-radius:5px; }
+  .sbtn { border:none; border-radius:7px; padding:5px 14px; font-size:11px; font-weight:800; cursor:pointer; }
+  .ibtn { border-radius:7px; padding:4px 12px; font-size:11px; cursor:pointer; border-width:1px; border-style:solid; background:transparent; }
+
+  .body { flex:1; padding:14px 16px; display:flex; flex-direction:column; gap:12px; overflow:hidden; }
+  .sg { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .sc { border-radius:9px; padding:12px 14px; border-width:1px; border-style:solid; }
+  .sl { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+  .sv { font-size:24px; font-weight:900; line-height:1; }
+  .ss { font-size:9px; margin-top:3px; }
+  .sbr { height:3px; border-radius:99px; margin-top:6px; overflow:hidden; }
+  .sbf { height:100%; border-radius:99px; }
+
+  .cr { display:flex; gap:5px; }
+  .ch { padding:3px 11px; border-radius:20px; font-size:10px; font-weight:600; cursor:pointer; border-width:1px; border-style:solid; }
+
+  .tc { border-radius:9px; overflow:hidden; border-width:1px; border-style:solid; }
+  .th2 { padding:9px 14px; border-bottom-width:1px; border-bottom-style:solid; display:flex; align-items:center; justify-content:space-between; }
+  .tt { font-size:12px; font-weight:700; }
+  .tc2 { font-size:10px; padding:2px 8px; border-radius:20px; border-width:1px; border-style:solid; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:6px 12px; text-align:left; border-bottom-width:1px; border-bottom-style:solid; }
+  tbody td { padding:7px 12px; font-size:11px; border-bottom-width:1px; border-bottom-style:solid; }
+  .tg { display:inline-flex; align-items:center; padding:1px 8px; border-radius:4px; font-size:10px; font-weight:700; border-width:1px; border-style:solid; }
+
+  .name-label { font-size:11px; color:#888; text-align:center; margin-top:14px; font-weight:700; }
+</style>
+</head>
+<body>
+<h1>More Professional Theme Suggestions</h1>
+<p class="sub">Full app previews — tell me which number you like and I'll apply it</p>
+
+<div class="grid">
+
+  <!-- ═══ THEME 1: CORPORATE NAVY ═══ -->
+  <div>
+  <div class="frame">
+    <div class="bar" style="background:#1c2a4a">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="urlbox" style="background:rgba(255,255,255,0.08);color:#7a9cc8">localhost:5173/DSP_E2E/</div>
+    </div>
+    <div class="app" style="background:#f0f4fb">
+      <div class="sb" style="background:#1e3a6e;border-right:none">
+        <div class="sb-logo" style="border-bottom-color:#15305a">
+          <div class="li" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1e3a6e">E</div>
+          <div><div class="lt1" style="color:#fff">E2E Hub</div><div class="lt2" style="color:#7aa0cc">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="ns" style="color:#6b90bf">Main</div>
+          <div class="ni" style="background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:700;border-left:3px solid #fbbf24;padding-left:7px">⊞ Home</div>
+          <div class="ni" style="color:#6b90bf">◈ DSP Sheet</div>
+          <div class="ni" style="color:#6b90bf">⚇ Team</div>
+          <div class="ni" style="color:#6b90bf">▤ Reports</div>
+          <div class="ns" style="color:#6b90bf">Settings</div>
+          <div class="ni" style="color:#6b90bf">✦ KT Sessions</div>
+          <div class="ni" style="color:#6b90bf">⛨ Access</div>
+        </div>
+        <div class="sb-foot" style="border-top-color:#15305a">
+          <div class="ur"><div class="av" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1e3a6e">RS</div><div><div style="font-size:11px;font-weight:700;color:#fff">Ritwik S.</div><div style="font-size:9px;color:#6b90bf">Admin</div></div></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="hdr" style="background:#fff;border-bottom-color:#dce8f5">
+          <div class="ht" style="color:#1e3a6e">DSP Sheet</div>
+          <div class="pill" style="background:#e8f0fd;color:#1e3a6e;border:1px solid #c0d4f5">April 2026</div>
+          <div class="hs"></div>
+          <div class="ibtn" style="color:#6b7c99;border-color:#dce8f5">Export</div>
+          <div class="sbtn" style="background:linear-gradient(135deg,#1e40af,#1e3a6e);color:#fff;box-shadow:0 2px 8px rgba(30,58,110,0.3)">Save Changes</div>
+        </div>
+        <div class="body" style="background:#f0f4fb">
+          <div class="sg">
+            <div class="sc" style="background:#fff;border-color:#dce8f5">
+              <div class="sl" style="color:#7a90bb">Total</div>
+              <div class="sv" style="color:#1e3a6e">36</div>
+              <div class="sbr" style="background:#e0eaf8"><div class="sbf" style="width:100%;background:linear-gradient(90deg,#1e40af,#1e3a6e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#dce8f5">
+              <div class="sl" style="color:#7a90bb">Passed</div>
+              <div class="sv" style="color:#16a34a">24</div>
+              <div class="sbr" style="background:#e0eaf8"><div class="sbf" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#dce8f5">
+              <div class="sl" style="color:#7a90bb">In Progress</div>
+              <div class="sv" style="color:#d97706">8</div>
+              <div class="sbr" style="background:#e0eaf8"><div class="sbf" style="width:22%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#dce8f5">
+              <div class="sl" style="color:#7a90bb">Failed</div>
+              <div class="sv" style="color:#dc2626">4</div>
+              <div class="sbr" style="background:#e0eaf8"><div class="sbf" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+          <div class="cr">
+            <div class="ch" style="background:#1e40af;border-color:#1e40af;color:#fff">All</div>
+            <div class="ch" style="border-color:#dce8f5;color:#7a90bb;background:#fff">Passed</div>
+            <div class="ch" style="border-color:#dce8f5;color:#7a90bb;background:#fff">In Progress</div>
+            <div class="ch" style="border-color:#dce8f5;color:#7a90bb;background:#fff">Failed</div>
+          </div>
+          <div class="tc" style="background:#fff;border-color:#dce8f5">
+            <div class="th2" style="background:#e8f0fd;border-bottom-color:#dce8f5">
+              <div class="tt" style="color:#1e3a6e">Manual Testing</div>
+              <div class="tc2" style="background:#fff;border-color:#dce8f5;color:#7a90bb">36 rows</div>
+            </div>
+            <table>
+              <thead style="background:#f4f8fe">
+                <tr><th style="color:#7a90bb;border-bottom-color:#dce8f5">#</th><th style="color:#7a90bb;border-bottom-color:#dce8f5">Test Case</th><th style="color:#7a90bb;border-bottom-color:#dce8f5">Status</th><th style="color:#7a90bb;border-bottom-color:#dce8f5">Tester</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#aaa;border-bottom-color:#eef3fb">1</td><td style="color:#1e3a6e;border-bottom-color:#eef3fb">Login with valid credentials</td><td style="border-bottom-color:#eef3fb"><span class="tg" style="background:#dcfce7;color:#14532d;border-color:#bbf7d0">Passed</span></td><td style="color:#7a90bb;border-bottom-color:#eef3fb">kalpana.r</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#eef3fb">2</td><td style="color:#1e3a6e;border-bottom-color:#eef3fb">Password reset flow</td><td style="border-bottom-color:#eef3fb"><span class="tg" style="background:#fef9c3;color:#92400e;border-color:#fde68a">In Progress</span></td><td style="color:#7a90bb;border-bottom-color:#eef3fb">swati.m</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#eef3fb">3</td><td style="color:#1e3a6e;border-bottom-color:#eef3fb">Export to Excel validation</td><td style="border-bottom-color:#eef3fb"><span class="tg" style="background:#fee2e2;color:#991b1b;border-color:#fecaca">Failed</span></td><td style="color:#7a90bb;border-bottom-color:#eef3fb">kalpana.r</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">1 — Corporate Navy · Deep Blue sidebar + Gold accents</div>
+  </div>
+
+  <!-- ═══ THEME 2: FOREST EXECUTIVE ═══ -->
+  <div>
+  <div class="frame">
+    <div class="bar" style="background:#0d3320">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="urlbox" style="background:rgba(255,255,255,0.08);color:#4a9a6a">localhost:5173/DSP_E2E/</div>
+    </div>
+    <div class="app" style="background:#f4fbf6">
+      <div class="sb" style="background:#14532d;border-right:none">
+        <div class="sb-logo" style="border-bottom-color:#0d3a20">
+          <div class="li" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#14532d">E</div>
+          <div><div class="lt1" style="color:#fff">E2E Hub</div><div class="lt2" style="color:#4a9a6a">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="ns" style="color:#3a7a50">Main</div>
+          <div class="ni" style="background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:700;border-left:3px solid #fbbf24;padding-left:7px">⊞ Home</div>
+          <div class="ni" style="color:#3a7a50">◈ DSP Sheet</div>
+          <div class="ni" style="color:#3a7a50">⚇ Team</div>
+          <div class="ni" style="color:#3a7a50">▤ Reports</div>
+          <div class="ns" style="color:#3a7a50">Settings</div>
+          <div class="ni" style="color:#3a7a50">✦ KT Sessions</div>
+          <div class="ni" style="color:#3a7a50">⛨ Access</div>
+        </div>
+        <div class="sb-foot" style="border-top-color:#0d3a20">
+          <div class="ur"><div class="av" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#14532d">RS</div><div><div style="font-size:11px;font-weight:700;color:#fff">Ritwik S.</div><div style="font-size:9px;color:#4a9a6a">Admin</div></div></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="hdr" style="background:#fff;border-bottom-color:#c8e8d4">
+          <div class="ht" style="color:#14532d">DSP Sheet</div>
+          <div class="pill" style="background:#dcfce7;color:#14532d;border:1px solid #bbf7d0">April 2026</div>
+          <div class="hs"></div>
+          <div class="ibtn" style="color:#4a7a5a;border-color:#c8e8d4">Export</div>
+          <div class="sbtn" style="background:linear-gradient(135deg,#16a34a,#14532d);color:#fff;box-shadow:0 2px 8px rgba(20,83,45,0.3)">Save Changes</div>
+        </div>
+        <div class="body" style="background:#f4fbf6">
+          <div class="sg">
+            <div class="sc" style="background:#fff;border-color:#c8e8d4">
+              <div class="sl" style="color:#4a8a60">Total</div>
+              <div class="sv" style="color:#14532d">36</div>
+              <div class="sbr" style="background:#d8f0e0"><div class="sbf" style="width:100%;background:linear-gradient(90deg,#16a34a,#14532d)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#c8e8d4">
+              <div class="sl" style="color:#4a8a60">Passed</div>
+              <div class="sv" style="color:#16a34a">24</div>
+              <div class="sbr" style="background:#d8f0e0"><div class="sbf" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#c8e8d4">
+              <div class="sl" style="color:#4a8a60">In Progress</div>
+              <div class="sv" style="color:#d97706">8</div>
+              <div class="sbr" style="background:#d8f0e0"><div class="sbf" style="width:22%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#c8e8d4">
+              <div class="sl" style="color:#4a8a60">Failed</div>
+              <div class="sv" style="color:#dc2626">4</div>
+              <div class="sbr" style="background:#d8f0e0"><div class="sbf" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+          <div class="cr">
+            <div class="ch" style="background:#16a34a;border-color:#16a34a;color:#fff">All</div>
+            <div class="ch" style="border-color:#c8e8d4;color:#4a8a60;background:#fff">Passed</div>
+            <div class="ch" style="border-color:#c8e8d4;color:#4a8a60;background:#fff">In Progress</div>
+            <div class="ch" style="border-color:#c8e8d4;color:#4a8a60;background:#fff">Failed</div>
+          </div>
+          <div class="tc" style="background:#fff;border-color:#c8e8d4">
+            <div class="th2" style="background:#eaf7ee;border-bottom-color:#c8e8d4">
+              <div class="tt" style="color:#14532d">Manual Testing</div>
+              <div class="tc2" style="background:#fff;border-color:#c8e8d4;color:#4a8a60">36 rows</div>
+            </div>
+            <table>
+              <thead style="background:#f2faf4">
+                <tr><th style="color:#4a8a60;border-bottom-color:#c8e8d4">#</th><th style="color:#4a8a60;border-bottom-color:#c8e8d4">Test Case</th><th style="color:#4a8a60;border-bottom-color:#c8e8d4">Status</th><th style="color:#4a8a60;border-bottom-color:#c8e8d4">Tester</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#aaa;border-bottom-color:#e0f4e8">1</td><td style="color:#14532d;border-bottom-color:#e0f4e8">Login with valid credentials</td><td style="border-bottom-color:#e0f4e8"><span class="tg" style="background:#dcfce7;color:#14532d;border-color:#bbf7d0">Passed</span></td><td style="color:#4a8a60;border-bottom-color:#e0f4e8">kalpana.r</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#e0f4e8">2</td><td style="color:#14532d;border-bottom-color:#e0f4e8">Password reset flow</td><td style="border-bottom-color:#e0f4e8"><span class="tg" style="background:#fef9c3;color:#92400e;border-color:#fde68a">In Progress</span></td><td style="color:#4a8a60;border-bottom-color:#e0f4e8">swati.m</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#e0f4e8">3</td><td style="color:#14532d;border-bottom-color:#e0f4e8">Export to Excel validation</td><td style="border-bottom-color:#e0f4e8"><span class="tg" style="background:#fee2e2;color:#991b1b;border-color:#fecaca">Failed</span></td><td style="color:#4a8a60;border-bottom-color:#e0f4e8">kalpana.r</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">2 — Forest Executive · Deep Green sidebar + Gold accents</div>
+  </div>
+
+  <!-- ═══ THEME 3: BURGUNDY PREMIUM ═══ -->
+  <div>
+  <div class="frame">
+    <div class="bar" style="background:#4a0a1a">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="urlbox" style="background:rgba(255,255,255,0.08);color:#b06070">localhost:5173/DSP_E2E/</div>
+    </div>
+    <div class="app" style="background:#fdf8f9">
+      <div class="sb" style="background:#7f1d1d;border-right:none">
+        <div class="sb-logo" style="border-bottom-color:#5a1010">
+          <div class="li" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#7f1d1d">E</div>
+          <div><div class="lt1" style="color:#fff">E2E Hub</div><div class="lt2" style="color:#c08080">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="ns" style="color:#a06060">Main</div>
+          <div class="ni" style="background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:700;border-left:3px solid #fbbf24;padding-left:7px">⊞ Home</div>
+          <div class="ni" style="color:#a06060">◈ DSP Sheet</div>
+          <div class="ni" style="color:#a06060">⚇ Team</div>
+          <div class="ni" style="color:#a06060">▤ Reports</div>
+          <div class="ns" style="color:#a06060">Settings</div>
+          <div class="ni" style="color:#a06060">✦ KT Sessions</div>
+          <div class="ni" style="color:#a06060">⛨ Access</div>
+        </div>
+        <div class="sb-foot" style="border-top-color:#5a1010">
+          <div class="ur"><div class="av" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#7f1d1d">RS</div><div><div style="font-size:11px;font-weight:700;color:#fff">Ritwik S.</div><div style="font-size:9px;color:#c08080">Admin</div></div></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="hdr" style="background:#fff;border-bottom-color:#f0d8d8">
+          <div class="ht" style="color:#7f1d1d">DSP Sheet</div>
+          <div class="pill" style="background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca">April 2026</div>
+          <div class="hs"></div>
+          <div class="ibtn" style="color:#a06070;border-color:#f0d8d8">Export</div>
+          <div class="sbtn" style="background:linear-gradient(135deg,#be123c,#7f1d1d);color:#fff;box-shadow:0 2px 8px rgba(127,29,29,0.3)">Save Changes</div>
+        </div>
+        <div class="body" style="background:#fdf8f9">
+          <div class="sg">
+            <div class="sc" style="background:#fff;border-color:#f0d8d8">
+              <div class="sl" style="color:#b08090">Total</div>
+              <div class="sv" style="color:#7f1d1d">36</div>
+              <div class="sbr" style="background:#f8e8e8"><div class="sbf" style="width:100%;background:linear-gradient(90deg,#be123c,#7f1d1d)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#f0d8d8">
+              <div class="sl" style="color:#b08090">Passed</div>
+              <div class="sv" style="color:#16a34a">24</div>
+              <div class="sbr" style="background:#f8e8e8"><div class="sbf" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#f0d8d8">
+              <div class="sl" style="color:#b08090">In Progress</div>
+              <div class="sv" style="color:#d97706">8</div>
+              <div class="sbr" style="background:#f8e8e8"><div class="sbf" style="width:22%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#f0d8d8">
+              <div class="sl" style="color:#b08090">Failed</div>
+              <div class="sv" style="color:#dc2626">4</div>
+              <div class="sbr" style="background:#f8e8e8"><div class="sbf" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+          <div class="cr">
+            <div class="ch" style="background:#be123c;border-color:#be123c;color:#fff">All</div>
+            <div class="ch" style="border-color:#f0d8d8;color:#b08090;background:#fff">Passed</div>
+            <div class="ch" style="border-color:#f0d8d8;color:#b08090;background:#fff">In Progress</div>
+            <div class="ch" style="border-color:#f0d8d8;color:#b08090;background:#fff">Failed</div>
+          </div>
+          <div class="tc" style="background:#fff;border-color:#f0d8d8">
+            <div class="th2" style="background:#fef2f2;border-bottom-color:#f0d8d8">
+              <div class="tt" style="color:#7f1d1d">Manual Testing</div>
+              <div class="tc2" style="background:#fff;border-color:#f0d8d8;color:#b08090">36 rows</div>
+            </div>
+            <table>
+              <thead style="background:#fdf6f6">
+                <tr><th style="color:#b08090;border-bottom-color:#f0d8d8">#</th><th style="color:#b08090;border-bottom-color:#f0d8d8">Test Case</th><th style="color:#b08090;border-bottom-color:#f0d8d8">Status</th><th style="color:#b08090;border-bottom-color:#f0d8d8">Tester</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#aaa;border-bottom-color:#faeaea">1</td><td style="color:#5a1010;border-bottom-color:#faeaea">Login with valid credentials</td><td style="border-bottom-color:#faeaea"><span class="tg" style="background:#dcfce7;color:#14532d;border-color:#bbf7d0">Passed</span></td><td style="color:#b08090;border-bottom-color:#faeaea">kalpana.r</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#faeaea">2</td><td style="color:#5a1010;border-bottom-color:#faeaea">Password reset flow</td><td style="border-bottom-color:#faeaea"><span class="tg" style="background:#fef9c3;color:#92400e;border-color:#fde68a">In Progress</span></td><td style="color:#b08090;border-bottom-color:#faeaea">swati.m</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#faeaea">3</td><td style="color:#5a1010;border-bottom-color:#faeaea">Export to Excel validation</td><td style="border-bottom-color:#faeaea"><span class="tg" style="background:#fee2e2;color:#991b1b;border-color:#fecaca">Failed</span></td><td style="color:#b08090;border-bottom-color:#faeaea">kalpana.r</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">3 — Burgundy Premium · Deep Red sidebar + Gold accents</div>
+  </div>
+
+  <!-- ═══ THEME 4: TEAL EXECUTIVE ═══ -->
+  <div>
+  <div class="frame">
+    <div class="bar" style="background:#0a2e2c">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="urlbox" style="background:rgba(255,255,255,0.08);color:#3a8a88">localhost:5173/DSP_E2E/</div>
+    </div>
+    <div class="app" style="background:#f2faf9">
+      <div class="sb" style="background:#134e4a;border-right:none">
+        <div class="sb-logo" style="border-bottom-color:#0a3532">
+          <div class="li" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#134e4a">E</div>
+          <div><div class="lt1" style="color:#fff">E2E Hub</div><div class="lt2" style="color:#3a8a88">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="ns" style="color:#2a6a68">Main</div>
+          <div class="ni" style="background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:700;border-left:3px solid #fbbf24;padding-left:7px">⊞ Home</div>
+          <div class="ni" style="color:#2a6a68">◈ DSP Sheet</div>
+          <div class="ni" style="color:#2a6a68">⚇ Team</div>
+          <div class="ni" style="color:#2a6a68">▤ Reports</div>
+          <div class="ns" style="color:#2a6a68">Settings</div>
+          <div class="ni" style="color:#2a6a68">✦ KT Sessions</div>
+          <div class="ni" style="color:#2a6a68">⛨ Access</div>
+        </div>
+        <div class="sb-foot" style="border-top-color:#0a3532">
+          <div class="ur"><div class="av" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#134e4a">RS</div><div><div style="font-size:11px;font-weight:700;color:#fff">Ritwik S.</div><div style="font-size:9px;color:#3a8a88">Admin</div></div></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="hdr" style="background:#fff;border-bottom-color:#b8deda">
+          <div class="ht" style="color:#134e4a">DSP Sheet</div>
+          <div class="pill" style="background:#ccfbf1;color:#134e4a;border:1px solid #99f6e4">April 2026</div>
+          <div class="hs"></div>
+          <div class="ibtn" style="color:#3a7a78;border-color:#b8deda">Export</div>
+          <div class="sbtn" style="background:linear-gradient(135deg,#0d9488,#134e4a);color:#fff;box-shadow:0 2px 8px rgba(19,78,74,0.3)">Save Changes</div>
+        </div>
+        <div class="body" style="background:#f2faf9">
+          <div class="sg">
+            <div class="sc" style="background:#fff;border-color:#b8deda">
+              <div class="sl" style="color:#3a8a88">Total</div>
+              <div class="sv" style="color:#134e4a">36</div>
+              <div class="sbr" style="background:#c8f0ec"><div class="sbf" style="width:100%;background:linear-gradient(90deg,#0d9488,#134e4a)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#b8deda">
+              <div class="sl" style="color:#3a8a88">Passed</div>
+              <div class="sv" style="color:#16a34a">24</div>
+              <div class="sbr" style="background:#c8f0ec"><div class="sbf" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#b8deda">
+              <div class="sl" style="color:#3a8a88">In Progress</div>
+              <div class="sv" style="color:#d97706">8</div>
+              <div class="sbr" style="background:#c8f0ec"><div class="sbf" style="width:22%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#b8deda">
+              <div class="sl" style="color:#3a8a88">Failed</div>
+              <div class="sv" style="color:#dc2626">4</div>
+              <div class="sbr" style="background:#c8f0ec"><div class="sbf" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+          <div class="cr">
+            <div class="ch" style="background:#0d9488;border-color:#0d9488;color:#fff">All</div>
+            <div class="ch" style="border-color:#b8deda;color:#3a8a88;background:#fff">Passed</div>
+            <div class="ch" style="border-color:#b8deda;color:#3a8a88;background:#fff">In Progress</div>
+            <div class="ch" style="border-color:#b8deda;color:#3a8a88;background:#fff">Failed</div>
+          </div>
+          <div class="tc" style="background:#fff;border-color:#b8deda">
+            <div class="th2" style="background:#e0f8f4;border-bottom-color:#b8deda">
+              <div class="tt" style="color:#134e4a">Manual Testing</div>
+              <div class="tc2" style="background:#fff;border-color:#b8deda;color:#3a8a88">36 rows</div>
+            </div>
+            <table>
+              <thead style="background:#edf8f6">
+                <tr><th style="color:#3a8a88;border-bottom-color:#b8deda">#</th><th style="color:#3a8a88;border-bottom-color:#b8deda">Test Case</th><th style="color:#3a8a88;border-bottom-color:#b8deda">Status</th><th style="color:#3a8a88;border-bottom-color:#b8deda">Tester</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#aaa;border-bottom-color:#d8f4f0">1</td><td style="color:#134e4a;border-bottom-color:#d8f4f0">Login with valid credentials</td><td style="border-bottom-color:#d8f4f0"><span class="tg" style="background:#dcfce7;color:#14532d;border-color:#bbf7d0">Passed</span></td><td style="color:#3a8a88;border-bottom-color:#d8f4f0">kalpana.r</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#d8f4f0">2</td><td style="color:#134e4a;border-bottom-color:#d8f4f0">Password reset flow</td><td style="border-bottom-color:#d8f4f0"><span class="tg" style="background:#fef9c3;color:#92400e;border-color:#fde68a">In Progress</span></td><td style="color:#3a8a88;border-bottom-color:#d8f4f0">swati.m</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#d8f4f0">3</td><td style="color:#134e4a;border-bottom-color:#d8f4f0">Export to Excel validation</td><td style="border-bottom-color:#d8f4f0"><span class="tg" style="background:#fee2e2;color:#991b1b;border-color:#fecaca">Failed</span></td><td style="color:#3a8a88;border-bottom-color:#d8f4f0">kalpana.r</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">4 — Teal Executive · Deep Teal sidebar + Gold accents</div>
+  </div>
+
+  <!-- ═══ THEME 5: GRAPE PROFESSIONAL ═══ -->
+  <div>
+  <div class="frame">
+    <div class="bar" style="background:#2e0a50">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="urlbox" style="background:rgba(255,255,255,0.08);color:#8a5abd">localhost:5173/DSP_E2E/</div>
+    </div>
+    <div class="app" style="background:#faf6ff">
+      <div class="sb" style="background:#3b0764;border-right:none">
+        <div class="sb-logo" style="border-bottom-color:#280450">
+          <div class="li" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#3b0764">E</div>
+          <div><div class="lt1" style="color:#fff">E2E Hub</div><div class="lt2" style="color:#9060c8">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="ns" style="color:#7040a8">Main</div>
+          <div class="ni" style="background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:700;border-left:3px solid #fbbf24;padding-left:7px">⊞ Home</div>
+          <div class="ni" style="color:#7040a8">◈ DSP Sheet</div>
+          <div class="ni" style="color:#7040a8">⚇ Team</div>
+          <div class="ni" style="color:#7040a8">▤ Reports</div>
+          <div class="ns" style="color:#7040a8">Settings</div>
+          <div class="ni" style="color:#7040a8">✦ KT Sessions</div>
+          <div class="ni" style="color:#7040a8">⛨ Access</div>
+        </div>
+        <div class="sb-foot" style="border-top-color:#280450">
+          <div class="ur"><div class="av" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#3b0764">RS</div><div><div style="font-size:11px;font-weight:700;color:#fff">Ritwik S.</div><div style="font-size:9px;color:#9060c8">Admin</div></div></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="hdr" style="background:#fff;border-bottom-color:#e0d0f5">
+          <div class="ht" style="color:#3b0764">DSP Sheet</div>
+          <div class="pill" style="background:#f3e8ff;color:#3b0764;border:1px solid #e0c0f8">April 2026</div>
+          <div class="hs"></div>
+          <div class="ibtn" style="color:#7050a0;border-color:#e0d0f5">Export</div>
+          <div class="sbtn" style="background:linear-gradient(135deg,#7c3aed,#3b0764);color:#fff;box-shadow:0 2px 8px rgba(59,7,100,0.3)">Save Changes</div>
+        </div>
+        <div class="body" style="background:#faf6ff">
+          <div class="sg">
+            <div class="sc" style="background:#fff;border-color:#e0d0f5">
+              <div class="sl" style="color:#8060b0">Total</div>
+              <div class="sv" style="color:#3b0764">36</div>
+              <div class="sbr" style="background:#ede0f8"><div class="sbf" style="width:100%;background:linear-gradient(90deg,#7c3aed,#3b0764)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#e0d0f5">
+              <div class="sl" style="color:#8060b0">Passed</div>
+              <div class="sv" style="color:#16a34a">24</div>
+              <div class="sbr" style="background:#ede0f8"><div class="sbf" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#e0d0f5">
+              <div class="sl" style="color:#8060b0">In Progress</div>
+              <div class="sv" style="color:#d97706">8</div>
+              <div class="sbr" style="background:#ede0f8"><div class="sbf" style="width:22%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#e0d0f5">
+              <div class="sl" style="color:#8060b0">Failed</div>
+              <div class="sv" style="color:#dc2626">4</div>
+              <div class="sbr" style="background:#ede0f8"><div class="sbf" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+          <div class="cr">
+            <div class="ch" style="background:#7c3aed;border-color:#7c3aed;color:#fff">All</div>
+            <div class="ch" style="border-color:#e0d0f5;color:#8060b0;background:#fff">Passed</div>
+            <div class="ch" style="border-color:#e0d0f5;color:#8060b0;background:#fff">In Progress</div>
+            <div class="ch" style="border-color:#e0d0f5;color:#8060b0;background:#fff">Failed</div>
+          </div>
+          <div class="tc" style="background:#fff;border-color:#e0d0f5">
+            <div class="th2" style="background:#f3e8ff;border-bottom-color:#e0d0f5">
+              <div class="tt" style="color:#3b0764">Manual Testing</div>
+              <div class="tc2" style="background:#fff;border-color:#e0d0f5;color:#8060b0">36 rows</div>
+            </div>
+            <table>
+              <thead style="background:#f8f2ff">
+                <tr><th style="color:#8060b0;border-bottom-color:#e0d0f5">#</th><th style="color:#8060b0;border-bottom-color:#e0d0f5">Test Case</th><th style="color:#8060b0;border-bottom-color:#e0d0f5">Status</th><th style="color:#8060b0;border-bottom-color:#e0d0f5">Tester</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#aaa;border-bottom-color:#ede0f8">1</td><td style="color:#3b0764;border-bottom-color:#ede0f8">Login with valid credentials</td><td style="border-bottom-color:#ede0f8"><span class="tg" style="background:#dcfce7;color:#14532d;border-color:#bbf7d0">Passed</span></td><td style="color:#8060b0;border-bottom-color:#ede0f8">kalpana.r</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#ede0f8">2</td><td style="color:#3b0764;border-bottom-color:#ede0f8">Password reset flow</td><td style="border-bottom-color:#ede0f8"><span class="tg" style="background:#fef9c3;color:#92400e;border-color:#fde68a">In Progress</span></td><td style="color:#8060b0;border-bottom-color:#ede0f8">swati.m</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#ede0f8">3</td><td style="color:#3b0764;border-bottom-color:#ede0f8">Export to Excel validation</td><td style="border-bottom-color:#ede0f8"><span class="tg" style="background:#fee2e2;color:#991b1b;border-color:#fecaca">Failed</span></td><td style="color:#8060b0;border-bottom-color:#ede0f8">kalpana.r</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">5 — Grape Professional · Deep Purple sidebar + Gold accents</div>
+  </div>
+
+  <!-- ═══ THEME 6: SLATE CHARCOAL ═══ -->
+  <div>
+  <div class="frame">
+    <div class="bar" style="background:#111827">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="urlbox" style="background:rgba(255,255,255,0.07);color:#6b7280">localhost:5173/DSP_E2E/</div>
+    </div>
+    <div class="app" style="background:#f9fafb">
+      <div class="sb" style="background:#1f2937;border-right:none">
+        <div class="sb-logo" style="border-bottom-color:#111827">
+          <div class="li" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1f2937">E</div>
+          <div><div class="lt1" style="color:#fff">E2E Hub</div><div class="lt2" style="color:#6b7280">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="ns" style="color:#4b5563">Main</div>
+          <div class="ni" style="background:rgba(251,191,36,0.12);color:#fbbf24;font-weight:700;border-left:3px solid #fbbf24;padding-left:7px">⊞ Home</div>
+          <div class="ni" style="color:#4b5563">◈ DSP Sheet</div>
+          <div class="ni" style="color:#4b5563">⚇ Team</div>
+          <div class="ni" style="color:#4b5563">▤ Reports</div>
+          <div class="ns" style="color:#4b5563">Settings</div>
+          <div class="ni" style="color:#4b5563">✦ KT Sessions</div>
+          <div class="ni" style="color:#4b5563">⛨ Access</div>
+        </div>
+        <div class="sb-foot" style="border-top-color:#111827">
+          <div class="ur"><div class="av" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1f2937">RS</div><div><div style="font-size:11px;font-weight:700;color:#fff">Ritwik S.</div><div style="font-size:9px;color:#6b7280">Admin</div></div></div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="hdr" style="background:#fff;border-bottom-color:#e5e7eb">
+          <div class="ht" style="color:#111827">DSP Sheet</div>
+          <div class="pill" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb">April 2026</div>
+          <div class="hs"></div>
+          <div class="ibtn" style="color:#6b7280;border-color:#e5e7eb">Export</div>
+          <div class="sbtn" style="background:linear-gradient(135deg,#374151,#1f2937);color:#fff;box-shadow:0 2px 8px rgba(31,41,55,0.3)">Save Changes</div>
+        </div>
+        <div class="body" style="background:#f9fafb">
+          <div class="sg">
+            <div class="sc" style="background:#fff;border-color:#e5e7eb">
+              <div class="sl" style="color:#9ca3af">Total</div>
+              <div class="sv" style="color:#111827">36</div>
+              <div class="sbr" style="background:#e5e7eb"><div class="sbf" style="width:100%;background:linear-gradient(90deg,#374151,#1f2937)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#e5e7eb">
+              <div class="sl" style="color:#9ca3af">Passed</div>
+              <div class="sv" style="color:#16a34a">24</div>
+              <div class="sbr" style="background:#e5e7eb"><div class="sbf" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#e5e7eb">
+              <div class="sl" style="color:#9ca3af">In Progress</div>
+              <div class="sv" style="color:#d97706">8</div>
+              <div class="sbr" style="background:#e5e7eb"><div class="sbf" style="width:22%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div>
+            </div>
+            <div class="sc" style="background:#fff;border-color:#e5e7eb">
+              <div class="sl" style="color:#9ca3af">Failed</div>
+              <div class="sv" style="color:#dc2626">4</div>
+              <div class="sbr" style="background:#e5e7eb"><div class="sbf" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+          <div class="cr">
+            <div class="ch" style="background:#1f2937;border-color:#1f2937;color:#fff">All</div>
+            <div class="ch" style="border-color:#e5e7eb;color:#6b7280;background:#fff">Passed</div>
+            <div class="ch" style="border-color:#e5e7eb;color:#6b7280;background:#fff">In Progress</div>
+            <div class="ch" style="border-color:#e5e7eb;color:#6b7280;background:#fff">Failed</div>
+          </div>
+          <div class="tc" style="background:#fff;border-color:#e5e7eb">
+            <div class="th2" style="background:#f3f4f6;border-bottom-color:#e5e7eb">
+              <div class="tt" style="color:#111827">Manual Testing</div>
+              <div class="tc2" style="background:#fff;border-color:#e5e7eb;color:#9ca3af">36 rows</div>
+            </div>
+            <table>
+              <thead style="background:#f9fafb">
+                <tr><th style="color:#9ca3af;border-bottom-color:#e5e7eb">#</th><th style="color:#9ca3af;border-bottom-color:#e5e7eb">Test Case</th><th style="color:#9ca3af;border-bottom-color:#e5e7eb">Status</th><th style="color:#9ca3af;border-bottom-color:#e5e7eb">Tester</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#aaa;border-bottom-color:#f3f4f6">1</td><td style="color:#111827;border-bottom-color:#f3f4f6">Login with valid credentials</td><td style="border-bottom-color:#f3f4f6"><span class="tg" style="background:#dcfce7;color:#14532d;border-color:#bbf7d0">Passed</span></td><td style="color:#9ca3af;border-bottom-color:#f3f4f6">kalpana.r</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#f3f4f6">2</td><td style="color:#111827;border-bottom-color:#f3f4f6">Password reset flow</td><td style="border-bottom-color:#f3f4f6"><span class="tg" style="background:#fef9c3;color:#92400e;border-color:#fde68a">In Progress</span></td><td style="color:#9ca3af;border-bottom-color:#f3f4f6">swati.m</td></tr>
+                <tr><td style="color:#aaa;border-bottom-color:#f3f4f6">3</td><td style="color:#111827;border-bottom-color:#f3f4f6">Export to Excel validation</td><td style="border-bottom-color:#f3f4f6"><span class="tg" style="background:#fee2e2;color:#991b1b;border-color:#fecaca">Failed</span></td><td style="color:#9ca3af;border-bottom-color:#f3f4f6">kalpana.r</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="name-label">6 — Slate Charcoal · Charcoal sidebar + Gold accents</div>
+  </div>
+
+</div>
+
+<p style="text-align:center;margin-top:40px;color:#888;font-size:13px;">
+  Say <strong>"apply 1"</strong>, <strong>"apply 3"</strong> etc. and I'll apply it to your app instantly.
+</p>
+</body>
+</html>

@@ -558,28 +558,8 @@ function App() {
                     {
                       key: 'role-info',
                       label: React.createElement('div', { style: { padding: '4px 0', pointerEvents: 'none' } },
-                        React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Active Role'),
-                        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 } },
-                          React.createElement(RoleIcon, { size: 13, color: roleConfig.color }),
-                          React.createElement('span', { style: { color: roleConfig.color, fontWeight: 700, fontSize: 12 } }, roleConfig.label),
-                          viewAsRole && React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Switched')
-                        ),
-                        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 3 } },
-                          ...[
-                            ['Edit data',    roleConfig.canEdit],
-                            ['Delete rows',  roleConfig.canDelete],
-                            ['Add rows',     roleConfig.canAddRow],
-                            ['Own rows only',roleConfig.onlyOwnRows],
-                          ].map(([perm, allowed]) =>
-                            React.createElement('div', { key: perm, style: { display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 } },
-                              React.createElement('span', { style: { color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1 } }, allowed ? '✓' : '✗'),
-                              React.createElement('span', { style: { color: allowed ? '#e2e8f0' : '#6b7280' } }, perm)
-                            )
-                          )
-                        ),
-                        // Show all roles this user has access to
-                        allowedRoles && allowedRoles.length > 0 && React.createElement('div', { style: { marginTop: 10, paddingTop: 8, borderTop: '1px solid #252d42' } },
-                          React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Access'),
+                        allowedRoles && allowedRoles.length > 0 && React.createElement('div', null,
+                          React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
                           React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 } },
                             ...allowedRoles.map((r) => {
                               const rc = ROLES[r] ?? ROLES.viewer;
