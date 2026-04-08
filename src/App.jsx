@@ -324,6 +324,7 @@ function App() {
     {
       key: 'modules-group',
       icon: React.createElement(LayoutDashboard, { size: 15 }),
+      title: 'Modules',
       label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
         'Modules',
         React.createElement(DotDirty, { dirty: dirtyModules.dsp || dirtyModules.ssa })
@@ -476,7 +477,10 @@ function App() {
             selectedKeys={[activeTab]}
             defaultOpenKeys={['modules-group']}
             items={navItems}
-            onClick={({ key }) => { if (key !== 'modules-group') { setActiveTab(key); setSearchQuery(''); } }}
+            onClick={({ key }) => {
+              if (key === 'modules-group') { setActiveModule(null); setSearchQuery(''); }
+              else { setActiveTab(key); setSearchQuery(''); }
+            }}
             inlineCollapsed={collapsed}
             style={{ background: 'transparent', border: 'none', marginTop: 6 }}
           />
