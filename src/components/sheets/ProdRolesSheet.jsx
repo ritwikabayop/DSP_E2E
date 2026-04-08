@@ -7,7 +7,7 @@ import {
 import { Users, RefreshCw, Plus, Trash2, Edit3, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { fetchProdRoles, upsertProdRolesRow, deleteProdRolesRow } from '../../services/api.js';
-import { LEAD_NAME_OPTIONS } from './RolesAccessSheet.jsx';
+import { LEAD_NAME_OPTIONS } from '../../utils/leadNames.js';
 import { MONTH_OPTIONS, currentMonthKey } from '../../utils/constants.js';
 
 const { Text } = Typography;
