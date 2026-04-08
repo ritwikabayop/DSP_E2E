@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, Table, Tag, Space, Row, Col, Select, Button, Typography, Progress, Statistic } from 'antd';
-import { BarChart3, TrendingUp, Users, FileText, User, Download, Printer } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, FileText, User, Download } from 'lucide-react';
 import { MONTH_OPTIONS, ROLES }              from '../../utils/constants.js';
 import { isHighPriority, statusColor } from '../../utils/helpers.jsx';
 
@@ -127,7 +127,6 @@ export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, sel
             style={{ background: canDownload ? '#217346' : undefined, borderColor: canDownload ? '#217346' : undefined }}>
             Full Export
           </Button>
-          <Button size="small" icon={<Printer size={13} />} onClick={() => window.print()} disabled={!canDownload}>Print</Button>
         </Space>
       </div>
 
