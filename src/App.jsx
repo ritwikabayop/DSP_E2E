@@ -474,19 +474,17 @@ function App() {
 
         <Layout style={{ background: 'var(--bg-base)', minWidth: 0 }}>
           <Header className="app-header" style={{ padding: '0 14px', lineHeight: 'normal' }}>
-            {activeTab !== 'home' && (
-              <Tooltip title="Back to Home">
-                <Button
-                  size="small"
-                  type="text"
-                  icon={React.createElement(Home, { size: 13 })}
-                  onClick={() => { setActiveTab('home'); setSearchQuery(''); }}
-                  style={{ color: '#8892a4', flexShrink: 0 }}
-                >
-                  Home
-                </Button>
-              </Tooltip>
-            )}
+            <Tooltip title="Back to Modules">
+              <Button
+                size="small"
+                type="text"
+                icon={React.createElement(Home, { size: 13 })}
+                onClick={() => { setActiveModule(null); setSearchQuery(''); }}
+                style={{ color: '#8892a4', flexShrink: 0 }}
+              >
+                Modules
+              </Button>
+            </Tooltip>
             <Select
               size="small"
               value={selectedMonth}
