@@ -212,6 +212,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
           <LayoutDashboard size={17} color="#fff" />
         </div>
         <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>MyISP</span>
+        <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: 12 }}>&nbsp;– Insight &amp; Status Platform</span>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
           {/* Profile dropdown — click to switch role / sign out */}
