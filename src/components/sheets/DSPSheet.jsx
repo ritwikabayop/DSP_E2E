@@ -123,7 +123,7 @@ export default function DSPSheet({
             : v ? <Text style={{ fontSize: 11 }}>{v}</Text> : <Text type="secondary" style={{ fontSize: 11 }}>—</Text>,
       },
       {
-        title: 'Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 110,
+        title: 'Last Edited Date', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 130,
         render: (v, rec) => !v ? <Text type="secondary">—</Text> : (
           <Text type="secondary" style={{ fontSize: 11 }} title={rec.lastEditedBy || ''}>{fmtDate(v)}</Text>
         ),

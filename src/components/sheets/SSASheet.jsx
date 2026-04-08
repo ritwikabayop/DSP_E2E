@@ -82,7 +82,7 @@ export default function SSASheet({
     message.info('Row deleted');
   };
 
-  // Column order: Tester → Module → Ver. → Deal IDs → Status → Edited → Comments
+  // Column order: Tester → Module → Ver. → Deal IDs → Status → Last Edited Date → Comments
   const cols = [
     {
       title: 'Tester', dataIndex: 'tester', key: 'tester', width: 160,
@@ -121,7 +121,7 @@ export default function SSASheet({
       ),
     },
     {
-      title: 'Edited', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 120,
+      title: 'Last Edited Date', dataIndex: 'lastEditedAt', key: 'lastEditedAt', width: 130,
       render: (v, rec) => !v ? <Text type="secondary">—</Text> : (
         <Text type="secondary" style={{ fontSize: 11 }} title={rec.lastEditedBy || ''}>{fmtDate(v)}</Text>
       ),
