@@ -2,12 +2,18 @@
 import { useEffect, useState } from 'react';
 import {
   Table, Typography, Card, message, Skeleton, Modal, Form, Input,
-  Button, Space, Tooltip,
+  Button, Space, Tooltip, Select, Row, Col,
 } from 'antd';
-import { Users, RefreshCw, Plus, Trash2, Edit3 } from 'lucide-react';
+import { Users, RefreshCw, Plus, Trash2, Edit3, Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { fetchProdRoles, upsertProdRolesRow, deleteProdRolesRow } from '../../services/api.js';
+import { LEAD_NAME_OPTIONS } from './RolesAccessSheet.jsx';
+import { MONTH_OPTIONS, currentMonthKey } from '../../utils/constants.js';
 
 const { Text } = Typography;
+
+const MODULE_OPTIONS = ['DSP', 'SSA', 'GenAI', 'BPMS', 'AMS', 'IMS', 'SI', 'Other']
+  .map((v) => ({ value: v, label: v }));
 
 /**
  * ProdRolesSheet — displays and edits the production team roles roster.
@@ -16,14 +22,15 @@ const { Text } = Typography;
  * @param {{ currentUser: string, role: string }} props
  */
 export default function ProdRolesSheet({ currentUser, role }) {
-  const [rows,      setRows]      = useState([]);
-  const [loading,   setLoading]   = useState(true);
-  const [search,    setSearch]    = useState('');
-  const [editRow,   setEditRow]   = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [saving,    setSaving]    = useState(false);
-  const [deleting,  setDeleting]  = useState(null);
-  const [form]      = Form.useForm();
+  const [rows,        setRows]        = useState([]);
+  const [loading,     setLoading]     = useState(true);
+  const [search,      setSearch]      = useState('');
+  const [monthFilter, setMonthFilter] = useState('');
+  const [editRow,     setEditRow]     = useState(null);
+  const [modalOpen,   setModalOpen]   = useState(false);
+  const [saving,      setSaving]      = useState(false);
+  const [deleting,    setDeleting]    = useState(null);
+  const [form]        = Form.useForm();
 
   const canEdit   = role === 'admin' || role === 'tl';
   const canDelete = role === 'admin';
@@ -43,6 +50,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
   const openAdd = () => {
     setEditRow(null);
     form.resetFields();
+    form.setFieldsValue({ month: currentMonthKey() });
     setModalOpen(true);
   };
 
@@ -60,6 +68,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
     try {
       const payload = {
         ...(editRow ? { id: editRow.id } : {}),
+        month:        values.month        ?? currentMonthKey(),
         team_lead:    values.team_lead?.trim()    ?? '',
         module:       values.module?.trim()       ?? '',
         resource_eid: values.resource_eid?.trim() ?? '',
@@ -97,18 +106,45 @@ export default function ProdRolesSheet({ currentUser, role }) {
     });
   };
 
+  // ── Excel export ──────────────────────────────────────────
+  const exportExcel = () => {
+    const data = filtered.map((r) => ({
+      Month:          MONTH_OPTIONS.find((m) => m.value === r.month)?.label ?? r.month ?? '',
+      'Team Lead':    r.team_lead    ?? '',
+      Module:         r.module       ?? '',
+      'Resource EID': r.resource_eid ?? '',
+      'Role Details': r.role_details ?? '',
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Team Roles');
+    XLSX.writeFile(wb, `Team_Roles_${monthFilter || 'All'}.xlsx`);
+  };
+
   // ── Filter ────────────────────────────────────────────────
   const filtered = rows.filter((r) => {
     const q = search.toLowerCase();
-    return !q
+    const matchMonth  = !monthFilter || r.month === monthFilter;
+    const matchSearch = !q
       || r.team_lead?.toLowerCase().includes(q)
       || r.module?.toLowerCase().includes(q)
       || r.resource_eid?.toLowerCase().includes(q)
       || r.role_details?.toLowerCase().includes(q);
+    return matchMonth && matchSearch;
   });
 
   // ── Columns ───────────────────────────────────────────────
   const columns = [
+    {
+      title: 'Month',
+      dataIndex: 'month',
+      key: 'month',
+      width: 130,
+      render: (v) => {
+        const lbl = MONTH_OPTIONS.find((m) => m.value === v)?.label ?? v ?? '—';
+        return <Text style={{ color: '#a78bfa', fontSize: 12 }}>{lbl}</Text>;
+      },
+    },
     {
       title: 'Team Lead',
       dataIndex: 'team_lead',
@@ -182,16 +218,28 @@ export default function ProdRolesSheet({ currentUser, role }) {
         }
         extra={
           <Space>
+            <Select
+              size="small"
+              allowClear
+              placeholder="All Months"
+              options={MONTH_OPTIONS}
+              value={monthFilter || undefined}
+              onChange={(v) => setMonthFilter(v ?? '')}
+              style={{ width: 140 }}
+            />
             <Input
               placeholder="Search..."
               size="small"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               allowClear
-              style={{ width: 180 }}
+              style={{ width: 150 }}
             />
             <Tooltip title="Refresh">
               <Button size="small" type="text" icon={<RefreshCw size={13} />} onClick={load} style={{ color: '#8892a4' }} />
+            </Tooltip>
+            <Tooltip title="Export to Excel">
+              <Button size="small" type="text" icon={<Download size={13} />} onClick={exportExcel} style={{ color: '#22c55e' }} />
             </Tooltip>
             {canEdit && (
               <Button size="small" type="primary" icon={<Plus size={13} />} onClick={openAdd}>
@@ -223,11 +271,26 @@ export default function ProdRolesSheet({ currentUser, role }) {
         destroyOnClose
       >
         <Form form={form} layout="vertical" size="small" style={{ marginTop: 12 }}>
+          <Row gutter={12}>
+            <Col span={12}>
+              <Form.Item name="month" label="Month" rules={[{ required: true, message: 'Required' }]}>
+                <Select options={MONTH_OPTIONS} placeholder="Select month" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="module" label="Module" rules={[{ required: true, message: 'Required' }]}>
+                <Select options={MODULE_OPTIONS} placeholder="Select module" allowClear showSearch />
+              </Form.Item>
+            </Col>
+          </Row>
           <Form.Item name="team_lead" label="Team Lead" rules={[{ required: true, message: 'Required' }]}>
-            <Input placeholder="e.g. John Smith" />
-          </Form.Item>
-          <Form.Item name="module" label="Module" rules={[{ required: true, message: 'Required' }]}>
-            <Input placeholder="e.g. DSP / SSA / BPMS" />
+            <Select
+              showSearch
+              allowClear
+              placeholder="Select or type a name"
+              options={LEAD_NAME_OPTIONS}
+              filterOption={(input, opt) => opt.label.toLowerCase().includes(input.toLowerCase())}
+            />
           </Form.Item>
           <Form.Item name="resource_eid" label="Resource EID" rules={[{ required: true, message: 'Required' }]}>
             <Input placeholder="e.g. john.smith" />

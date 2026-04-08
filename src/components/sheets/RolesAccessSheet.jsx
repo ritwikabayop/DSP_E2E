@@ -13,6 +13,27 @@ const ROLE_CATEGORY_OPTIONS = [
   'SA', 'SME', 'PMO', 'Internal', 'RA', 'PLD',
 ].map((v) => ({ value: v, label: v }));
 
+export const LEAD_NAME_OPTIONS = [
+  { value: 'srinivasan.selvam',     label: 'Srinivasan Selvam' },
+  { value: 'pramod.kasam',          label: 'Pramod Kasam' },
+  { value: 'archana.a.nagarajan',   label: 'Archana Nagarajan' },
+  { value: 'aqil.patnam',           label: 'Aqil Patnam' },
+  { value: 'd.sampathkumar',        label: 'Dhaarani Sampathkumar' },
+  { value: 'devika.kalaivanan',     label: 'Devika Kalaivanan' },
+  { value: 'himanshu.m.jain',       label: 'Himanshu Jain' },
+  { value: 'hajara.ayyubkhan',      label: 'Hajara Ayyubkhan' },
+  { value: 'deepti.prakash',        label: 'Deepti Prakash' },
+  { value: 'j.damodaran',           label: 'J. Damodaran' },
+  { value: 'leena.a.das',           label: 'Leena Das' },
+  { value: 'vishnu.ramalingam',     label: 'Vishnu Ramalingam' },
+  { value: 'pirtheebaa.krishnan',   label: 'Pirtheebaa Krishnan' },
+  { value: 'r.kalia.moorthy',       label: 'Rajarajeswari Kalia Moorthy' },
+  { value: 'k.b.selvamani',         label: 'Kavichandrika Selvamani' },
+  { value: 'nandini.baskaran',      label: 'Nandini Baskaran' },
+  { value: 'anand.b.gadad',         label: 'Anand B Gadad' },
+  { value: 'shini.vv',              label: 'Shini V V' },
+];
+
 const ROLES_OPTIONS = [
   'Configurator V2V',
   'Advisory Song SA',
@@ -179,7 +200,7 @@ export default function RolesAccessSheet({ currentUser, role }) {
   // ── Columns ───────────────────────────────────────────────
   const cols = [
     {
-      title: 'First Name', dataIndex: 'first_name', key: 'first_name', width: 110,
+      title: 'Lead Name', dataIndex: 'first_name', key: 'first_name', width: 110,
       render: (v) => <Text style={{ fontSize: 12 }}>{v}</Text>,
     },
     {
@@ -330,8 +351,15 @@ export default function RolesAccessSheet({ currentUser, role }) {
         <Form form={form} layout="vertical" onFinish={handleSave} style={{ marginTop: 8 }}>
           <Row gutter={12}>
             <Col span={12}>
-              <Form.Item name="first_name" label="First Name" rules={[{ required: true, message: 'Required' }]}>
-                <Input placeholder="e.g. Reshmi" size="middle" />
+              <Form.Item name="first_name" label="Lead Name" rules={[{ required: true, message: 'Required' }]}>
+                <Select
+                  size="middle"
+                  showSearch
+                  allowClear
+                  placeholder="Select or type a name"
+                  options={LEAD_NAME_OPTIONS}
+                  filterOption={(input, opt) => opt.label.toLowerCase().includes(input.toLowerCase())}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
