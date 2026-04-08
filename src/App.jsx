@@ -322,22 +322,32 @@ function App() {
   const navItems = [
     { key: 'home',   icon: React.createElement(Home,    { size: 15 }), label: 'Home' },
     {
-      key: 'dsp',
-      icon: React.createElement(Monitor, { size: 15 }),
+      key: 'modules-group',
+      icon: React.createElement(LayoutDashboard, { size: 15 }),
       label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
-        'DSP',
-        React.createElement(Badge, { count: dspManual.length + dspAuto.length, style: { background: 'rgba(34,197,94,0.15)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', fontSize: 9, boxShadow: 'none' } }),
-        React.createElement(DotDirty, { dirty: dirtyModules.dsp })
+        'Modules',
+        React.createElement(DotDirty, { dirty: dirtyModules.dsp || dirtyModules.ssa })
       ),
-    },
-    {
-      key: 'ssa',
-      icon: React.createElement(Shield, { size: 15 }),
-      label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
-        'SSA',
-        React.createElement(Badge, { count: ssaData.length, style: { background: 'rgba(139,92,246,0.15)', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.3)', fontSize: 9, boxShadow: 'none' } }),
-        React.createElement(DotDirty, { dirty: dirtyModules.ssa })
-      ),
+      children: [
+        {
+          key: 'dsp',
+          icon: React.createElement(Monitor, { size: 15 }),
+          label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
+            'DSP',
+            React.createElement(Badge, { count: dspManual.length + dspAuto.length, style: { background: 'rgba(34,197,94,0.15)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', fontSize: 9, boxShadow: 'none' } }),
+            React.createElement(DotDirty, { dirty: dirtyModules.dsp })
+          ),
+        },
+        {
+          key: 'ssa',
+          icon: React.createElement(Shield, { size: 15 }),
+          label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
+            'SSA',
+            React.createElement(Badge, { count: ssaData.length, style: { background: 'rgba(139,92,246,0.15)', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.3)', fontSize: 9, boxShadow: 'none' } }),
+            React.createElement(DotDirty, { dirty: dirtyModules.ssa })
+          ),
+        },
+      ],
     },
     {
       key: 'team',
@@ -464,8 +474,9 @@ function App() {
             mode="inline"
             theme="dark"
             selectedKeys={[activeTab]}
+            defaultOpenKeys={['modules-group']}
             items={navItems}
-            onClick={({ key }) => { setActiveTab(key); setSearchQuery(''); }}
+            onClick={({ key }) => { if (key !== 'modules-group') { setActiveTab(key); setSearchQuery(''); } }}
             inlineCollapsed={collapsed}
             style={{ background: 'transparent', border: 'none', marginTop: 6 }}
           />
