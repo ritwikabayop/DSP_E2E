@@ -97,7 +97,6 @@ const [rows,       setRows]       = useState([]);
     const q = search.toLowerCase();
     return (
       r.first_name?.toLowerCase().includes(q) ||
-      r.last_name?.toLowerCase().includes(q) ||
       r.enterprise_id?.toLowerCase().includes(q)
     );
   });
@@ -113,7 +112,6 @@ const [rows,       setRows]       = useState([]);
     setEditRow(rec);
     form.setFieldsValue({
       first_name:     rec.first_name,
-      last_name:      rec.last_name,
       enterprise_id:  rec.enterprise_id,
       role_category:  rec.role_category,
       roles:          rec.roles ?? [],
@@ -137,7 +135,6 @@ const [rows,       setRows]       = useState([]);
       const row = {
         ...(editRow?.id ? { id: editRow.id } : {}),
         first_name:    values.first_name?.trim() ?? '',
-        last_name:     values.last_name?.trim() ?? '',
         enterprise_id: values.enterprise_id?.trim() ?? '',
         role_category: values.role_category ?? '',
         roles:         values.roles ?? [],
@@ -162,7 +159,7 @@ const [rows,       setRows]       = useState([]);
   const handleDelete = (rec) => {
     Modal.confirm({
       title:   'Delete Entry',
-      content: `Remove ${rec.first_name} ${rec.last_name} (${rec.enterprise_id})?`,
+      content: `Remove ${rec.first_name} (${rec.enterprise_id})?`,
       okText:  'Delete',
       okType:  'danger',
       onOk: async () => {
@@ -184,10 +181,6 @@ const [rows,       setRows]       = useState([]);
   const cols = [
     {
       title: 'Lead Name', dataIndex: 'first_name', key: 'first_name', width: 110,
-      render: (v) => <Text style={{ fontSize: 12 }}>{v}</Text>,
-    },
-    {
-      title: 'Last Name', dataIndex: 'last_name', key: 'last_name', width: 110,
       render: (v) => <Text style={{ fontSize: 12 }}>{v}</Text>,
     },
     {
@@ -333,7 +326,7 @@ const [rows,       setRows]       = useState([]);
       >
         <Form form={form} layout="vertical" onFinish={handleSave} style={{ marginTop: 8 }}>
           <Row gutter={12}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item name="first_name" label="Lead Name" rules={[{ required: true, message: 'Required' }]}>
                 <Select
                   size="middle"
@@ -343,11 +336,6 @@ const [rows,       setRows]       = useState([]);
                   options={LEAD_NAME_OPTIONS}
                   filterOption={(input, opt) => opt.label.toLowerCase().includes(input.toLowerCase())}
                 />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="last_name" label="Last Name" rules={[{ required: true, message: 'Required' }]}>
-                <Input placeholder="e.g. Doddi" size="middle" />
               </Form.Item>
             </Col>
           </Row>
