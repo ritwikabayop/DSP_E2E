@@ -84,7 +84,7 @@ export default function HomePage({
   return (
     <div style={{ padding: 24 }}>
       {/* Welcome banner */}
-      <div className="home-banner">
+      <div className="home-banner" style={{ background: 'linear-gradient(135deg, rgba(13,28,18,0.8) 0%, rgba(6,16,10,0.9) 50%, rgba(4,12,8,0.9) 100%)', backdropFilter: 'blur(20px)', borderRadius: 24, border: '1px solid rgba(34,197,94,0.18)' }}>
         <div aria-hidden="true" style={{ position: 'absolute', top: -20,  right: -20,  width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
         <div aria-hidden="true" style={{ position: 'absolute', bottom: -40, right: 80,  width: 150, height: 150, borderRadius: '50%', background: 'rgba(255,255,255,0.03)' }} />
         <Row align="middle" gutter={24}>
@@ -171,7 +171,7 @@ export default function HomePage({
                 <Col xs={12} key={m.key}>
                   <Card
                     className="stat-card"
-                    style={{ cursor: 'pointer', borderTop: `3px solid ${m.color}`, background: 'var(--bg-card)' }}
+                    style={{ cursor: 'pointer', borderTop: `2px solid ${m.color}`, background: 'var(--bg-card)', backdropFilter: 'blur(16px)', borderRadius: 20 }}
                     size="small"
                     role="button"
                     tabIndex={0}

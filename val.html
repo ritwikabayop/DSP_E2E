@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyISP Zenith Upgrade | 2026 Advanced UI</title>
+    <style>
+        :root {
+            /* 2026 Core Palette */
+            --bg-deep: #06080c;
+            --glass-card: rgba(13, 17, 28, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --accent-primary: #22c55e;
+            --accent-glow: rgba(34, 197, 94, 0.25);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            
+            /* Organic Mesh Gradient */
+            --mesh: radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.1) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%);
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-deep);
+            background-image: var(--mesh);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Spatial Sidebar --- */
+        .sidebar {
+            width: 280px;
+            background: rgba(10, 12, 18, 0.6);
+            backdrop-filter: blur(30px);
+            border-right: 1px solid var(--glass-border);
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-item {
+            padding: 14px 18px;
+            border-radius: 14px;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            background: rgba(34, 197, 94, 0.08);
+            color: var(--accent-primary);
+            box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.2);
+        }
+
+        /* --- Bento Grid Layout --- */
+        .viewport {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 160px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* --- Glassmorphism Card --- */
+        .card {
+            background: var(--glass-card);
+            backdrop-filter: blur(16px) saturate(160%);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 24px;
+            position: relative;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(34, 197, 94, 0.4);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Bento Span Sizes */
+        .card-hero { grid-column: span 3; grid-row: span 2; } /* Main Insight */
+        .card-stat { grid-column: span 1; grid-row: span 1; } /* Quick Numbers */
+        .card-feed { grid-column: span 1; grid-row: span 3; } /* Changes Feed */
+
+        /* --- Predictive UI Elements --- */
+        .pulse-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent-primary);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-primary);
+            animation: breathe 2s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .big-data {
+            font-size: 56px;
+            font-weight: 800;
+            margin: 20px 0;
+            background: linear-gradient(180deg, #fff 30%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sparkline {
+            height: 40px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.2), transparent);
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div style="font-size: 24px; font-weight: 900; margin-bottom: 40px;">MYISP<span style="color:var(--accent-primary)">.</span></div>
+        <div class="nav-item active">● Overview</div>
+        <div class="nav-item">○ DSP Modules</div>
+        <div class="nav-item">○ SSA Security</div>
+        <div class="nav-item">○ Team Logs</div>
+    </aside>
+
+    <main class="viewport">
+        <div class="header-top">
+            <div>
+                <p style="color: var(--text-dim); font-size: 13px; font-weight: 600;">WEDNESDAY, APRIL 08, 2026</p>
+                <h1 style="margin: 4px 0; font-size: 32px;">Zenith Overview</h1>
+            </div>
+            <div class="pulse-badge">
+                <div class="pulse-dot"></div> AI Monitoring Active
+            </div>
+        </div>
+
+        <div class="bento-grid">
+            <div class="card card-hero">
+                <p style="color:var(--text-dim); font-weight: 600; font-size: 14px;">DSP COMPLETION</p>
+                <div class="big-data">94.2%</div>
+                <p style="max-width: 450px; line-height: 1.6;">
+                    <strong>Aureluna</strong> detects 3 manual test cases pending for the 'IMS' module. 
+                    Immediate resolution suggested to meet April deployment targets.
+                </p>
+                <button style="margin-top: 24px; background: var(--accent-primary); border: none; padding: 12px 28px; border-radius: 14px; font-weight: 800; cursor: pointer; color: #000;">Complete Now</button>
+            </div>
+
+            <div class="card card-feed">
+                <p style="font-size: 12px; color: var(--text-dim); font-weight: 700;">LIVE UPDATES</p>
+                <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 20px;">
+                    <div style="font-size: 13px;">
+                        <span style="color: var(--accent-primary);">●</span> Ritwik changed DSP Status
+                        <div style="color: var(--text-dim); font-size: 11px; margin-top: 4px;">2 mins ago</div>
+                    </div>
+                    <div style="font-size: 13px;">
+                        <span style="color: #3b82f6;">●</span> SSA Validation Finished
+                        <div style="color: var(--text-dim); font-size: 11px; margin-top: 4px;">14 mins ago</div>
+                    </div>
+                    <div style="font-size: 13px;">
+                        <span style="color: #f59e0b;">●</span> New Tester Assigned
+                        <div style="color: var(--text-dim); font-size: 11px; margin-top: 4px;">1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-stat">
+                <p style="color: var(--text-dim); font-size: 11px; font-weight: 700;">SYSTEM VELOCITY</p>
+                <div style="font-size: 28px; font-weight: 800; margin: 8px 0;">+12.4%</div>
+                <div class="sparkline"></div>
+            </div>
+
+            <div class="card card-stat">
+                <p style="color: var(--text-dim); font-size: 11px; font-weight: 700;">SSA COMPLIANCE</p>
+                <div style="font-size: 28px; font-weight: 800; margin: 8px 0;">Secure</div>
+                <div style="color: var(--accent-primary); font-size: 11px;">0 active threats</div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

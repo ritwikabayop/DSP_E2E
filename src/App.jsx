@@ -39,15 +39,15 @@ const DARK_THEME = {
   algorithm: antTheme.darkAlgorithm,
   token: {
     colorPrimary:       '#22c55e',
-    colorBgBase:        '#0d0f18',
-    colorBgContainer:   '#1a1f2e',
-    colorBgElevated:    '#1e2438',
-    colorBorder:        '#252d42',
-    colorText:          '#e2e8f0',
-    colorTextSecondary: '#8892a4',
-    borderRadius:       8,
-    borderRadiusLG:     10,
-    fontFamily:         "'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
+    colorBgBase:        '#06080c',
+    colorBgContainer:   'rgba(13,17,28,0.55)',
+    colorBgElevated:    'rgba(20,26,42,0.8)',
+    colorBorder:        'rgba(255,255,255,0.07)',
+    colorText:          '#f1f5f9',
+    colorTextSecondary: '#94a3b8',
+    borderRadius:       12,
+    borderRadiusLG:     20,
+    fontFamily:         "'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
     fontSize:           13,
   },
 };
@@ -75,8 +75,8 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0f18' }}>
-      <div style={{ width: 420, background: '#1a1f2e', borderRadius: 12, padding: '32px 28px', border: '1px solid #252d42' }}>
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#06080c', backgroundImage: 'radial-gradient(at 0% 0%, rgba(34,197,94,0.08) 0px, transparent 55%), radial-gradient(at 100% 100%, rgba(59,130,246,0.06) 0px, transparent 55%)' }}>
+      <div style={{ width: 420, background: 'rgba(13,17,28,0.7)', backdropFilter: 'blur(20px)', borderRadius: 20, padding: '32px 28px', border: '1px solid rgba(255,255,255,0.07)' }}>
         {done ? (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(34,197,94,0.15)', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>

@@ -185,15 +185,18 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#0d0f18',
+      background: '#06080c',
+      backgroundImage: 'radial-gradient(at 0% 0%, rgba(34,197,94,0.08) 0px, transparent 55%), radial-gradient(at 100% 100%, rgba(59,130,246,0.06) 0px, transparent 55%)',
+      backgroundAttachment: 'fixed',
       display: 'flex',
       flexDirection: 'column',
     }}>
       {/* Top bar */}
       <div style={{
         height: 56,
-        borderBottom: '1px solid #1e2332',
-        background: '#0f1117',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        background: 'rgba(8,10,16,0.85)',
+        backdropFilter: 'blur(20px)',
         display: 'flex',
         alignItems: 'center',
         padding: '0 24px',

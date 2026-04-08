@@ -1,22 +1,22 @@
 /* ═══════════════════════════════════════════════
-   DARK THEME — E2E Testing Master Hub
+   ZENITH THEME — MyISP 2026
    ═══════════════════════════════════════════════ */
 :root {
-  --bg-base:      #0d0f18;
-  --bg-surface:   #131720;
-  --bg-card:      #1a1f2e;
-  --bg-card-hover:#1e2438;
-  --bg-sidebar:   #0f1117;
-  --bg-header:    #131720;
-  --border:       #252d42;
-  --border-light: #1e2638;
-  --border-subtle:#1e2332;
+  --bg-base:      #06080c;
+  --bg-surface:   #0d1117;
+  --bg-card:      rgba(13, 17, 28, 0.55);
+  --bg-card-hover:rgba(20, 26, 42, 0.7);
+  --bg-sidebar:   rgba(10, 12, 18, 0.7);
+  --bg-header:    rgba(8, 10, 16, 0.9);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-light: rgba(255, 255, 255, 0.05);
+  --border-subtle:rgba(255, 255, 255, 0.035);
   --accent:       #22c55e;
   --accent-dim:   #16a34a;
-  --accent-glow:  rgba(34,197,94,0.15);
-  --text-primary: #e2e8f0;
-  --text-secondary:#8892a4;
-  --text-muted:   #4b5568;
+  --accent-glow:  rgba(34, 197, 94, 0.2);
+  --text-primary: #f1f5f9;
+  --text-secondary:#94a3b8;
+  --text-muted:   #475569;
   --danger:       #ef4444;
   --danger-light: #f87171;
   --warning:      #f59e0b;
@@ -24,16 +24,20 @@
   --info:         #3b82f6;
   --link:         #60a5fa;
   --purple:       #8b5cf6;
-  --bg-deep:      #151c2c;
+  --bg-deep:      #06080c;
   --excel-green:  #217346;
+  --mesh: radial-gradient(at 0% 0%, rgba(34,197,94,0.08) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(59,130,246,0.06) 0px, transparent 55%);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-base);
+  background-image: var(--mesh);
+  background-attachment: fixed;
   color: var(--text-primary);
 }
 
@@ -46,6 +50,8 @@ body {
 /* ─── APP SIDEBAR ────────────────────────────── */
 .app-sidebar {
   background: var(--bg-sidebar) !important;
+  backdrop-filter: blur(30px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
   border-right: 1px solid var(--border) !important;
   display: flex;
   flex-direction: column;
@@ -90,6 +96,8 @@ body {
 /* ─── APP HEADER ─────────────────────────────── */
 .app-header {
   background: var(--bg-header) !important;
+  backdrop-filter: blur(20px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
   border-bottom: 1px solid var(--border);
   height: 52px !important;
   line-height: 52px !important;
@@ -106,30 +114,35 @@ body {
 .glass-card,
 .ant-card {
   background: var(--bg-card) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .glass-card:hover {
-  border-color: #2d3850 !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+  transform: translateY(-6px) scale(1.01);
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  box-shadow: 0 24px 50px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(34,197,94,0.15) !important;
 }
 
 /* ─── STAT CARDS ─────────────────────────────── */
 .stat-card {
   background: var(--bg-card) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  border-radius: 20px !important;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s ease, border-color 0.35s ease;
   cursor: pointer;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.4) !important;
-  border-color: #2d3850 !important;
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 24px 50px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(34,197,94,0.2) !important;
+  border-color: rgba(34,197,94,0.3) !important;
 }
 
 .stat-card:focus-visible {
@@ -181,7 +194,7 @@ body {
 }
 
 .ant-table-thead > tr > th {
-  background: #151c2c !important;
+  background: rgba(6,8,12,0.8) !important;
   color: var(--text-secondary) !important;
   font-size: 11px !important;
   font-weight: 700 !important;
@@ -267,15 +280,15 @@ body {
 }
 
 .ant-menu-dark .ant-menu-item {
-  border-radius: 8px !important;
+  border-radius: 12px !important;
   margin: 2px 8px !important;
   width: calc(100% - 16px) !important;
   color: var(--text-secondary) !important;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .ant-menu-dark .ant-menu-item:hover {
-  background: rgba(255,255,255,0.05) !important;
+  background: rgba(255,255,255,0.06) !important;
   color: var(--text-primary) !important;
 }
 
@@ -291,7 +304,7 @@ body {
 
 /* ─── ANT CARD HEADER ────────────────────────── */
 .ant-card-head {
-  background: #151c2c !important;
+  background: rgba(6,8,12,0.6) !important;
   border-bottom: 1px solid var(--border) !important;
   color: var(--text-primary) !important;
   min-height: 42px !important;
@@ -307,7 +320,8 @@ body {
 
 /* ─── ANT SELECT / INPUT ─────────────────────── */
 .ant-select-selector {
-  background: #1a2035 !important;
+  background: rgba(10,12,20,0.7) !important;
+  backdrop-filter: blur(8px) !important;
   border-color: var(--border) !important;
   color: var(--text-primary) !important;
 }
@@ -317,7 +331,8 @@ body {
 }
 
 .ant-input {
-  background: #1a2035 !important;
+  background: rgba(10,12,20,0.7) !important;
+  backdrop-filter: blur(8px) !important;
   border-color: var(--border) !important;
   color: var(--text-primary) !important;
 }
@@ -328,7 +343,7 @@ body {
 
 /* ─── ANT SEGMENTED ──────────────────────────── */
 .ant-segmented {
-  background: #1a2035 !important;
+  background: rgba(10,12,20,0.7) !important;
   border: 1px solid var(--border) !important;
 }
 
@@ -342,7 +357,7 @@ body {
 
 /* ─── ANT BUTTON ─────────────────────────────── */
 .ant-btn-default {
-  background: #1a2035 !important;
+  background: rgba(10,12,20,0.7) !important;
   border-color: var(--border) !important;
   color: var(--text-primary) !important;
 }
@@ -354,12 +369,15 @@ body {
 
 /* ─── ANT MODAL ──────────────────────────────── */
 .ant-modal-content {
-  background: var(--bg-card) !important;
+  background: rgba(13,17,28,0.85) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
   border: 1px solid var(--border) !important;
+  border-radius: 20px !important;
 }
 
 .ant-modal-header {
-  background: var(--bg-card) !important;
+  background: transparent !important;
   border-bottom: 1px solid var(--border) !important;
 }
 
@@ -486,19 +504,37 @@ body {
 
 /* ─── KT SESSION CARD ────────────────────────── */
 .kt-session-card {
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: 14px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
   padding: 22px 22px 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
 }
 
 .kt-session-card:hover,
 .kt-session-card:focus-within {
-  background: rgba(255,255,255,0.03);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.3);
-  transform: translateY(-2px);
+  border-color: rgba(34,197,94,0.3);
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+  transform: translateY(-4px);
+}
+
+/* ─── PULSE LIVE DOT ─────────────────────────── */
+.pulse-live {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  animation: pulse-breathe 2s infinite ease-in-out;
+}
+
+@keyframes pulse-breathe {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
 }
