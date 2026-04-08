@@ -41,7 +41,7 @@ const ROLES_OPTIONS = [
 ].filter((v, i, a) => a.indexOf(v) === i)
   .map((v) => ({ value: v, label: v }));
 
-const SERVICE_OPTIONS = ['ALL', 'NA', 'Song', 'Technology', 'Cross Service', 'Operations', 'Security'].map((v) => ({ value: v, label: v }));
+const SERVICE_OPTIONS = ['AMS', 'SI', 'IMS', 'BPMS'].map((v) => ({ value: v, label: v }));
 
 const DASHBOARD_OPTIONS = ['Assigned', 'NA'].map((v) => ({ value: v, label: v }));
 
