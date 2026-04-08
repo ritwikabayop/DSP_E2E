@@ -204,7 +204,8 @@ export default function SSASheet({
                     </div>
                     <section aria-label="PT SSA Rows">
                       <Table dataSource={ptData} columns={cols} rowKey="key"
-                        pagination={false} size="small" bordered scroll={{ x: 'max-content' }}
+                        pagination={false} size="small" bordered
+                        scroll={{ x: 1165 }} tableLayout="fixed"
                         onRow={makeResizableRow()}
                         rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
                         locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No PT rows" /> }}
@@ -219,7 +220,8 @@ export default function SSASheet({
                     </div>
                     <section aria-label="UAT SSA Rows">
                       <Table dataSource={uatData} columns={cols} rowKey="key"
-                        pagination={false} size="small" bordered scroll={{ x: 'max-content' }}
+                        pagination={false} size="small" bordered
+                        scroll={{ x: 1165 }} tableLayout="fixed"
                         onRow={makeResizableRow()}
                         rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
                         locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No UAT rows" /> }}

@@ -171,7 +171,8 @@ export default function DSPSheet({
               <Table
                 dataSource={ptData} columns={cols}
                 pagination={false} size="small" bordered
-                scroll={{ x: 'max-content' }}
+                scroll={{ x: 870 }}
+                tableLayout="fixed"
                 onRow={makeResizableRow()}
                 rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
                 locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No rows match the current filter" /> }}
@@ -190,7 +191,8 @@ export default function DSPSheet({
               <Table
                 dataSource={uatData} columns={cols}
                 pagination={false} size="small" bordered
-                scroll={{ x: 'max-content' }}
+                scroll={{ x: 870 }}
+                tableLayout="fixed"
                 onRow={makeResizableRow()}
                 rowClassName={(r) => isHighPriority(r.status) ? 'row-error' : ''}
                 locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No rows match the current filter" /> }}
