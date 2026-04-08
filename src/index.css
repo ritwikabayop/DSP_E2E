@@ -454,6 +454,11 @@ body {
   outline-offset: 2px;
 }
 
+/* ─── PT / UAT GRID SPLIT ────────────────────── */
+/* Adds breathing room between table columns and the 1px divider */
+.env-split-grid > *:first-child { padding-right: 12px; }
+.env-split-grid > *:last-child  { padding-left:  12px; }
+
 /* ─── RESIZABLE TABLE ROWS ───────────────────── */
 /* Allows users to drag the bottom edge of any row to change its height */
 .ant-table-tbody > tr.resizable-row > td {

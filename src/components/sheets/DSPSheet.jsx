@@ -160,9 +160,9 @@ export default function DSPSheet({
           </Space>
         )}
       >
-        <div style={{ display: 'flex', gap: 0, alignItems: 'flex-start' }}>
+        <div className="env-split-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr', alignItems: 'start' }}>
           {/* PT column */}
-          <div style={{ flex: '1 1 0', minWidth: 0 }}>
+          <div style={{ minWidth: 0, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="green" style={{ fontWeight: 700, fontSize: 12 }}>PT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{ptData.length} row{ptData.length !== 1 ? 's' : ''}</Text>
@@ -180,9 +180,9 @@ export default function DSPSheet({
             </section>
           </div>
           {/* Divider */}
-          <div style={{ width: 1, alignSelf: 'stretch', background: 'var(--border)', margin: '0 12px', flexShrink: 0 }} aria-hidden="true" />
+          <div style={{ background: 'var(--border)', alignSelf: 'stretch' }} aria-hidden="true" />
           {/* UAT column */}
-          <div style={{ flex: '1 1 0', minWidth: 0 }}>
+          <div style={{ minWidth: 0, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Tag color="orange" style={{ fontWeight: 700, fontSize: 12 }}>UAT</Tag>
               <Text type="secondary" style={{ fontSize: 11 }}>{uatData.length} row{uatData.length !== 1 ? 's' : ''}</Text>
