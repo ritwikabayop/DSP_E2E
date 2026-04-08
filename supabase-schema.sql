@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS ssa_data (
   key            INTEGER NOT NULL,
   tester         TEXT    NOT NULL DEFAULT '',
   module         TEXT    NOT NULL DEFAULT '',
+  env            TEXT    NOT NULL DEFAULT 'PT',
   deal_id        TEXT    NOT NULL DEFAULT '',
   deal_id2       TEXT    NOT NULL DEFAULT '',
   deal_id3       TEXT    NOT NULL DEFAULT '',
@@ -125,6 +126,7 @@ CREATE INDEX IF NOT EXISTS idx_ssa_data_month ON ssa_data(month_key);
 -- Migration (safe to re-run)
 ALTER TABLE ssa_data ADD COLUMN IF NOT EXISTS comments   TEXT NOT NULL DEFAULT '';
 ALTER TABLE ssa_data ADD COLUMN IF NOT EXISTS version_id INT  NOT NULL DEFAULT 1;
+ALTER TABLE ssa_data ADD COLUMN IF NOT EXISTS env        TEXT NOT NULL DEFAULT 'PT';
 
 
 -- ──────────────────────────────────────────────────────────

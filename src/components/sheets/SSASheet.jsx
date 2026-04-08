@@ -69,7 +69,7 @@ export default function SSASheet({
       ...prev,
       {
         key: nextKey(ssaData), id: crypto.randomUUID(), tester: '', module: '', dealId: '',
-        dealId2: '', dealId3: '', dealId4: '', status: '',
+        dealId2: '', status: '',
         comments: '', versionId: 1, env: env ?? 'PT',
         lastEditedBy: currentUser || 'Unknown', lastEditedAt: new Date().toISOString(),
       },
@@ -106,9 +106,9 @@ export default function SSASheet({
               onSave={(key, field, val) => handleSave(key, field, Number(val) || 1)} />
           : <Text type="secondary" style={{ fontSize: 11 }}>{v ?? 1}</Text>,
     },
-    ...['dealId', 'dealId2', 'dealId3', 'dealId4'].map((field, i) => ({
-      title: i === 0 ? 'Deal ID' : `Deal ID ${i + 1}`,
-      dataIndex: field, key: field, width: 105,
+    ...['dealId', 'dealId2'].map((field, i) => ({
+      title: i === 0 ? 'Deal ID' : 'Deal ID 2',
+      dataIndex: field, key: field, width: 115,
       render: (v, rec) =>
         editMode && canEditRow(rec)
           ? <EditableCell value={v} record={rec} dataIndex={field} onSave={handleSave} />
