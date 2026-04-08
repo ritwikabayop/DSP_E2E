@@ -189,7 +189,7 @@ function App() {
         content:   'You have unsaved changes. Save before switching months?',
         okText:    'Save & Switch',
         cancelText:'Discard & Switch',
-        onOk:    () => { saveAllModules(); setSelectedMonth(newMonth); setSearchQuery(''); },
+        onOk:    async () => { await saveAllModules(); setSelectedMonth(newMonth); setSearchQuery(''); },
         onCancel:() => { setSelectedMonth(newMonth); setSearchQuery(''); },
       });
     } else {
@@ -422,6 +422,8 @@ function App() {
           collapsible
           collapsed={collapsed}
           onCollapse={setCollapsed}
+          breakpoint="lg"
+          onBreakpoint={(broken) => { if (broken) setCollapsed(true); }}
           width={210}
           collapsedWidth={60}
           style={{ background: 'var(--bg-sidebar)', borderRight: '1px solid var(--border-subtle)' }}
@@ -470,7 +472,7 @@ function App() {
 
         </Sider>
 
-        <Layout style={{ background: 'var(--bg-base)' }}>
+        <Layout style={{ background: 'var(--bg-base)', minWidth: 0 }}>
           <Header className="app-header" style={{ padding: '0 14px', lineHeight: 'normal' }}>
             {activeTab !== 'home' && (
               <Tooltip title="Back to Home">
@@ -490,6 +492,7 @@ function App() {
               value={selectedMonth}
               onChange={handleMonthChange}
               options={MONTH_OPTIONS}
+              className="header-month-select"
               style={{ width: 155, flexShrink: 0 }}
               popupMatchSelectWidth={false}
               suffixIcon={React.createElement(Calendar, { size: 12, color: '#4b5568' })}
@@ -502,6 +505,7 @@ function App() {
               onChange={function(e) { setSearchQuery(e.target.value); }}
               allowClear
               size="small"
+              className="header-search"
               style={{ flex: 1, maxWidth: 360 }}
             />
 

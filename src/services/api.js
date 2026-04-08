@@ -21,13 +21,15 @@ export const fetchModuleData = async (table, monthKey) => {
 
 /**
  * Check if a month has any rows in ALL four module tables.
+ * Requires all tables to have data to avoid partial-seed data loss on retry.
  */
 export const monthHasData = async (monthKey) => {
-  const { count } = await supabase
-    .from('dsp_manual')
-    .select('id', { count: 'exact', head: true })
-    .eq('month_key', monthKey);
-  return (count ?? 0) > 0;
+  const results = await Promise.all(
+    ['dsp_manual', 'dsp_auto', 'ssa_data', 'team_data'].map((table) =>
+      supabase.from(table).select('id', { count: 'exact', head: true }).eq('month_key', monthKey)
+    )
+  );
+  return results.every(({ count }) => (count ?? 0) > 0);
 };
 
 /**

@@ -61,14 +61,15 @@ export function useMonthData(monthKey, user) {
         } else {
           // No data for this month — seed with INIT defaults
           const def = getDefaultData();
-          const now = new Date().toISOString();
           const stampSsa = (rows, mk) =>
+            // eslint-disable-next-line no-unused-vars
             rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, comments, versionId, ...r }) => ({
               ...r, month_key: mk, last_edited_by: '', last_edited_at: null,
               deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
               comments: comments ?? '', version_id: versionId ?? 1,
             }));
           const stamp = (rows, mk) =>
+            // eslint-disable-next-line no-unused-vars
             rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: mk, last_edited_by: '', last_edited_at: null }));
 
           await Promise.all([
@@ -126,6 +127,7 @@ export function useMonthData(monthKey, user) {
 
     load();
     return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthKey, user?.id]);
 
   // ── Dirty tracking ────────────────────────────────────────────────────────
@@ -156,40 +158,37 @@ export function useMonthData(monthKey, user) {
         const logsDa = diffRows(snapshotRef.current.dspAuto,   dspAuto,   'DSP Automation', changedBy, monthKey);
 
         const toDb = (rows) =>
-          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
 
         await Promise.all([
           upsertRows('dsp_manual', toDb(dspManual)),
           upsertRows('dsp_auto',   toDb(dspAuto)),
-          insertActivityLogs([...logsDm, ...logsDa]),
         ]);
         snapshotRef.current = { ...snapshotRef.current, dspManual: [...dspManual], dspAuto: [...dspAuto] };
+        // Activity logs are non-critical — a failure here must not roll back the save
+        insertActivityLogs([...logsDm, ...logsDa]).catch((e) => console.warn('Activity log write failed:', e));
       }
 
       if (moduleKey === 'ssa') {
         const logs = diffRows(snapshotRef.current.ssaData, ssaData, 'SSA', changedBy, monthKey);
         const toDb = (rows) =>
           rows.map(({ lastEditedBy, lastEditedAt, dealId, dealId2, dealId3, dealId4, comments, versionId, ...r }) => ({
-            ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null,
+            ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null,
             deal_id: dealId ?? '', deal_id2: dealId2 ?? '', deal_id3: dealId3 ?? '', deal_id4: dealId4 ?? '',
             comments: comments ?? '', version_id: versionId ?? 1,
           }));
-        await Promise.all([
-          upsertRows('ssa_data', toDb(ssaData)),
-          insertActivityLogs(logs),
-        ]);
+        await upsertRows('ssa_data', toDb(ssaData));
         snapshotRef.current = { ...snapshotRef.current, ssaData: [...ssaData] };
+        insertActivityLogs(logs).catch((e) => console.warn('Activity log write failed:', e));
       }
 
       if (moduleKey === 'team') {
         const logs = diffRows(snapshotRef.current.teamData, teamData, 'Team', changedBy, monthKey);
         const toDb = (rows) =>
-          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, id: r.id ?? crypto.randomUUID(), month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
-        await Promise.all([
-          upsertRows('team_data', toDb(teamData)),
-          insertActivityLogs(logs),
-        ]);
+          rows.map(({ lastEditedBy, lastEditedAt, ...r }) => ({ ...r, month_key: monthKey, last_edited_by: lastEditedBy, last_edited_at: lastEditedAt || null }));
+        await upsertRows('team_data', toDb(teamData));
         snapshotRef.current = { ...snapshotRef.current, teamData: [...teamData] };
+        insertActivityLogs(logs).catch((e) => console.warn('Activity log write failed:', e));
       }
 
       setDirtyModules((d) => ({ ...d, [moduleKey]: false }));

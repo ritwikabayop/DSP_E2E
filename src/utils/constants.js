@@ -156,14 +156,14 @@ export const INIT_UPLOAD_OWNERS = [
 ];
 
 export const INIT_SSA_DATA = [
-  { key: 1, tester: 'veena@example.com',    module: 'SSA/S2C',             dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 2, tester: 'prasanna@example.com', module: 'SSA/HSP',             dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 3, tester: 'shyam@example.com',    module: 'SSA/ODI',             dealId: '', dealId2: '', dealId3: '', dealId4: '', status: 'Ensure configuration is applied to all deals.', lastEditedBy: '', lastEditedAt: '' },
-  { key: 4, tester: 'naveena@example.com',  module: 'SSA/RFP',             dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 5, tester: 'vignesh@example.com',  module: 'SSA/DLC',             dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 6, tester: 'varadha@example.com',  module: 'SSA/S2C',             dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 7, tester: 'saikumar@example.com', module: 'SSA/CDAT',            dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
-  { key: 8, tester: 'gayathri@example.com', module: 'Document Management', dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', lastEditedBy: '', lastEditedAt: '' },
+  { key: 1, tester: 'veena@example.com',    module: 'SSA/S2C',             env: 'PT',  dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 2, tester: 'prasanna@example.com', module: 'SSA/HSP',             env: 'PT',  dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 3, tester: 'shyam@example.com',    module: 'SSA/ODI',             env: 'PT',  dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 4, tester: 'naveena@example.com',  module: 'SSA/RFP',             env: 'PT',  dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 5, tester: 'vignesh@example.com',  module: 'SSA/DLC',             env: 'PT',  dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 6, tester: 'varadha@example.com',  module: 'SSA/S2C',             env: 'UAT', dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 7, tester: 'saikumar@example.com', module: 'SSA/CDAT',            env: 'UAT', dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
+  { key: 8, tester: 'gayathri@example.com', module: 'Document Management', env: 'UAT', dealId: '', dealId2: '', dealId3: '', dealId4: '', status: '', comments: '', versionId: 1, lastEditedBy: '', lastEditedAt: '' },
 ];
 
 export const INIT_TEAM_DATA = [
