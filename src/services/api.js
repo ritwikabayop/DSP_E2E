@@ -267,6 +267,44 @@ export const deleteRolesAccessRow = async (id) => {
 
 
 /* ══════════════════════════════════════════════════════
+   PROD ROLES
+   ══════════════════════════════════════════════════════ */
+
+/**
+ * Fetch all rows from prod_roles, ordered by team_lead.
+ */
+export const fetchProdRoles = async () => {
+  const { data, error } = await supabase
+    .from('prod_roles')
+    .select('*')
+    .order('team_lead', { ascending: true });
+  if (error) throw error;
+  return data;
+};
+
+/**
+ * Insert or update a single row in prod_roles.
+ * Conflict target is id (UUID primary key).
+ * @param {Object} row
+ */
+export const upsertProdRolesRow = async (row) => {
+  const { error } = await supabase
+    .from('prod_roles')
+    .upsert(row, { onConflict: 'id' });
+  if (error) throw error;
+};
+
+/**
+ * Delete a prod_roles row by UUID.
+ * @param {string} id  UUID
+ */
+export const deleteProdRolesRow = async (id) => {
+  const { error } = await supabase.from('prod_roles').delete().eq('id', id);
+  if (error) throw error;
+};
+
+
+/* ══════════════════════════════════════════════════════
    MYISP MODULE ROLES
    ══════════════════════════════════════════════════════ */
 

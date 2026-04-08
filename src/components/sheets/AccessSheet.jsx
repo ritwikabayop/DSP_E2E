@@ -2,6 +2,7 @@
 import { Tabs, Space } from 'antd';
 import { ShieldCheck, KeyRound, SlidersHorizontal, Users } from 'lucide-react';
 import RolesAccessSheet          from './RolesAccessSheet.jsx';
+import ProdRolesSheet            from './ProdRolesSheet.jsx';
 import MyIspModuleRolesSheet     from './MyIspModuleRolesSheet.jsx';
 import PermissionDesignerSheet   from './PermissionDesignerSheet.jsx';
 import UsersSheet                from './UsersSheet.jsx';
@@ -33,10 +34,20 @@ export default function AccessSheet({ currentUser, currentUserId, role }) {
           label: (
             <Space size={6}>
               <ShieldCheck size={13} />
-              Roles &amp; Access
+              Prod Roles
             </Space>
           ),
           children: <RolesAccessSheet currentUser={currentUser} role={role} />,
+        },
+        {
+          key: 'prod-roles',
+          label: (
+            <Space size={6}>
+              <Users size={13} />
+              Team Roles
+            </Space>
+          ),
+          children: <ProdRolesSheet currentUser={currentUser} role={role} />,
         },
         {
           key: 'myisp',
