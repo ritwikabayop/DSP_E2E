@@ -171,8 +171,8 @@ export default function SSASheet({
                   color: '#8b5cf6', fontSize: 12, fontFamily: 'inherit', transition: 'all 0.15s',
                 } : {
                   padding: '3px 12px', borderRadius: 20, cursor: 'pointer',
-                  border: '1px solid #252d42', background: 'transparent',
-                  color: '#8892a4', fontSize: 12, fontFamily: 'inherit', transition: 'all 0.15s',
+                  border: '1px solid var(--border)', background: 'transparent',
+                  color: 'var(--text-secondary)', fontSize: 12, fontFamily: 'inherit', transition: 'all 0.15s',
                 }}
               >
                 {f.label}
@@ -188,7 +188,7 @@ export default function SSASheet({
               <Card
                 title={<Space><Shield size={16} /> SSA / GenAI Testing <Badge count={ssaData.length} style={{ background: '#722ed1' }} /></Space>}
                 size="small" className="glass-card"
-                styles={{ header: { background: 'linear-gradient(90deg, #1a1035, #1a1f2e)', borderBottom: '2px solid #6d28d9' } }}
+                styles={{ header: { background: 'var(--bg-card)', borderBottom: '2px solid #6d28d9' } }}
                 extra={editMode && roleConfig.canAddRow && (
                   <Space size={4}>
                     <Button type="dashed" size="small" icon={<Plus size={13} />} onClick={() => addRow('PT')}>+ PT</Button>

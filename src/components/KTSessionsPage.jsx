@@ -72,14 +72,14 @@ export default function KTSessionsPage({ onBack }) {
         }}>
           <Video size={16} color="#fff" />
         </div>
-        <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>KT Sessions</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14 }}>KT Sessions</span>
         <Tag style={{ margin: 0, fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)' }}>
           {SESSIONS.length} session{SESSIONS.length !== 1 ? 's' : ''}
         </Tag>
 
         <Input
           placeholder="Search sessions…"
-          prefix={<Search size={12} color="#4b5568" />}
+          prefix={<Search size={12} color="var(--text-muted)" />}
           aria-label="Search sessions"
           value={search}
           onChange={(e) => setSearch(e.target.value)}

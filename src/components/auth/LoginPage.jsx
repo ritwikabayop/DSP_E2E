@@ -156,8 +156,8 @@ export default function LoginPage({ onSignIn }) {
                 <LayoutDashboard size={22} color="#fff" />
               </div>
               <div>
-                <div style={{ color:'#e2e8f0', fontWeight:800, fontSize:18, lineHeight:1.2 }}>MyISP</div>
-                <div style={{ color:'#4b5568', fontSize:11, fontWeight:500 }}>Insight &amp; Status Platform</div>
+                <div style={{ color:'var(--text-primary)', fontWeight:800, fontSize:18, lineHeight:1.2 }}>MyISP</div>
+                <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:500 }}>Insight &amp; Status Platform</div>
               </div>
             </div>
 
@@ -166,7 +166,7 @@ export default function LoginPage({ onSignIn }) {
                 ● LIVE
               </span>
             </div>
-            <h1 style={{ color:'#e2e8f0', fontSize:30, fontWeight:800, lineHeight:1.2, margin:'0 0 12px', letterSpacing:'-0.5px' }}>
+            <h1 style={{ color:'var(--text-primary)', fontSize:30, fontWeight:800, lineHeight:1.2, margin:'0 0 12px', letterSpacing:'-0.5px' }}>
               Welcome back
             </h1>
             <p style={{ color:'#64748b', fontSize:13, lineHeight:1.8, margin:'0 0 36px', maxWidth:300 }}>
@@ -181,8 +181,8 @@ export default function LoginPage({ onSignIn }) {
                     <Icon size={15} color="#22c55e" />
                   </div>
                   <div>
-                    <div style={{ color:'#cbd5e1', fontSize:13, fontWeight:600, lineHeight:1.3 }}>{label}</div>
-                    <div style={{ color:'#475569', fontSize:11 }}>{sub}</div>
+                    <div style={{ color:'var(--text-secondary)', fontSize:13, fontWeight:600, lineHeight:1.3 }}>{label}</div>
+                    <div style={{ color:'var(--text-muted)', fontSize:11 }}>{sub}</div>
                   </div>
                 </div>
               ))}
@@ -194,8 +194,8 @@ export default function LoginPage({ onSignIn }) {
             {stats.map(({ Icon, value, label }) => (
               <div key={label} style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 12px', borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)' }}>
                 <Icon size={12} color="#4ade80" />
-                <span style={{ color:'#94a3b8', fontSize:11, fontWeight:600 }}>{value}</span>
-                <span style={{ color:'#475569', fontSize:11 }}>{label}</span>
+                <span style={{ color:'var(--text-secondary)', fontSize:11, fontWeight:600 }}>{value}</span>
+                <span style={{ color:'var(--text-muted)', fontSize:11 }}>{label}</span>
               </div>
             ))}
           </div>
@@ -211,25 +211,25 @@ export default function LoginPage({ onSignIn }) {
                 <div style={{ width:64, height:64, borderRadius:18, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
                   <Mail size={28} color="#22c55e" />
                 </div>
-                <div style={{ color:'#e2e8f0', fontSize:22, fontWeight:800, marginBottom:8 }}>Check your email</div>
-                <div style={{ color:'#64748b', fontSize:13, lineHeight:1.7, marginBottom:28 }}>
-                  We sent a reset link to <strong style={{ color:'#e2e8f0' }}>{resetEmail}</strong>
+                <div style={{ color:'var(--text-primary)', fontSize:22, fontWeight:800, marginBottom:8 }}>Check your email</div>
+                <div style={{ color:'var(--text-muted)', fontSize:13, lineHeight:1.7, marginBottom:28 }}>
+                  We sent a reset link to <strong style={{ color:'var(--text-primary)' }}>{resetEmail}</strong>
                 </div>
                 <Button size="large" onClick={() => { setForgotMode(false); setResetSent(false); setResetEmail(''); }}
-                  style={{ borderRadius:10, height:46, width:'100%', background:'rgba(255,255,255,0.05)', border:'1px solid #252d42', color:'#e2e8f0', fontWeight:600 }}>
+                  style={{ borderRadius:10, height:46, width:'100%', background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-primary)', fontWeight:600 }}>
                   ← Back to Sign in
                 </Button>
               </div>
             ) : (
               <>
                 <div style={{ marginBottom:28 }}>
-                  <div style={{ color:'#e2e8f0', fontSize:22, fontWeight:800, marginBottom:4 }}>Reset password</div>
-                  <div style={{ color:'#64748b', fontSize:13 }}>We'll send a link to your inbox</div>
+                  <div style={{ color:'var(--text-primary)', fontSize:22, fontWeight:800, marginBottom:4 }}>Reset password</div>
+                  <div style={{ color:'var(--text-muted)', fontSize:13 }}>We'll send a link to your inbox</div>
                 </div>
                 {resetError && <Alert message={resetError} type="error" showIcon closable onClose={() => setResetError('')} style={{ marginBottom:18, borderRadius:8 }} />}
                 <div style={{ marginBottom:20 }}>
                   <span style={S.label}>Email address</span>
-                  <Input size="large" prefix={<Mail size={14} color="#4b5568" style={{ marginRight:4 }} />}
+                  <Input size="large" prefix={<Mail size={14} color="var(--text-muted)" style={{ marginRight:4 }} />}
                     placeholder="you@accenture.com" value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)} onPressEnter={handleForgot}
                     style={S.inputStyle} />
@@ -239,7 +239,7 @@ export default function LoginPage({ onSignIn }) {
                   {resetLoading ? 'Sending…' : 'Send Reset Link'}
                 </Button>
                 <Button type="link" onClick={() => { setForgotMode(false); setResetError(''); }}
-                  style={{ color:'#64748b', fontSize:13, padding:0 }}>
+                  style={{ color:'var(--text-muted)', fontSize:13, padding:0 }}>
                   ← Back to Sign in
                 </Button>
               </>
@@ -248,13 +248,13 @@ export default function LoginPage({ onSignIn }) {
             /* ── Sign in ── */
             <>
               {/* Login method tabs */}
-              <div style={{ display:'flex', gap:4, marginBottom:28, background:'#0d1117', borderRadius:10, padding:4 }}>
+              <div style={{ display:'flex', gap:4, marginBottom:28, background:'var(--bg-base)', borderRadius:10, padding:4 }}>
                 {[{key:'password',label:'Password'},{key:'magic',label:'Magic Link'}].map((t) => (
                   <button key={t.key} onClick={() => { setLoginTab(t.key); setError(''); setMagicError(''); setMagicSent(false); }}
                     style={{
                       flex:1, height:36, borderRadius:8, border:'none', cursor:'pointer',
-                      background: loginTab === t.key ? '#1a1f2e' : 'transparent',
-                      color: loginTab === t.key ? '#e2e8f0' : '#4b5568',
+                      background: loginTab === t.key ? 'var(--bg-card)' : 'transparent',
+                      color: loginTab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
                       fontWeight: loginTab === t.key ? 700 : 500,
                       fontSize:13,
                       fontFamily:"'Plus Jakarta Sans','Inter','Segoe UI',sans-serif",
@@ -272,26 +272,26 @@ export default function LoginPage({ onSignIn }) {
                     <div style={{ width:56, height:56, borderRadius:16, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
                       <Mail size={24} color="#22c55e" />
                     </div>
-                    <div style={{ color:'#e2e8f0', fontSize:20, fontWeight:800, marginBottom:8 }}>Check your email</div>
-                    <div style={{ color:'#64748b', fontSize:13, lineHeight:1.7, marginBottom:24 }}>
-                      We sent a login link to <strong style={{ color:'#e2e8f0' }}>{magicEmail}</strong>.<br/>Click it to sign in instantly.
+                    <div style={{ color:'var(--text-primary)', fontSize:20, fontWeight:800, marginBottom:8 }}>Check your email</div>
+                    <div style={{ color:'var(--text-muted)', fontSize:13, lineHeight:1.7, marginBottom:24 }}>
+                      We sent a login link to <strong style={{ color:'var(--text-primary)' }}>{magicEmail}</strong>.<br/>Click it to sign in instantly.
                     </div>
                     <Button size="large" onClick={() => { setMagicSent(false); setMagicEmail(''); }}
-                      style={{ borderRadius:10, height:44, width:'100%', background:'rgba(255,255,255,0.05)', border:'1px solid #252d42', color:'#e2e8f0', fontWeight:600 }}>
+                      style={{ borderRadius:10, height:44, width:'100%', background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-primary)', fontWeight:600 }}>
                       ← Use a different email
                     </Button>
                   </div>
                 ) : (
                   <>
                     <div style={{ marginBottom:20 }}>
-                      <div style={{ color:'#e2e8f0', fontSize:22, fontWeight:800, marginBottom:4 }}>Sign in instantly</div>
-                      <div style={{ color:'#64748b', fontSize:13 }}>No password needed — we'll email you a link</div>
+                    <div style={{ color:'var(--text-primary)', fontSize:22, fontWeight:800, marginBottom:4 }}>Sign in instantly</div>
+                    <div style={{ color:'var(--text-muted)', fontSize:13 }}>No password needed — we'll email you a link</div>
                     </div>
                     {magicError && <Alert message={magicError} type="error" showIcon closable onClose={() => setMagicError('')} style={{ marginBottom:16, borderRadius:8 }} />}
                     <div style={{ marginBottom:20 }}>
                       <span style={S.label}>Email address</span>
                       <Input size="large"
-                        prefix={<Mail size={14} color="#4b5568" style={{ marginRight:4 }} />}
+                        prefix={<Mail size={14} color="var(--text-muted)" style={{ marginRight:4 }} />}
                         placeholder="you@accenture.com" value={magicEmail}
                         onChange={(e) => setMagicEmail(e.target.value)}
                         onPressEnter={handleMagicLink}
@@ -317,7 +317,7 @@ export default function LoginPage({ onSignIn }) {
                   style={{ marginBottom:18 }}
                 >
                   <Input size="large"
-                    prefix={<Mail size={14} color="#4b5568" style={{ marginRight:4 }} />}
+                    prefix={<Mail size={14} color="var(--text-muted)" style={{ marginRight:4 }} />}
                     placeholder="you@accenture.com" autoComplete="email"
                     style={S.inputStyle} />
                 </Form.Item>
@@ -338,7 +338,7 @@ export default function LoginPage({ onSignIn }) {
                   style={{ marginBottom:28 }}
                 >
                   <Input.Password size="large"
-                    prefix={<Lock size={14} color="#4b5568" style={{ marginRight:4 }} />}
+                    prefix={<Lock size={14} color="var(--text-muted)" style={{ marginRight:4 }} />}
                     placeholder="Enter your password" autoComplete="current-password"
                     style={S.inputStyle} />
                 </Form.Item>
@@ -354,12 +354,12 @@ export default function LoginPage({ onSignIn }) {
 
               {/* Bottom divider */}
               <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0 0' }}>
-                <div style={{ flex:1, height:1, background:'#1e2332' }} />
-                <span style={{ color:'#374151', fontSize:11 }}>secured by Supabase</span>
-                <div style={{ flex:1, height:1, background:'#1e2332' }} />
+                <div style={{ flex:1, height:1, background:'var(--border)' }} />
+                <span style={{ color:'var(--text-muted)', fontSize:11 }}>secured by Supabase</span>
+                <div style={{ flex:1, height:1, background:'var(--border)' }} />
               </div>
 
-              <div style={{ color:'#374151', fontSize:11, textAlign:'center', marginTop:10 }}>
+              <div style={{ color:'var(--text-muted)', fontSize:11, textAlign:'center', marginTop:10 }}>
                 Contact your admin to create or reset your account.
               </div>
               </>

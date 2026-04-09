@@ -255,7 +255,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
             <Tag style={{ fontSize: 10 }}>{users.length} total</Tag>
           </Space>
         }
-        styles={{ header: { borderBottom: '1px solid #252d42' } }}
+        styles={{ header: { borderBottom: '1px solid var(--border)' } }}
         extra={
           <Space size={6}>
             <Input.Search
@@ -310,7 +310,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                     <div style={{ width: 52, height: 52, borderRadius: '50%', background: `${m.color}20`, border: `2px solid ${m.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
                       <Icon size={22} color={m.color} />
                     </div>
-                    <Text strong style={{ color: '#e2e8f0', fontSize: 16, display: 'block' }}>
+                    <Text strong style={{ color: 'var(--text-primary)', fontSize: 16, display: 'block' }}>
                       {inviteResult.existing ? 'Role Updated!' : 'Invite Sent!'}
                     </Text>
                     <Text type="secondary" style={{ fontSize: 12 }}>
@@ -334,22 +334,22 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                   </div>
 
                   {/* Permission summary for assigned role */}
-                  <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
+                  <div style={{ background: 'var(--bg-card)', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
                     <Text strong style={{ fontSize: 11, color: m.color, display: 'block', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.6 }}>
                       What {inviteResult.email.split('@')[0]} can do
                     </Text>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
                       {perms.map(([perm, allowed]) => (
                         <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                          <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
-                          <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                          <span style={{ color: allowed ? '#22c55e' : 'var(--text-muted)', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
+                          <span style={{ color: allowed ? 'var(--text-primary)' : 'var(--text-muted)' }}>{perm}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Copy link */}
-                  <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                  <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
                     <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 6 }}>Share login link via Teams / email:</Text>
                     <Text code style={{ fontSize: 11, wordBreak: 'break-all' }}>
                       {window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/')}
@@ -390,20 +390,20 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
               const m = ROLE_META[match.role] ?? ROLE_META.viewer;
               const existingRoles = match.allowed_roles ?? [match.role];
               return (
-                <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                     <Avatar size={28} style={{ background: m.color, flexShrink: 0, fontSize: 12 }}>
                       {(match.display_name || match.email || '?')[0].toUpperCase()}
                     </Avatar>
                     <div style={{ flex: 1 }}>
-                      <Text strong style={{ fontSize: 12, color: '#e2e8f0', display: 'block' }}>
+                      <Text strong style={{ fontSize: 12, color: 'var(--text-primary)', display: 'block' }}>
                         {match.display_name || match.email}
                         <Tag color="orange" style={{ marginLeft: 6, fontSize: 10 }}>Existing User</Tag>
                       </Text>
                       <Text type="secondary" style={{ fontSize: 11 }}>{match.email}</Text>
                     </div>
                   </div>
-                  <div style={{ borderTop: '1px solid #252d42', paddingTop: 8 }}>
+                  <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8 }}>
                     <Text type="secondary" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
                       Has {existingRoles.length} role{existingRoles.length > 1 ? 's' : ''}
                     </Text>
@@ -451,7 +451,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
               const Icon = m.icon;
               const perms = Object.values(PERMISSION_GROUPS).flat().map((k) => [PERMISSION_LABELS[k] ?? k, resolveRole(inviteRole)[k] ?? false]);
               return (
-                <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
+                <div style={{ background: 'var(--bg-card)', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                     <Icon size={13} color={m.color} />
                     <Text strong style={{ fontSize: 12, color: m.color }}>{m.label} — Permissions</Text>
@@ -459,8 +459,8 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px' }}>
                     {perms.map(([perm, allowed]) => (
                       <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                        <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
-                        <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                        <span style={{ color: allowed ? '#22c55e' : 'var(--text-muted)', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
+                        <span style={{ color: allowed ? 'var(--text-primary)' : 'var(--text-muted)' }}>{perm}</span>
                       </div>
                     ))}
                   </div>

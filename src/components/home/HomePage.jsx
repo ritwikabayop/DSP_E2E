@@ -84,21 +84,21 @@ export default function HomePage({
   return (
     <div style={{ padding: 24 }}>
       {/* Welcome banner */}
-      <div className="home-banner" style={{ background: 'linear-gradient(135deg, rgba(13,28,18,0.8) 0%, rgba(6,16,10,0.9) 50%, rgba(4,12,8,0.9) 100%)', backdropFilter: 'blur(20px)', borderRadius: 24, border: '1px solid rgba(34,197,94,0.18)' }}>
+      <div className="home-banner" style={{ backdropFilter: 'blur(20px)', borderRadius: 24 }}>
         <div aria-hidden="true" style={{ position: 'absolute', top: -20,  right: -20,  width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
         <div aria-hidden="true" style={{ position: 'absolute', bottom: -40, right: 80,  width: 150, height: 150, borderRadius: '50%', background: 'rgba(255,255,255,0.03)' }} />
         <Row align="middle" gutter={24}>
           <Col flex="auto">
-            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, display: 'block', marginBottom: 4 }}>
+            <Text style={{ color: 'var(--text-secondary)', fontSize: 13, display: 'block', marginBottom: 4 }}>
               Welcome back{displayName ? `, ${displayName}` : ''} ·&nbsp;
               <span style={{ background: roleConfig.bg, color: roleConfig.color, padding: '1px 8px', borderRadius: 20, fontSize: 11, fontWeight: 700 }}>
                 <RoleIcon size={10} style={{ marginRight: 3 }} />{roleConfig.label}
               </span>
             </Text>
-            <Title level={3} style={{ color: '#fff', margin: 0, fontWeight: 700 }}>
+            <Title level={3} style={{ color: 'var(--text-primary)', margin: 0, fontWeight: 700 }}>
               MyISP – Insight &amp; Status Platform
             </Title>
-            <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13 }}>
+            <Text style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
               <Calendar size={12} style={{ marginRight: 4 }} />{monthLabel}
             </Text>
           </Col>
@@ -109,7 +109,7 @@ export default function HomePage({
                 { label: 'Completed',   count: stats.completed,  color: '#22c55e' },
                 { label: 'In Progress', count: stats.inProgress, color: '#3b82f6' },
                 { label: 'Blocked',     count: stats.blocked,    color: '#ef4444' },
-                { label: 'Not Started', count: stats.notStarted, color: '#252d42' },
+                { label: 'Not Started', count: stats.notStarted, color: 'var(--text-muted)' },
               ];
               const total = stats.total || 1;
               let offset = 0;
@@ -133,14 +133,14 @@ export default function HomePage({
                         />
                       );
                     })}
-                    <text x="50" y="46" textAnchor="middle" fill="#fff" fontSize="16" fontWeight="700">{stats.total}</text>
-                    <text x="50" y="60" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="9">total</text>
+                    <text x="50" y="46" textAnchor="middle" fill="var(--text-primary)" fontSize="16" fontWeight="700">{stats.total}</text>
+                    <text x="50" y="60" textAnchor="middle" fill="var(--text-muted)" fontSize="9">total</text>
                   </svg>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
                     {slices.map((s) => (
                       <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                         <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-                        <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>{s.label} {s.count}</Text>
+                        <Text style={{ color: 'var(--text-secondary)', fontSize: 10 }}>{s.label} {s.count}</Text>
                       </div>
                     ))}
                   </div>
@@ -216,7 +216,7 @@ export default function HomePage({
                 ]}
                 pagination={false} size="small" bordered
                 locale={{ emptyText: (
-                  <Space direction="vertical" size={4} style={{ padding: '12px 0', color: '#4b5568' }}>
+                  <Space direction="vertical" size={4} style={{ padding: '12px 0', color: 'var(--text-muted)' }}>
                     <CheckCircle size={22} color="#22c55e" />
                     <span style={{ fontSize: 12 }}>No tasks assigned to you this month</span>
                   </Space>
@@ -262,10 +262,10 @@ export default function HomePage({
                   <div key={log.id} style={{ padding: '5px 0', borderBottom: '1px solid var(--border-subtle)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     <Tag color="purple" style={{ fontSize: 10, flexShrink: 0, marginTop: 1 }}>{log.module_name}</Tag>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <Text style={{ fontSize: 11, color: '#e2e8f0' }}>
+                      <Text style={{ fontSize: 11, color: 'var(--text-primary)' }}>
                         <strong>{log.changed_by}</strong> changed <em>{log.field_name}</em>
                       </Text>
-                      <div style={{ fontSize: 10, color: '#4b5568', marginTop: 1 }}>
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 1 }}>
                         {log.old_value ? <><span style={{ color: 'var(--danger-light)' }}>{log.old_value}</span> → </> : null}
                         <span style={{ color: '#22c55e' }}>{log.new_value || '—'}</span>
                       </div>
@@ -310,7 +310,7 @@ export default function HomePage({
                   )}
                   {canEditEnv && editingEnv !== env && (
                     <Button type="text" size="small" icon={<Pencil size={12} />}
-                      onClick={() => startEdit(env)} style={{ color: '#4b5568', flexShrink: 0 }} />
+                      onClick={() => startEdit(env)} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   )}
                   {canEditEnv && editingEnv === env && (
                     <Space size={4}>
@@ -322,22 +322,22 @@ export default function HomePage({
                   )}
                 </div>
                 <div style={{ display: 'flex', gap: 12, paddingLeft: 4, flexWrap: 'wrap' }}>
-                  <Text style={{ fontSize: 11, color: '#8892a4' }}>Manual:&nbsp;
+                  <Text style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Manual:&nbsp;
                     {editingEnv === env ? (
                       <Input size="small" value={editBuf.dealManual}
                         onChange={(e) => setEditBuf((b) => ({ ...b, dealManual: e.target.value }))}
                         style={{ width: 110, fontSize: 11 }} />
                     ) : (
-                      <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealManual}</Text>
+                      <Text copyable strong style={{ color: 'var(--text-primary)', fontSize: 11 }}>{cfg.dealManual}</Text>
                     )}
                   </Text>
-                  <Text style={{ fontSize: 11, color: '#8892a4' }}>Auto:&nbsp;
+                  <Text style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Auto:&nbsp;
                     {editingEnv === env ? (
                       <Input size="small" value={editBuf.dealAuto}
                         onChange={(e) => setEditBuf((b) => ({ ...b, dealAuto: e.target.value }))}
                         style={{ width: 110, fontSize: 11 }} />
                     ) : (
-                      <Text copyable strong style={{ color: '#e2e8f0', fontSize: 11 }}>{cfg.dealAuto}</Text>
+                      <Text copyable strong style={{ color: 'var(--text-primary)', fontSize: 11 }}>{cfg.dealAuto}</Text>
                     )}
                   </Text>
                 </div>

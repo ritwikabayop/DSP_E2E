@@ -130,14 +130,14 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
             <Form form={form} layout="vertical" requiredMark={false} onFinish={handleSave}>
               <Form.Item
                 name="password"
-                label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>New Password</Text>}
+                label={<Text style={{ color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>New Password</Text>}
                 rules={[{ required: true, message: 'Enter a password' }, { min: 8, message: 'At least 8 characters' }]}
               >
-                <Input.Password size="large" prefix={<Lock size={14} color="#4b5568" style={{ marginRight: 4 }} />} placeholder="Minimum 8 characters" style={{ borderRadius: 9, height: 44 }} />
+                <Input.Password size="large" prefix={<Lock size={14} color="var(--text-muted)" style={{ marginRight: 4 }} />} placeholder="Minimum 8 characters" style={{ borderRadius: 9, height: 44 }} />
               </Form.Item>
               <Form.Item
                 name="confirm"
-                label={<Text style={{ color: '#8892a4', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Confirm Password</Text>}
+                label={<Text style={{ color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase' }}>Confirm Password</Text>}
                 dependencies={['password']}
                 rules={[
                   { required: true, message: 'Please confirm your password' },
@@ -148,7 +148,7 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
                   }),
                 ]}
               >
-                <Input.Password size="large" prefix={<Lock size={14} color="#4b5568" style={{ marginRight: 4 }} />} placeholder="Re-enter password" style={{ borderRadius: 9, height: 44 }} />
+                <Input.Password size="large" prefix={<Lock size={14} color="var(--text-muted)" style={{ marginRight: 4 }} />} placeholder="Re-enter password" style={{ borderRadius: 9, height: 44 }} />
               </Form.Item>
               <Button type="primary" htmlType="submit" size="large" loading={saving}
                 style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', fontWeight: 700, fontSize: 15 }}>
@@ -320,7 +320,7 @@ function App() {
               size="small" type="text"
               icon={React.createElement(ShieldCheck, { size: 14, color: '#22c55e' })}
               onClick={() => setActiveModule(null)}
-              style={{ color: '#8892a4', fontSize: 12 }}
+                style={{ color: 'var(--text-secondary)', fontSize: 12 }}
             >
               ← Back to Modules
             </Button>
@@ -489,8 +489,8 @@ function App() {
             </Tooltip>
             {!collapsed && (
               <div style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => setActiveModule(null)}>
-                <span style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>MyISP</span>
-                <span style={{ color: '#4b5568', fontSize: 10 }}>◀ Modules</span>
+                <span style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>MyISP</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>◀ Modules</span>
               </div>
             )}
           </div>
@@ -519,7 +519,7 @@ function App() {
                 type="text"
                 icon={React.createElement(Home, { size: 13 })}
                 onClick={() => { setActiveModule(null); setSearchQuery(''); }}
-                style={{ color: '#8892a4', flexShrink: 0 }}
+                style={{ color: 'var(--text-secondary)', flexShrink: 0 }}
               >
                 Modules
               </Button>
@@ -532,12 +532,12 @@ function App() {
               className="header-month-select"
               style={{ width: 155, flexShrink: 0 }}
               popupMatchSelectWidth={false}
-              suffixIcon={React.createElement(Calendar, { size: 12, color: '#4b5568' })}
+              suffixIcon={React.createElement(Calendar, { size: 12, color: 'var(--text-muted)' })}
             />
 
             <Input
               placeholder={'Search ' + (activeTab === 'home' ? 'all' : activeTab) + '…'}
-              prefix={React.createElement(Search, { size: 12, color: '#4b5568' })}
+              prefix={React.createElement(Search, { size: 12, color: 'var(--text-muted)' })}
               value={searchQuery}
               onChange={function(e) { setSearchQuery(e.target.value); }}
               allowClear
@@ -589,7 +589,7 @@ function App() {
                       key: 'role-info',
                       label: React.createElement('div', { style: { padding: '4px 0', pointerEvents: 'none' } },
                         allowedRoles && allowedRoles.length > 0 && React.createElement('div', null,
-                          React.createElement('div', { style: { fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
+                          React.createElement('div', { style: { fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
                           React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 } },
                             ...allowedRoles.map((r) => {
                               const rc = ROLES[r] ?? ROLES.viewer;
@@ -600,7 +600,7 @@ function App() {
                                 style: {
                                   background: isActive ? rc.bg : 'transparent',
                                   color: rc.color,
-                                  border: `1px solid ${isActive ? rc.border : '#252d42'}`,
+                                  border: `1px solid ${isActive ? rc.border : 'var(--border)'}`,
                                   fontSize: 11, margin: 0,
                                   fontWeight: isActive ? 700 : 400,
                                 },
@@ -664,13 +664,13 @@ function App() {
             children: React.createElement('div', {
                   role: 'button',
                   tabIndex: 0,
-                  style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: '#1a2035', border: '1px solid var(--border-subtle)', cursor: 'pointer' }
+                  style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }
                 },
                   React.createElement('div', { style: { width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #22c55e, #16a34a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
                     React.createElement(RoleIcon, { size: 11, color: '#fff' })
                   ),
                   React.createElement('div', { style: { lineHeight: 1.2, maxWidth: 160 } },
-                    React.createElement('div', { style: { color: '#e2e8f0', fontSize: 11, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, title: displayName }, displayName),
+                    React.createElement('div', { style: { color: 'var(--text-primary)', fontSize: 11, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, title: displayName }, displayName),
                     React.createElement('div', { style: { color: roleConfig.color, fontSize: 10, fontWeight: 700 } }, roleConfig.label)
                   )
                 )
