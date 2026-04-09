@@ -32,6 +32,16 @@ export default function HomePage({
   const [editBuf,    setEditBuf]    = useState({});
   const [recentLogs, setRecentLogs]  = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);
+  const [isLight, setIsLight] = useState(
+    () => document.documentElement.getAttribute('data-theme') === 'light'
+  );
+  useEffect(() => {
+    const obs = new MutationObserver(() =>
+      setIsLight(document.documentElement.getAttribute('data-theme') === 'light')
+    );
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => obs.disconnect();
+  }, []);
 
   const startEdit  = (env) => { setEditingEnv(env); setEditBuf({ ...envConfig[env] }); };
   const cancelEdit = ()    => { setEditingEnv(null); setEditBuf({}); };
@@ -180,7 +190,7 @@ export default function HomePage({
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab(m.key); } }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ width: 36, height: 36, borderRadius: 8, background: `${m.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 8, background: `${m.color}${isLight ? '33' : '22'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon size={18} color={m.color} aria-hidden="true" />
                       </div>
                       <ArrowUpRight size={14} color={m.color} aria-hidden="true" />
