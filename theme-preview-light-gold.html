@@ -5,27 +5,58 @@
 <title>E2E Dashboard — Light Gold + White Themes</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #f5f0e8; color: #1c1207; }
+  body {
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0d0a05 0%, #1a1208 50%, #0e0b06 100%);
+    color: #fff;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(251,191,36,0.09) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(217,119,6,0.07) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  h1 { text-align: center; padding: 44px 0 8px; font-size: 24px; color: #1c1207; letter-spacing: -0.5px; }
-  .tag-row { display: flex; gap: 8px; justify-content: center; margin: 12px 0 44px; }
-  .tag-row span { font-size: 11px; padding: 3px 12px; border-radius: 20px; border: 1px solid #e2d9c8; color: #a07830; background: #fffdf6; }
+  h1 {
+    text-align: center;
+    padding: 16px 40px 12px;
+    font-size: 46px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    background: linear-gradient(120deg, #fde68a 0%, #fbbf24 35%, #fff7d4 65%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(251,191,36,0.25));
+    position: relative;
+    z-index: 1;
+  }
+  .tag-row { display: flex; gap: 10px; justify-content: center; margin: 14px 0 48px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .tag-row span { font-size: 11px; font-weight: 600; padding: 6px 18px; border-radius: 20px; border: 1px solid rgba(251,191,36,0.2); color: rgba(251,191,36,0.8); background: rgba(251,191,36,0.07); backdrop-filter: blur(8px); letter-spacing: 0.3px; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px; padding: 0 40px 60px; max-width: 1700px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(410px, 1fr)); gap: 32px; padding: 0 40px 72px; max-width: 1820px; margin: 0 auto; position: relative; z-index: 1; }
 
-  .theme-card { border-radius: 18px; overflow: hidden; box-shadow: 0 4px 32px rgba(0,0,0,0.10); transition: transform 0.2s, box-shadow 0.2s; border: 1.5px solid #e8dfc8; }
-  .theme-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.15); }
+  .theme-card { border-radius: 22px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(251,191,36,0.08) inset; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease; border: 1px solid rgba(251,191,36,0.15); }
+  .theme-card:hover { transform: translateY(-8px) scale(1.005); box-shadow: 0 28px 72px rgba(0,0,0,0.5), 0 0 50px rgba(251,191,36,0.12), 0 1px 0 rgba(251,191,36,0.15) inset; }
 
-  .tc-header { padding: 18px 22px 14px; display: flex; align-items: center; justify-content: space-between; }
-  .tc-name { font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
-  .tc-badge { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+  .tc-header { padding: 22px 26px 18px; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+  .tc-name { font-weight: 800; font-size: 17px; letter-spacing: -0.4px; position: relative; z-index: 1; }
+  .tc-badge { font-size: 10px; font-weight: 700; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.8px; position: relative; z-index: 1; }
 
   .swatches { display: flex; height: 6px; }
   .swatches span { flex: 1; }
 
-  .mini-app { display: flex; height: 290px; }
+  .mini-app { display: flex; height: 300px; }
   .mini-sidebar { width: 58px; display: flex; flex-direction: column; padding: 10px 8px; gap: 6px; }
-  .mini-sidebar .logo { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; margin-bottom: 6px; }
+  .mini-sidebar .logo { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 17px; margin-bottom: 6px; }
   .mini-nav-item { height: 33px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
   .mini-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   .mini-header { height: 42px; display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0; }
@@ -46,7 +77,7 @@
   .mini-chip { height: 20px; border-radius: 20px; padding: 0 10px; font-size: 9px; display: flex; align-items: center; border-width: 1px; border-style: solid; }
 
   .vars-block { padding: 16px 22px 20px; }
-  .vars-block h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #a09080; margin-bottom: 12px; }
+  .vars-block h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #a09080; margin-bottom: 12px; font-weight: 700; }
   .var-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .var-row { display: flex; align-items: center; gap: 7px; font-size: 10.5px; color: #706050; }
   .var-dot { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
@@ -54,8 +85,8 @@
   /* ═══════════════════
      L1 — IVORY GOLD (pure white + gold)
   ═══════════════════ */
-  .l1 { background: #ffffff; border-color: #f0e6cc; }
-  .l1 .tc-header { background: #fffdf6; border-bottom: 1px solid #f0e6cc; }
+  .l1 { background: #ffffff; border-color: rgba(251,191,36,0.2); }
+  .l1 .tc-header { background: linear-gradient(135deg, #fffdf6 0%, #fef3c7 60%, #fde68a 100%); border-bottom: 1px solid #f0e6cc; }
   .l1 .tc-name { color: #92700a; }
   .l1 .tc-badge { background: rgba(251,191,36,0.12); color: #92700a; border: 1px solid rgba(251,191,36,0.3); }
   .l1 .swatches span:nth-child(1){background:#ffffff}
@@ -64,13 +95,13 @@
   .l1 .swatches span:nth-child(4){background:#f59e0b}
   .l1 .swatches span:nth-child(5){background:#78350f}
   .l1 .mini-sidebar { background: #fef9e7; border-right: 1px solid #f0e6cc; }
-  .l1 .logo { background: linear-gradient(135deg,#fbbf24,#d97706); box-shadow: 0 0 14px rgba(251,191,36,0.4); }
+  .l1 .logo { background: linear-gradient(135deg,#fbbf24,#d97706); box-shadow: 0 0 20px rgba(251,191,36,0.55), 0 4px 12px rgba(251,191,36,0.3); }
   .l1 .mini-nav-item { color: #c8a04a; }
   .l1 .mini-nav-item.active { background: rgba(251,191,36,0.15); color: #92700a; }
   .l1 .mini-header { background: #fffdf6; border-bottom: 1px solid #f0e6cc; }
   .l1 .mini-header .month-pill { background: #fef3c7; color: #92700a; border: 1px solid #f0e6cc; }
   .l1 .mini-header .search { background: #fff8e6; color: #b8902a; border: 1px solid #f0e6cc; }
-  .l1 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#d97706); color: #fff; }
+  .l1 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#d97706); color: #fff; box-shadow: 0 2px 8px rgba(251,191,36,0.4); }
   .l1 .mini-header .avatar { background: linear-gradient(135deg,#92700a,#78350f); color: #fff; }
   .l1 .mini-content { background: #ffffff; }
   .l1 .mini-banner { background: linear-gradient(135deg,#fef3c7,#fde68a); border: 1px solid rgba(251,191,36,0.3); color: #78350f; }
@@ -85,8 +116,8 @@
   /* ═══════════════════
      L2 — PEARL CHAMPAGNE (warm white + champagne gold)
   ═══════════════════ */
-  .l2 { background: #fdf8f0; border-color: #e8d9b8; }
-  .l2 .tc-header { background: #fdf8f0; border-bottom: 1px solid #e8d9b8; }
+  .l2 { background: #fdf8f0; border-color: rgba(217,119,6,0.2); }
+  .l2 .tc-header { background: linear-gradient(135deg, #fdf8f0 0%, #f5ead8 60%, #ead5b0 100%); border-bottom: 1px solid #e8d9b8; }
   .l2 .tc-name { color: #7a5c10; }
   .l2 .tc-badge { background: rgba(217,119,6,0.1); color: #7a5c10; border: 1px solid rgba(217,119,6,0.25); }
   .l2 .swatches span:nth-child(1){background:#fdf8f0}
@@ -95,13 +126,13 @@
   .l2 .swatches span:nth-child(4){background:#b45309}
   .l2 .swatches span:nth-child(5){background:#92400e}
   .l2 .mini-sidebar { background: #f7f0e4; border-right: 1px solid #e8d9b8; }
-  .l2 .logo { background: linear-gradient(135deg,#d97706,#b45309); box-shadow: 0 0 14px rgba(217,119,6,0.35); }
+  .l2 .logo { background: linear-gradient(135deg,#d97706,#b45309); box-shadow: 0 0 20px rgba(217,119,6,0.5), 0 4px 12px rgba(217,119,6,0.3); }
   .l2 .mini-nav-item { color: #c09850; }
   .l2 .mini-nav-item.active { background: rgba(217,119,6,0.12); color: #7a5c10; }
   .l2 .mini-header { background: #fdf8f0; border-bottom: 1px solid #e8d9b8; }
   .l2 .mini-header .month-pill { background: #f5ead8; color: #7a5c10; border: 1px solid #e8d9b8; }
   .l2 .mini-header .search { background: #f5ead8; color: #a07830; border: 1px solid #e8d9b8; }
-  .l2 .mini-header .save-btn { background: linear-gradient(135deg,#d97706,#b45309); color: #fff; }
+  .l2 .mini-header .save-btn { background: linear-gradient(135deg,#d97706,#b45309); color: #fff; box-shadow: 0 2px 8px rgba(217,119,6,0.4); }
   .l2 .mini-header .avatar { background: linear-gradient(135deg,#7a5c10,#92400e); color: #fff; }
   .l2 .mini-content { background: #fdf8f0; }
   .l2 .mini-banner { background: linear-gradient(135deg,#f5ead8,#ead5b0); border: 1px solid rgba(217,119,6,0.25); color: #7a5c10; }
@@ -116,8 +147,8 @@
   /* ═══════════════════
      L3 — FROST GOLD (cool white + bright gold)
   ═══════════════════ */
-  .l3 { background: #ffffff; border-color: #e5e0d5; }
-  .l3 .tc-header { background: #f9f6f0; border-bottom: 1px solid #e5e0d5; }
+  .l3 { background: #ffffff; border-color: rgba(234,179,8,0.18); }
+  .l3 .tc-header { background: linear-gradient(135deg, #fefffe 0%, #fefce8 60%, #fef9c3 100%); border-bottom: 1px solid #e5e0d5; }
   .l3 .tc-name { color: #8a6800; }
   .l3 .tc-badge { background: rgba(234,179,8,0.1); color: #8a6800; border: 1px solid rgba(234,179,8,0.3); }
   .l3 .swatches span:nth-child(1){background:#ffffff}
@@ -126,13 +157,13 @@
   .l3 .swatches span:nth-child(4){background:#ca8a04}
   .l3 .swatches span:nth-child(5){background:#713f12}
   .l3 .mini-sidebar { background: #f5f2ea; border-right: 1px solid #e5e0d5; }
-  .l3 .logo { background: linear-gradient(135deg,#eab308,#a16207); box-shadow: 0 0 14px rgba(234,179,8,0.35); }
+  .l3 .logo { background: linear-gradient(135deg,#eab308,#a16207); box-shadow: 0 0 20px rgba(234,179,8,0.5), 0 4px 12px rgba(234,179,8,0.3); }
   .l3 .mini-nav-item { color: #c0a030; }
   .l3 .mini-nav-item.active { background: rgba(234,179,8,0.12); color: #8a6800; }
   .l3 .mini-header { background: #f9f6f0; border-bottom: 1px solid #e5e0d5; }
   .l3 .mini-header .month-pill { background: #fef9c3; color: #8a6800; border: 1px solid #e5e0d5; }
   .l3 .mini-header .search { background: #fef9c3; color: #a08020; border: 1px solid #e5e0d5; }
-  .l3 .mini-header .save-btn { background: linear-gradient(135deg,#eab308,#a16207); color: #fff; }
+  .l3 .mini-header .save-btn { background: linear-gradient(135deg,#eab308,#a16207); color: #fff; box-shadow: 0 2px 8px rgba(234,179,8,0.4); }
   .l3 .mini-header .avatar { background: linear-gradient(135deg,#8a6800,#713f12); color: #fff; }
   .l3 .mini-content { background: #ffffff; }
   .l3 .mini-banner { background: linear-gradient(135deg,#fef9c3,#fde68a); border: 1px solid rgba(234,179,8,0.3); color: #713f12; }
@@ -147,8 +178,8 @@
   /* ═══════════════════
      L4 — GOLDEN LINEN (linen + amber)
   ═══════════════════ */
-  .l4 { background: #faf5ed; border-color: #e2d4b8; }
-  .l4 .tc-header { background: #f5ede0; border-bottom: 1px solid #e2d4b8; }
+  .l4 { background: #faf5ed; border-color: rgba(245,158,11,0.2); }
+  .l4 .tc-header { background: linear-gradient(135deg, #faf5ed 0%, #f0e8d8 60%, #e8d5be 100%); border-bottom: 1px solid #e2d4b8; }
   .l4 .tc-name { color: #8b5e14; }
   .l4 .tc-badge { background: rgba(245,158,11,0.12); color: #8b5e14; border: 1px solid rgba(245,158,11,0.3); }
   .l4 .swatches span:nth-child(1){background:#faf5ed}
@@ -157,13 +188,13 @@
   .l4 .swatches span:nth-child(4){background:#d97706}
   .l4 .swatches span:nth-child(5){background:#92400e}
   .l4 .mini-sidebar { background: #f0e8d8; border-right: 1px solid #e2d4b8; }
-  .l4 .logo { background: linear-gradient(135deg,#f59e0b,#b45309); box-shadow: 0 0 14px rgba(245,158,11,0.35); }
+  .l4 .logo { background: linear-gradient(135deg,#f59e0b,#b45309); box-shadow: 0 0 20px rgba(245,158,11,0.5), 0 4px 12px rgba(245,158,11,0.3); }
   .l4 .mini-nav-item { color: #c09048; }
   .l4 .mini-nav-item.active { background: rgba(245,158,11,0.14); color: #8b5e14; }
   .l4 .mini-header { background: #f5ede0; border-bottom: 1px solid #e2d4b8; }
   .l4 .mini-header .month-pill { background: #ede0c8; color: #8b5e14; border: 1px solid #e2d4b8; }
   .l4 .mini-header .search { background: #ede0c8; color: #a07030; border: 1px solid #e2d4b8; }
-  .l4 .mini-header .save-btn { background: linear-gradient(135deg,#f59e0b,#b45309); color: #fff; }
+  .l4 .mini-header .save-btn { background: linear-gradient(135deg,#f59e0b,#b45309); color: #fff; box-shadow: 0 2px 8px rgba(245,158,11,0.4); }
   .l4 .mini-header .avatar { background: linear-gradient(135deg,#8b5e14,#92400e); color: #fff; }
   .l4 .mini-content { background: #faf5ed; }
   .l4 .mini-banner { background: linear-gradient(135deg,#ede0c8,#e0d0b0); border: 1px solid rgba(245,158,11,0.25); color: #8b5e14; }
@@ -178,8 +209,8 @@
   /* ═══════════════════
      L5 — CREAM SILK (off-white + warm copper-gold)
   ═══════════════════ */
-  .l5 { background: #fefcf8; border-color: #ede5d0; }
-  .l5 .tc-header { background: #fefcf8; border-bottom: 1px solid #ede5d0; }
+  .l5 { background: #fefcf8; border-color: rgba(202,138,4,0.18); }
+  .l5 .tc-header { background: linear-gradient(135deg, #fefcf8 0%, #fdf6e8 60%, #f5e8c8 100%); border-bottom: 1px solid #ede5d0; }
   .l5 .tc-name { color: #7c5a0a; }
   .l5 .tc-badge { background: rgba(202,138,4,0.1); color: #7c5a0a; border: 1px solid rgba(202,138,4,0.25); }
   .l5 .swatches span:nth-child(1){background:#fefcf8}
@@ -188,13 +219,13 @@
   .l5 .swatches span:nth-child(4){background:#fbbf24}
   .l5 .swatches span:nth-child(5){background:#a0520a}
   .l5 .mini-sidebar { background: #fdf6e8; border-right: 1px solid #ede5d0; }
-  .l5 .logo { background: linear-gradient(135deg,#fbbf24,#ca8a04); box-shadow: 0 0 14px rgba(202,138,4,0.3); }
+  .l5 .logo { background: linear-gradient(135deg,#fbbf24,#ca8a04); box-shadow: 0 0 20px rgba(202,138,4,0.5), 0 4px 12px rgba(202,138,4,0.3); }
   .l5 .mini-nav-item { color: #c8a050; }
   .l5 .mini-nav-item.active { background: rgba(202,138,4,0.1); color: #7c5a0a; }
   .l5 .mini-header { background: #fefcf8; border-bottom: 1px solid #ede5d0; }
   .l5 .mini-header .month-pill { background: #fdf6e8; color: #7c5a0a; border: 1px solid #ede5d0; }
   .l5 .mini-header .search { background: #fdf6e8; color: #a07828; border: 1px solid #ede5d0; }
-  .l5 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#ca8a04); color: #fff; }
+  .l5 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#ca8a04); color: #fff; box-shadow: 0 2px 8px rgba(202,138,4,0.4); }
   .l5 .mini-header .avatar { background: linear-gradient(135deg,#7c5a0a,#a0520a); color: #fff; }
   .l5 .mini-content { background: #fefcf8; }
   .l5 .mini-banner { background: linear-gradient(135deg,#fdf6e8,#f5e8c8); border: 1px solid rgba(202,138,4,0.2); color: #7c5a0a; }
@@ -209,8 +240,8 @@
   /* ═══════════════════
      L6 — WHITE GOLD MARBLE (pure white + deep gold accents)
   ═══════════════════ */
-  .l6 { background: #ffffff; border-color: #e8ddc8; }
-  .l6 .tc-header { background: #fffdf9; border-bottom: 1px solid #e8ddc8; }
+  .l6 { background: #ffffff; border-color: rgba(251,191,36,0.22); }
+  .l6 .tc-header { background: linear-gradient(135deg, #fffdf9 0%, #fef8e0 50%, #fde68a 100%); border-bottom: 1px solid #e8ddc8; }
   .l6 .tc-name { color: #6b4c08; }
   .l6 .tc-badge { background: rgba(251,191,36,0.15); color: #6b4c08; border: 1px solid rgba(251,191,36,0.4); }
   .l6 .swatches span:nth-child(1){background:#ffffff}
@@ -219,13 +250,13 @@
   .l6 .swatches span:nth-child(4){background:#6b4c08}
   .l6 .swatches span:nth-child(5){background:#1c1207}
   .l6 .mini-sidebar { background: #fffdf5; border-right: 1px solid #e8ddc8; }
-  .l6 .logo { background: linear-gradient(135deg,#fbbf24,#92700a); box-shadow: 0 0 18px rgba(251,191,36,0.45); }
+  .l6 .logo { background: linear-gradient(135deg,#fbbf24,#92700a); box-shadow: 0 0 24px rgba(251,191,36,0.6), 0 4px 16px rgba(251,191,36,0.35); }
   .l6 .mini-nav-item { color: #d4a84a; }
   .l6 .mini-nav-item.active { background: rgba(251,191,36,0.12); color: #6b4c08; }
   .l6 .mini-header { background: #fffdf9; border-bottom: 1px solid #e8ddc8; }
   .l6 .mini-header .month-pill { background: #fef8e0; color: #8a6800; border: 1px solid #e8ddc8; }
   .l6 .mini-header .search { background: #fef8e0; color: #b8940a; border: 1px solid #e8ddc8; }
-  .l6 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#92700a); color: #fff; font-weight: 900; }
+  .l6 .mini-header .save-btn { background: linear-gradient(135deg,#fbbf24,#92700a); color: #fff; font-weight: 900; box-shadow: 0 2px 10px rgba(251,191,36,0.5); }
   .l6 .mini-header .avatar { background: #1c1207; color: #fbbf24; font-weight: 900; }
   .l6 .mini-content { background: #ffffff; }
   .l6 .mini-banner { background: linear-gradient(135deg,#fef8e0,#fde68a); border: 1px solid rgba(251,191,36,0.35); color: #6b4c08; }
@@ -240,7 +271,9 @@
 </head>
 <body>
 
-<h1>✨ Light Gold + White Themes</h1>
+<p style="text-align:center;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#d97706;padding-top:8px;position:relative;z-index:1">— E2E Dashboard —</p>
+<h1>✨ Light Gold &amp; White</h1>
+<p style="text-align:center;color:rgba(255,255,255,0.4);font-size:14px;margin:-20px 0 20px;position:relative;z-index:1;font-weight:400">Six premium light-mode palettes — creams, whites &amp; gold accents</p>
 
 <div class="tag-row">
   <span>No dark backgrounds</span>
@@ -559,7 +592,7 @@
 
 </div>
 
-<div style="text-align:center;padding:0 0 56px;color:#8a7050;font-size:12px;">
+<div style="text-align:center;padding:0 0 56px;color:rgba(251,191,36,0.4);font-size:12px;position:relative;z-index:1;">
   All light — white & cream backgrounds, gold accents, no dark colours.<br>
   Tell me which one you want applied.
 </div>

@@ -265,3 +265,44 @@
 }
 [data-theme="light"] .ant-card-head-title { color: #1a1209 !important; }
 [data-theme="light"] .ant-card-body { background: #ffffff !important; }
+
+/* Segmented — unselected item text colour */
+[data-theme="light"] .ant-segmented-item { color: #92700a !important; }
+
+/* Primary button — use gold accent instead of green */
+[data-theme="light"] .ant-btn-primary {
+  background: #d97706 !important;
+  border-color: #b45309 !important;
+  color: #fff !important;
+}
+[data-theme="light"] .ant-btn-primary:hover {
+  background: #b45309 !important;
+  border-color: #92400e !important;
+}
+[data-theme="light"] .ant-btn-primary:disabled {
+  background: rgba(217,119,6,0.25) !important;
+  border-color: rgba(217,119,6,0.2) !important;
+  color: rgba(255,255,255,0.5) !important;
+}
+
+/* Badge counts — keep readable on light bg */
+[data-theme="light"] .ant-badge-count {
+  background: rgba(217,119,6,0.15) !important;
+  color: #7a5c08 !important;
+  border: 1px solid rgba(217,119,6,0.3) !important;
+  box-shadow: none !important;
+}
+
+/* Table row error highlight */
+[data-theme="light"] .ant-table-tbody > tr.row-error > td {
+  background: rgba(220,38,38,0.04) !important;
+  border-left: 2px solid #dc2626 !important;
+}
+
+/* Popconfirm */
+[data-theme="light"] .ant-popconfirm-inner-content {
+  background: #fffdf6 !important;
+}
+
+/* Spin dot */
+[data-theme="light"] .ant-spin-dot-item { background: #d97706 !important; }

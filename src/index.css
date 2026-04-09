@@ -675,3 +675,43 @@ body {
   0%, 100% { opacity: 0.4; transform: scale(0.85); }
   50%       { opacity: 1;   transform: scale(1.15); }
 }
+
+/* ═══════════════════════════════════════════════
+   LIGHT THEME — missing overrides
+   (rules in this file that hard-code dark colors)
+   ═══════════════════════════════════════════════ */
+
+/* Sidebar logo: green → gold */
+[data-theme="light"] .sidebar-logo-icon {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+  box-shadow: 0 0 16px rgba(217,119,6,0.3) !important;
+}
+
+/* Scrollbar thumb hover: dark blue → warm tan */
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #c8b090 !important; }
+
+/* Glass card hover: green glow → gold glow */
+[data-theme="light"] .glass-card:hover {
+  border-color: rgba(251,191,36,0.45) !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(251,191,36,0.2) !important;
+}
+
+/* KT session card hover: green border + dark shadow → gold */
+[data-theme="light"] .kt-session-card:hover,
+[data-theme="light"] .kt-session-card:focus-within {
+  border-color: rgba(217,119,6,0.35) !important;
+  box-shadow: 0 16px 32px rgba(0,0,0,0.07) !important;
+}
+
+/* Row resize handle: green tint → amber */
+[data-theme="light"] .row-resize-handle:hover,
+[data-theme="light"] .row-resize-handle--dragging {
+  background: rgba(217,119,6,0.3) !important;
+}
+
+/* Editable cell input (while editing): dark bg → white */
+[data-theme="light"] .editable-input .ant-input {
+  background: #ffffff !important;
+  border-color: #d97706 !important;
+  color: #1a1209 !important;
+}
