@@ -118,7 +118,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
       key: 'role-info',
       label: (
         <div style={{ padding: '4px 0', pointerEvents: 'none' }}>
-          <div style={{ fontSize: 10, color: '#8892a4', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 }}>Your Role</div>
+          <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 }}>Your Role</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
             <span style={{ color: roleConfig.color, fontWeight: 700, fontSize: 12 }}>⬤ {roleConfig.label}</span>
             {viewAsRole && <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Previewing</Tag>}
@@ -136,8 +136,8 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
               ['Own rows only',   roleConfig.onlyOwnRows],
             ].map(([perm, allowed]) => (
               <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1 }}>{allowed ? '✓' : '✗'}</span>
-                <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                <span style={{ color: allowed ? '#22c55e' : 'var(--text-muted)', fontSize: 13, lineHeight: 1 }}>{allowed ? '✓' : '✗'}</span>
+                <span style={{ color: allowed ? 'var(--text-primary)' : 'var(--text-muted)' }}>{perm}</span>
               </div>
             ))}
           </div>
@@ -185,8 +185,8 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#06080c',
-      backgroundImage: 'radial-gradient(at 0% 0%, rgba(34,197,94,0.08) 0px, transparent 55%), radial-gradient(at 100% 100%, rgba(59,130,246,0.06) 0px, transparent 55%)',
+      background: 'var(--bg-base)',
+      backgroundImage: 'var(--mesh)',
       backgroundAttachment: 'fixed',
       display: 'flex',
       flexDirection: 'column',
@@ -194,8 +194,8 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
       {/* Top bar */}
       <div style={{
         height: 56,
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
-        background: 'rgba(8,10,16,0.85)',
+        borderBottom: '1px solid var(--border)',
+        background: 'var(--bg-header)',
         backdropFilter: 'blur(20px)',
         display: 'flex',
         alignItems: 'center',
@@ -211,7 +211,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         }}>
           <LayoutDashboard size={17} color="#fff" />
         </div>
-        <span style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 14 }}>MyISP</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14 }}>MyISP</span>
         <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: 12 }}>&nbsp;– Insight &amp; Status Platform</span>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -224,11 +224,11 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
               style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--bg-card)', border: '1px solid var(--border)',
                 transition: 'background 0.15s',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-card-hover)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; }}
               aria-label="Profile and role options"
             >
               {/* Avatar */}
@@ -242,7 +242,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
               </div>
               {/* Name + role */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <span style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 600, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
+                <span style={{ color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
                   {displayName}
                 </span>
                 <span style={{
@@ -272,10 +272,10 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
       }}>
         {/* Greeting */}
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <h1 style={{ color: '#e2e8f0', fontSize: 28, fontWeight: 700, margin: 0, lineHeight: 1.3 }}>
+          <h1 style={{ color: 'var(--text-primary)', fontSize: 28, fontWeight: 700, margin: 0, lineHeight: 1.3 }}>
             Welcome back, <span style={{ color: '#22c55e' }}>{displayName.split('@')[0]}</span>
           </h1>
-          <p style={{ color: '#6b7280', fontSize: 14, marginTop: 8, marginBottom: 0 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 8, marginBottom: 0 }}>
             Choose a module to continue
           </p>
         </div>
@@ -303,7 +303,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
                 style={{
                   flex: '1 1 340px',
                   maxWidth: 400,
-                  background: isHovered ? `rgba(255,255,255,0.03)` : mod.bg,
+                  background: isHovered ? 'var(--bg-card-hover)' : mod.bg,
                   border: `1.5px solid ${isHovered ? mod.hoverBorder : mod.border}`,
                   borderRadius: 16,
                   padding: '32px 28px',
@@ -327,17 +327,17 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
                     <Icon size={26} color={mod.color} />
                   </div>
                   <div>
-                    <div style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 18, lineHeight: 1.3 }}>
+                    <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 18, lineHeight: 1.3 }}>
                       {mod.label}
                     </div>
                     {mod.external && (
-                      <span style={{ color: '#6b7280', fontSize: 11 }}>Opens in new tab</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>Opens in new tab</span>
                     )}
                   </div>
                 </div>
 
                 {/* Description */}
-                <p style={{ color: '#8892a4', fontSize: 13, margin: 0, lineHeight: 1.7 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 13, margin: 0, lineHeight: 1.7 }}>
                   {mod.description}
                 </p>
 
