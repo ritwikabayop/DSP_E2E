@@ -1,0 +1,485 @@
+import { useEffect, useState } from 'react';
+import { Table, Select, Tag, Typography, Card, message, Spin, Modal, Form, Input, Button, Space, Row, Col, Avatar, Tooltip, Divider } from 'antd';
+import { Crown, UserCheck, User, Eye, UserPlus, RefreshCw, Shield, Users, Copy, CheckCheck } from 'lucide-react';
+import { listUserProfiles, updateUserRole, updateUserAllowedRoles, inviteUser } from '../../services/api.js';
+import { resolveRole, PERMISSION_GROUPS, PERMISSION_LABELS } from '../../utils/constants.js';
+
+const { Text } = Typography;
+
+const ROLE_META = {
+  admin:  { color: '#cf1322', bg: '#fff1f0', border: '#ffa39e', tagColor: 'red',     icon: Crown,      label: 'Operation User', desc: 'Full access — edit, delete, add rows, manage users' },
+  tl:     { color: '#1d39c4', bg: '#f0f5ff', border: '#adc6ff', tagColor: 'blue',    icon: UserCheck,  label: 'Super User',     desc: 'Edit & add rows, view logs, read-only users page' },
+  tester: { color: '#0958d9', bg: '#e6f4ff', border: '#91caff', tagColor: 'cyan',    icon: User,       label: 'Support',        desc: 'Edit own rows only' },
+  viewer: { color: '#8c8c8c', bg: '#fafafa', border: '#d9d9d9', tagColor: 'default', icon: Eye,        label: 'Viewer',         desc: 'Read-only access' },
+};
+
+
+
+const ROLE_OPTIONS = Object.entries(ROLE_META).map(([value, m]) => ({ value, label: m.label }));
+
+const roleTag = (r) => {
+  const m = ROLE_META[r] ?? ROLE_META.viewer;
+  const Icon = m.icon;
+  return <Tag color={m.tagColor} icon={<Icon size={10} />} style={{ fontSize: 11 }}>{m.label}</Tag>;
+};
+
+export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
+  const [users,      setUsers]      = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [saving,     setSaving]     = useState(null);
+  const [inviteOpen,   setInviteOpen]   = useState(false);
+  const [inviting,     setInviting]     = useState(false);
+  const [inviteResult, setInviteResult] = useState(null); // { email, existing }
+  const [copied,       setCopied]       = useState(false);
+  const [search,       setSearch]       = useState('');
+  const [inviteEmail,  setInviteEmail]  = useState('');
+  const [inviteRole,   setInviteRole]   = useState('tester');
+  const [form] = Form.useForm();
+
+  const canEdit = role === 'admin';
+
+  const load = () => {
+    setLoading(true);
+    listUserProfiles()
+      .then(setUsers)
+      .catch((e) => message.error('Failed to load users: ' + e.message))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleRoleChange = async (userId, newRole) => {
+    setSaving(userId);
+    try {
+      await updateUserRole(userId, newRole);
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
+      message.success('Role updated');
+    } catch (e) {
+      message.error('Failed to update role: ' + e.message);
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleAllowedRolesChange = async (userId, roles) => {
+    if (!roles.length) { message.warning('At least one role is required'); return; }
+    setSaving(userId + '-allowed');
+    try {
+      await updateUserAllowedRoles(userId, roles);
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, allowed_roles: roles } : u)));
+      message.success('Allowed roles updated');
+    } catch (e) {
+      message.error('Failed to update allowed roles: ' + e.message);
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleInvite = async (values) => {
+    setInviting(true);
+    try {
+      const email = values.email.trim().toLowerCase();
+      const match = users.find((u) => u.email?.toLowerCase() === email);
+      if (match) {
+        // Existing user — merge new role into allowed_roles without replacing
+        const current = match.allowed_roles ?? [match.role];
+        const merged  = current.includes(values.role) ? current : [...current, values.role];
+        await updateUserAllowedRoles(match.id, merged);
+        form.resetFields();
+        setInviteResult({ email, existing: true, role: values.role, allRoles: merged });
+      } else {
+        const result = await inviteUser(email, values.role, values.displayName?.trim() || '', currentUserEmail || '');
+        form.resetFields();
+        setInviteResult({ email, existing: !!result?.existing, role: values.role, allRoles: [values.role] });
+      }
+      load();
+    } catch (e) {
+      message.error('Invite failed: ' + e.message);
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  const handleCopyLink = () => {
+    const link = window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/');
+    navigator.clipboard.writeText(link).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  const closeInviteModal = () => {
+    setInviteOpen(false);
+    setInviteResult(null);
+    setCopied(false);
+    setInviteEmail('');
+    setInviteRole('tester');
+    form.resetFields();
+  };
+
+  if (role !== 'admin' && role !== 'tl') {
+    return <div style={{ padding: 20 }}><Card><Text type="secondary">Access restricted.</Text></Card></div>;
+  }
+
+  const filtered = users.filter((u) =>
+    !search || u.email?.toLowerCase().includes(search.toLowerCase()) ||
+    u.display_name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Summary counts per role
+  const counts = Object.keys(ROLE_META).reduce((acc, r) => ({ ...acc, [r]: users.filter((u) => u.role === r).length }), {});
+
+  const cols = [
+    {
+      title: 'User', key: 'user',
+      render: (_, rec) => (
+        <Space>
+          <Avatar size={28} style={{ background: ROLE_META[rec.role]?.color ?? '#8c8c8c', fontSize: 12, flexShrink: 0 }}>
+            {(rec.display_name || rec.email || '?')[0].toUpperCase()}
+          </Avatar>
+          <div style={{ lineHeight: 1.3 }}>
+            <Text strong style={{ fontSize: 12, display: 'block' }}>
+              {rec.display_name || <Text type="secondary" style={{ fontStyle: 'italic', fontSize: 12 }}>No name</Text>}
+              {rec.id === currentUserId && <Tag color="green" style={{ marginLeft: 6, fontSize: 10 }}>You</Tag>}
+            </Text>
+            <Text type="secondary" style={{ fontSize: 11 }}>{rec.email}</Text>
+          </div>
+        </Space>
+      ),
+    },
+    {
+      title: 'Invited By', dataIndex: 'invited_by', key: 'invited_by', width: 200,
+      render: (v) => v
+        ? <Tag icon={<User size={10} />} color="blue" style={{ fontSize: 11, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }} title={v}>{v}</Tag>
+        : <Text type="secondary" style={{ fontSize: 11 }}>—</Text>,
+    },
+    {
+      title: 'Current Role', dataIndex: 'role', key: 'role', width: 150,
+      filters: ROLE_OPTIONS.map(({ value, label }) => ({ text: label, value })),
+      onFilter: (value, record) => record.role === value,
+      render: (v) => roleTag(v),
+    },
+    {
+      title: 'Assign Role', key: 'assign', width: 200,
+      render: (_, rec) => !canEdit
+        ? <Text type="secondary" style={{ fontSize: 11 }}>—</Text>
+        : (
+          <Select
+            size="small"
+            value={rec.role}
+            onChange={(val) => handleRoleChange(rec.id, val)}
+            options={ROLE_OPTIONS.map((o) => ({
+              ...o,
+              label: (
+                <Space size={4}>
+                  {(() => { const M = ROLE_META[o.value]; const I = M.icon; return <I size={11} color={M.color} />; })()}
+                  <span>{o.label}</span>
+                </Space>
+              ),
+            }))}
+            loading={saving === rec.id}
+            disabled={saving === rec.id}
+            style={{ width: 170 }}
+            popupMatchSelectWidth={false}
+          />
+        ),
+    },
+    {
+      title: 'Allowed Roles', key: 'allowed_roles', width: 260,
+      render: (_, rec) => !canEdit
+        ? (
+          <Space size={4} wrap>
+            {(rec.allowed_roles ?? [rec.role]).map((r) => roleTag(r))}
+          </Space>
+        )
+        : (
+          <Select
+            mode="multiple"
+            size="small"
+            value={rec.allowed_roles ?? [rec.role]}
+            onChange={(vals) => handleAllowedRolesChange(rec.id, vals)}
+            options={ROLE_OPTIONS.map((o) => ({
+              ...o,
+              label: (
+                <Space size={4}>
+                  {(() => { const M = ROLE_META[o.value]; const I = M.icon; return <I size={11} color={M.color} />; })()}
+                  <span>{o.label}</span>
+                </Space>
+              ),
+            }))}
+            loading={saving === rec.id + '-allowed'}
+            disabled={saving === rec.id + '-allowed'}
+            style={{ width: 240 }}
+            popupMatchSelectWidth={false}
+          />
+        ),
+    },
+    {
+      title: 'Joined', dataIndex: 'created_at', key: 'created_at', width: 130,
+      render: (v) => v ? <Text type="secondary" style={{ fontSize: 11 }}>{new Date(v).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text> : '—',
+    },
+  ];
+
+  return (
+    <div style={{ padding: 20 }}>
+
+      {/* Role summary cards */}
+      <Row gutter={[12, 12]} style={{ marginBottom: 20 }}>
+        {Object.entries(ROLE_META).map(([key, m]) => {
+          const Icon = m.icon;
+          return (
+            <Col xs={12} sm={6} key={key}>
+              <Card size="small" style={{ borderTop: `3px solid ${m.color}`, background: 'var(--bg-card)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 8, background: m.bg, border: `1px solid ${m.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon size={16} color={m.color} />
+                  </div>
+                  <div>
+                    <Text type="secondary" style={{ fontSize: 11 }}>{m.label}</Text>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: m.color, lineHeight: 1.2 }}>{counts[key] ?? 0}</div>
+                  </div>
+                </div>
+                <Text type="secondary" style={{ fontSize: 10, display: 'block', marginTop: 4 }}>{m.desc}</Text>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+
+      {/* Main user table */}
+      <Card
+        title={
+          <Space>
+            <Users size={15} />
+            <span>All Users</span>
+            <Tag style={{ fontSize: 10 }}>{users.length} total</Tag>
+          </Space>
+        }
+        styles={{ header: { borderBottom: '1px solid #252d42' } }}
+        extra={
+          <Space size={6}>
+            <Input.Search
+              size="small" placeholder="Search email or name…"
+              value={search} onChange={(e) => setSearch(e.target.value)}
+              style={{ width: 200 }} allowClear
+            />
+            <Tooltip title="Refresh"><Button size="small" icon={<RefreshCw size={13} />} onClick={load} loading={loading} /></Tooltip>
+            {canEdit && (
+              <Button type="primary" size="small" icon={<UserPlus size={13} />}
+                onClick={() => setInviteOpen(true)}
+                style={{ background: '#217346', borderColor: '#217346' }}>
+                Add User
+              </Button>
+            )}
+          </Space>
+        }
+      >
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: 40 }}><Spin /></div>
+        ) : (
+          <Table
+            dataSource={filtered}
+            columns={cols}
+            rowKey="id"
+            size="small"
+            pagination={{ pageSize: 20, showSizeChanger: false, showTotal: (t) => `${t} users` }}
+            rowClassName={(rec) => rec.id === currentUserId ? 'row-highlight' : ''}
+          />
+        )}
+      </Card>
+
+      {/* Invite modal */}
+      <Modal
+        title={inviteResult ? null : <Space><UserPlus size={15} /> Invite New User</Space>}
+        open={inviteOpen}
+        onCancel={closeInviteModal}
+        footer={null}
+        width={440}
+      >
+        {inviteResult ? (
+          /* ── Success screen with role summary ── */
+          <div style={{ padding: '8px 0 16px' }}>
+            {(() => {
+              const m     = ROLE_META[inviteResult.role] ?? ROLE_META.viewer;
+              const Icon  = m.icon;
+              const perms = Object.values(PERMISSION_GROUPS).flat().map((k) => [PERMISSION_LABELS[k] ?? k, resolveRole(inviteResult.role)[k] ?? false]);
+              return (
+                <>
+                  {/* Header */}
+                  <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                    <div style={{ width: 52, height: 52, borderRadius: '50%', background: `${m.color}20`, border: `2px solid ${m.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                      <Icon size={22} color={m.color} />
+                    </div>
+                    <Text strong style={{ color: '#e2e8f0', fontSize: 16, display: 'block' }}>
+                      {inviteResult.existing ? 'Role Updated!' : 'Invite Sent!'}
+                    </Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>
+                      {inviteResult.existing
+                        ? `Role added to ${inviteResult.email}`
+                        : `${inviteResult.email} will join as`}
+                    </Text>
+                    <div style={{ marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center' }}>
+                      {(inviteResult.allRoles ?? [inviteResult.role]).map((r) => {
+                        const rm = ROLE_META[r] ?? ROLE_META.viewer;
+                        const RI = rm.icon;
+                        const isNew = r === inviteResult.role;
+                        return (
+                          <Tag key={r} color={rm.tagColor} icon={<RI size={11} />}
+                            style={{ fontSize: 12, padding: '3px 10px', fontWeight: isNew ? 700 : 400, opacity: isNew ? 1 : 0.7 }}>
+                            {rm.label}{isNew && inviteResult.existing ? ' ✦ new' : ''}
+                          </Tag>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Permission summary for assigned role */}
+                  <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
+                    <Text strong style={{ fontSize: 11, color: m.color, display: 'block', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.6 }}>
+                      What {inviteResult.email.split('@')[0]} can do
+                    </Text>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
+                      {perms.map(([perm, allowed]) => (
+                        <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
+                          <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
+                          <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Copy link */}
+                  <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                    <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 6 }}>Share login link via Teams / email:</Text>
+                    <Text code style={{ fontSize: 11, wordBreak: 'break-all' }}>
+                      {window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/')}
+                    </Text>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                    <Button
+                      icon={copied ? <CheckCheck size={13} /> : <Copy size={13} />}
+                      onClick={handleCopyLink}
+                      style={copied ? { borderColor: '#49aa19', color: '#49aa19' } : {}}
+                    >
+                      {copied ? 'Copied!' : 'Copy Link'}
+                    </Button>
+                    <Button type="primary" onClick={closeInviteModal} style={{ background: '#217346', borderColor: '#217346' }}>
+                      Done
+                    </Button>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        ) : (
+          /* ── Invite form ── */
+          <Form form={form} layout="vertical" onFinish={handleInvite} style={{ marginTop: 8 }}>
+            <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email', message: 'Enter a valid email' }]}>
+              <Input
+                placeholder="user@accenture.com"
+                size="middle"
+                onChange={(e) => setInviteEmail(e.target.value.trim().toLowerCase())}
+              />
+            </Form.Item>
+
+            {/* Live email lookup — show existing user's allowed roles */}
+            {(() => {
+              const match = inviteEmail && users.find((u) => u.email?.toLowerCase() === inviteEmail);
+              if (!match) return null;
+              const m = ROLE_META[match.role] ?? ROLE_META.viewer;
+              const existingRoles = match.allowed_roles ?? [match.role];
+              return (
+                <div style={{ background: '#0d1526', border: '1px solid #2d3a55', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <Avatar size={28} style={{ background: m.color, flexShrink: 0, fontSize: 12 }}>
+                      {(match.display_name || match.email || '?')[0].toUpperCase()}
+                    </Avatar>
+                    <div style={{ flex: 1 }}>
+                      <Text strong style={{ fontSize: 12, color: '#e2e8f0', display: 'block' }}>
+                        {match.display_name || match.email}
+                        <Tag color="orange" style={{ marginLeft: 6, fontSize: 10 }}>Existing User</Tag>
+                      </Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>{match.email}</Text>
+                    </div>
+                  </div>
+                  <div style={{ borderTop: '1px solid #252d42', paddingTop: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
+                      Has {existingRoles.length} role{existingRoles.length > 1 ? 's' : ''}
+                    </Text>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      {existingRoles.map((r) => {
+                        const rm = ROLE_META[r] ?? ROLE_META.viewer;
+                        const RI = rm.icon;
+                        return <Tag key={r} color={rm.tagColor} icon={<RI size={10} />} style={{ fontSize: 11 }}>{rm.label}</Tag>;
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <Form.Item name="displayName" label="Display Name">
+              <Input placeholder="e.g. Santhwana M R" size="middle" />
+            </Form.Item>
+
+            <Form.Item
+              name="role"
+              label={inviteEmail && users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Add Role' : 'Assign Role'}
+              initialValue="tester"
+              rules={[{ required: true }]}
+            >
+              <Select
+                size="middle"
+                onChange={(val) => setInviteRole(val)}
+                options={ROLE_OPTIONS.map((o) => ({
+                  ...o,
+                  label: (
+                    <Space size={4}>
+                      {(() => { const M = ROLE_META[o.value]; const I = M.icon; return <I size={11} color={M.color} />; })()}
+                      <span>{o.label}</span>
+                      <Text type="secondary" style={{ fontSize: 11 }}>— {ROLE_META[o.value].desc}</Text>
+                    </Space>
+                  ),
+                }))}
+              />
+            </Form.Item>
+
+            {/* Permission preview for the selected role */}
+            {inviteRole && (() => {
+              const m    = ROLE_META[inviteRole] ?? ROLE_META.viewer;
+              const Icon = m.icon;
+              const perms = Object.values(PERMISSION_GROUPS).flat().map((k) => [PERMISSION_LABELS[k] ?? k, resolveRole(inviteRole)[k] ?? false]);
+              return (
+                <div style={{ background: '#0d1526', border: `1px solid ${m.border}`, borderRadius: 8, padding: '12px 14px', marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <Icon size={13} color={m.color} />
+                    <Text strong style={{ fontSize: 12, color: m.color }}>{m.label} — Permissions</Text>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px' }}>
+                    {perms.map(([perm, allowed]) => (
+                      <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
+                        <span style={{ color: allowed ? '#22c55e' : '#6b7280', fontSize: 13, lineHeight: 1, flexShrink: 0 }}>{allowed ? '✓' : '✗'}</span>
+                        <span style={{ color: allowed ? '#e2e8f0' : '#6b7280' }}>{perm}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            <Form.Item style={{ marginBottom: 0 }}>
+              <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+                <Button onClick={closeInviteModal}>Cancel</Button>
+                <Button type="primary" htmlType="submit" loading={inviting}
+                  style={{ background: '#217346', borderColor: '#217346' }}>
+                  {users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Add Role' : 'Send Invite'}
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
+    </div>
+  );
+}

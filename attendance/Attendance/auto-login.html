@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracker - Auto-Login Setup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .method {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .method h2 {
+            color: #0369a1;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .method ol {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        .method li {
+            margin-bottom: 10px;
+            color: #374151;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+        }
+        .btn-secondary {
+            display: inline-block;
+            padding: 14px 28px;
+            background: #6b7280;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 5px;
+        }
+        .warning {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+        .feature strong {
+            color: #10b981;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span style="font-size: 32px;">🔐</span>
+            Attendance Tracker - Auto-Login
+        </h1>
+        <p class="subtitle">Automatic Windows username detection - no manual entry needed!</p>
+
+        <div class="method">
+            <h2>⭐ Method 1: Local Auth Service (Recommended)</h2>
+            <p style="color: #374151; margin-bottom: 15px; font-size: 14px;">
+                Runs a background service that automatically detects your username. 
+                <strong>Most secure and convenient!</strong>
+            </p>
+            <ol>
+                <li><strong>Download</strong> and run the auth service</li>
+                <li><strong>Keep the window open</strong> in the background</li>
+                <li><strong>Open the attendance tracker</strong> - login is automatic!</li>
+            </ol>
+            <div style="background: #fff7ed; border: 1px solid #fb923c; padding: 12px; border-radius: 6px; margin: 15px 0; font-size: 13px; color: #9a3412;">
+                <strong>⚡ Pro Tip:</strong> Start the service once and leave it running all day. Every time you open the attendance tracker, login is instant!
+            </div>
+            <div style="margin-top: 20px;">
+                <a href="/Attendance/Start-Auth-Service.bat" download class="btn-primary">
+                    📥 Download Auth Service (.bat)
+                </a>
+                <a href="/Attendance/Username-Auth-Service.ps1" download class="btn-secondary">
+                    Download PowerShell (.ps1)
+                </a>
+            </div>
+        </div>
+
+        <div class="method" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+            <h2>🚀 Method 2: Launcher Script</h2>
+            <p style="color: #374151; margin-bottom: 15px; font-size: 14px;">
+                One-click access - opens browser with automatic login.
+            </p>
+            <ol>
+                <li><strong>Download</strong> the launcher script below</li>
+                <li><strong>Double-click</strong> the downloaded file</li>
+                <li><strong>Done!</strong> Your username is automatically detected and you're logged in</li>
+            </ol>
+            <div style="margin-top: 20px;">
+                <a href="/Attendance/Launch-Attendance-Tracker.bat" download class="btn-primary">
+                    📥 Download Launcher (.bat)
+                </a>
+                <a href="/Attendance/Launch-Attendance-Tracker.ps1" download class="btn-secondary">
+                    Download PowerShell (.ps1)
+                </a>
+            </div>
+        </div>
+
+        <div style="background: #f3f4f6; padding: 20px; border-radius: 12px; margin: 20px 0;">
+            <h3 style="color: #374151; font-size: 16px; margin-bottom: 15px;">🛡️ Security Features</h3>
+            <div class="feature-list">
+                <div class="feature">
+                    <strong>✅ Auto-Detection</strong>
+                    No manual username entry
+                </div>
+                <div class="feature">
+                    <strong>✅ Access Control</strong>
+                    Only authorized users
+                </div>
+                <div class="feature">
+                    <strong>✅ Audit Logging</strong>
+                    All access tracked
+                </div>
+                <div class="feature">
+                    <strong>✅ Secure Session</strong>
+                    Logout clears data
+                </div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Manual Login (Less Secure):</strong><br>
+            If the auto-login doesn't work, you can <a href="/Attendance/team-attendance-tracker-sharepoint.html" style="color: #0369a1;">click here</a> and enter your username manually. However, this is less secure and not recommended.
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+            <div id="authServiceStatus" style="
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                font-size: 14px;
+                display: none;
+            "></div>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                Need help? Check the <a href="/Attendance/AUTO_USERNAME_DETECTION.md" style="color: #0369a1;">Complete Guide</a>
+            </p>
+            <a href="/" style="color: #6b7280; text-decoration: none; font-size: 13px;">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if auth service is running
+        async function checkAuthService() {
+            const statusDiv = document.getElementById('authServiceStatus');
+            try {
+                const response = await fetch('http://localhost:9999/status', {
+                    method: 'GET',
+                    timeout: 2000
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.style.display = 'block';
+                    statusDiv.style.background = '#d1fae5';
+                    statusDiv.style.border = '1px solid #10b981';
+                    statusDiv.style.color = '#065f46';
+                    statusDiv.innerHTML = `
+                        <strong>✅ Auth Service Running</strong><br>
+                        <span style="font-size: 12px;">
+                            Username: ${data.username} | Requests: ${data.requests} | Status: ${data.status}
+                        </span>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.border = '1px solid #ef4444';
+                statusDiv.style.color = '#991b1b';
+                statusDiv.innerHTML = `
+                    <strong>⚠️ Auth Service Not Running</strong><br>
+                    <span style="font-size: 12px;">
+                        Download and run Start-Auth-Service.bat for automatic login
+                    </span>
+                `;
+            }
+        }
+
+        // Auto-detect if user already has a session
+        const hasSession = localStorage.getItem('attendance_username');
+        const detectionMethod = localStorage.getItem('attendance_detection_method');
+        
+        if (hasSession) {
+            const methodEmoji = {
+                'local_service': '⚡',
+                'launcher': '🚀',
+                'manual': '✍️'
+            };
+            
+            const banner = document.createElement('div');
+            banner.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #10b981;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                z-index: 1000;
+                font-size: 14px;
+                font-weight: 600;
+            `;
+            banner.innerHTML = `${methodEmoji[detectionMethod] || '✅'} Already logged in as: ${hasSession}`;
+            document.body.appendChild(banner);
+
+            setTimeout(() => {
+                banner.style.transition = 'opacity 0.3s';
+                banner.style.opacity = '0';
+                setTimeout(() => banner.remove(), 300);
+            }, 3000);
+        }
+
+        // Check auth service status after page loads
+        setTimeout(checkAuthService, 500);
+        
+        // Refresh status every 10 seconds
+        setInterval(checkAuthService, 10000);
+    </script>
+</body>
+</html>

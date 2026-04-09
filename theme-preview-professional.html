@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>E2E Dashboard — Professional Themes</title>
+<style>
+  *,*::before,*::after { margin: 0; padding: 0; box-sizing: border-box; }
+  * { transition: background-color .25s, color .2s, border-color .2s; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+  body.dark { background: #080d18; color: #e2e8f0; }
+
+  h1 { text-align: center; padding: 44px 0 8px; font-size: 24px; color: #1a1a2e; letter-spacing: -0.5px; }
+  body.dark h1 { color: #e2e8f0; }
+  .tag-row { display: flex; gap: 8px; justify-content: center; margin: 12px 0 44px; flex-wrap: wrap; }
+  .tag-row span { font-size: 11px; padding: 3px 14px; border-radius: 20px; border: 1px solid #e0e0e0; color: #555; background: #fff; }
+  body.dark .tag-row span { background: #1e293b; color: #94a3b8; border-color: #334155; }
+
+  /* ── Toggle Bar ── */
+  .top-bar {
+    position: sticky; top: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 40px;
+    background: rgba(240,242,245,0.95); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  body.dark .top-bar { background: rgba(8,13,24,0.95); border-bottom-color: rgba(255,255,255,0.06); }
+  .top-bar-left h1 { padding: 0; font-size: 18px; }
+  .top-bar-left p { font-size: 11px; color: #888; margin-top: 2px; }
+  body.dark .top-bar-left p { color: #475569; }
+  .toggle-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: #0f172a; color: #f1f5f9;
+    border: none; padding: 9px 20px; border-radius: 99px;
+    cursor: pointer; font-size: 13px; font-weight: 700;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    font-family: inherit; flex-shrink: 0;
+  }
+  body.dark .toggle-btn { background: #f1f5f9; color: #0f172a; }
+
+  /* ── Dark Mode Card Overrides ── */
+  body.dark .theme-card { border-color: rgba(255,255,255,0.08) !important; box-shadow: 0 4px 32px rgba(0,0,0,0.45) !important; }
+  body.dark .tc-header { background: #1e293b !important; border-bottom-color: rgba(255,255,255,0.08) !important; }
+  body.dark .tc-name { color: #e2e8f0 !important; }
+  body.dark .mini-header { background: #111827 !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+  body.dark .mini-header .month-pill { background: #1e293b !important; color: #94a3b8 !important; border-color: rgba(255,255,255,0.1) !important; }
+  body.dark .mini-header .search { background: #1e293b !important; color: #64748b !important; border-color: rgba(255,255,255,0.07) !important; }
+  body.dark .mini-content { background: #0f172a !important; }
+  body.dark .mini-stat { background: #1e293b !important; border-color: rgba(255,255,255,0.07) !important; color: #64748b !important; }
+  body.dark .mini-stat strong { color: #e2e8f0 !important; }
+  body.dark .mini-table-row { background: #1e293b !important; color: #94a3b8 !important; border-color: rgba(255,255,255,0.06) !important; }
+  body.dark .mini-chip { background: #1e293b !important; color: #64748b !important; border-color: rgba(255,255,255,0.1) !important; }
+  body.dark .mini-chip.active { border-color: transparent !important; }
+  body.dark .vars-block { background: #111827 !important; border-top-color: rgba(255,255,255,0.07) !important; }
+  body.dark .vars-block h4 { color: #475569 !important; }
+  body.dark .var-row { color: #94a3b8 !important; }
+  body.dark code { color: #94a3b8 !important; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 32px; padding: 0 40px 60px; max-width: 1700px; margin: 0 auto; }
+
+  .theme-card { border-radius: 16px; overflow: hidden; box-shadow: 0 2px 24px rgba(0,0,0,0.09); transition: transform 0.2s, box-shadow 0.2s; }
+  .theme-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.14); }
+
+  .tc-header { padding: 18px 22px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .tc-name { font-weight: 800; font-size: 16px; }
+  .tc-badge { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .swatches { display: flex; height: 5px; }
+  .swatches span { flex: 1; }
+
+  .mini-app { display: flex; height: 290px; }
+  .mini-sidebar { width: 58px; display: flex; flex-direction: column; padding: 10px 8px; gap: 6px; }
+  .mini-sidebar .logo { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; margin-bottom: 6px; }
+  .mini-nav-item { height: 33px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .mini-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .mini-header { height: 44px; display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0; }
+  .mini-header .month-pill { height: 27px; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .mini-header .search { flex: 1; height: 27px; border-radius: 6px; display: flex; align-items: center; padding: 0 8px; font-size: 10px; border-width: 1px; border-style: solid; }
+  .mini-header .save-btn { height: 27px; border-radius: 6px; padding: 0 14px; font-size: 10px; font-weight: 800; display: flex; align-items: center; white-space: nowrap; letter-spacing: 0.3px; }
+  .mini-header .avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-left: auto; flex-shrink: 0; }
+  .mini-content { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .mini-banner { border-radius: 10px; padding: 11px 14px; font-size: 11px; font-weight: 700; }
+  .mini-banner span { font-size: 9px; font-weight: 400; opacity: 0.65; display: block; margin-top: 3px; }
+  .mini-stat-row { display: flex; gap: 6px; }
+  .mini-stat { flex: 1; border-radius: 8px; padding: 8px 10px; font-size: 9px; }
+  .mini-stat strong { display: block; font-size: 18px; font-weight: 900; margin-bottom: 1px; line-height: 1; }
+  .mini-table-row { height: 24px; border-radius: 5px; display: flex; align-items: center; padding: 0 8px; gap: 8px; font-size: 9px; }
+  .mini-table-row .cell { flex: 1; }
+  .mini-table-row .tag { height: 16px; border-radius: 4px; padding: 0 7px; font-size: 9px; display: flex; align-items: center; font-weight: 700; }
+  .mini-chip-row { display: flex; gap: 4px; }
+  .mini-chip { height: 22px; border-radius: 20px; padding: 0 10px; font-size: 9px; display: flex; align-items: center; border-width: 1px; border-style: solid; font-weight: 600; }
+
+  .vars-block { padding: 14px 22px 18px; }
+  .vars-block h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 10px; }
+  .var-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .var-row { display: flex; align-items: center; gap: 7px; font-size: 10.5px; }
+  .var-dot { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
+
+  /* ═══════════════════════
+     P1 — CORPORATE NAVY
+  ═══════════════════════ */
+  .p1 { background: #fff; border: 1.5px solid #dce4f0; }
+  .p1 .tc-header { background: #fff; border-bottom: 1px solid #dce4f0; }
+  .p1 .tc-name { color: #1e3a5f; }
+  .p1 .tc-badge { background: rgba(30,58,95,0.08); color: #1e3a5f; border: 1px solid rgba(30,58,95,0.2); }
+  .p1 .swatches span:nth-child(1){background:#fff}
+  .p1 .swatches span:nth-child(2){background:#f0f5fc}
+  .p1 .swatches span:nth-child(3){background:#1e40af}
+  .p1 .swatches span:nth-child(4){background:#1e3a5f}
+  .p1 .swatches span:nth-child(5){background:#fbbf24}
+  .p1 .mini-sidebar { background: #1e3a5f; border-right: none; }
+  .p1 .logo { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #1e3a5f; }
+  .p1 .mini-nav-item { color: rgba(255,255,255,0.35); }
+  .p1 .mini-nav-item.active { background: rgba(255,255,255,0.12); color: #fff; border-radius: 8px; }
+  .p1 .mini-header { background: #fff; border-bottom: 1px solid #dce4f0; }
+  .p1 .mini-header .month-pill { background: #f0f5fc; color: #1e3a5f; border: 1px solid #dce4f0; }
+  .p1 .mini-header .search { background: #f8fafd; color: #6b7c99; border-color: #dce4f0; }
+  .p1 .mini-header .save-btn { background: #1e40af; color: #fff; }
+  .p1 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #1e3a5f; font-weight: 900; }
+  .p1 .mini-content { background: #f8fafd; }
+  .p1 .mini-banner { background: linear-gradient(135deg,#1e3a5f,#1e40af); color: #fff; }
+  .p1 .mini-stat { background: #fff; border: 1px solid #dce4f0; color: #6b7c99; }
+  .p1 .mini-stat strong { color: #1e3a5f; }
+  .p1 .mini-table-row { background: #fff; color: #6b7c99; border: 1px solid #eef2f8; }
+  .p1 .mini-table-row .tag { background: #e8f0fe; color: #1e3a5f; border: 1px solid #c3d5f4; }
+  .p1 .mini-chip { border-color: #dce4f0; color: #6b7c99; background: #fff; }
+  .p1 .mini-chip.active { background: #1e40af; border-color: #1e40af; color: #fff; }
+  .p1 .vars-block { background: #f0f5fc; border-top: 1px solid #dce4f0; }
+  .p1 .var-row { color: #4a5a7a; }
+
+  /* ═══════════════════════
+     P2 — EXECUTIVE SLATE
+  ═══════════════════════ */
+  .p2 { background: #fff; border: 1.5px solid #e2e8f0; }
+  .p2 .tc-header { background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .p2 .tc-name { color: #1e293b; }
+  .p2 .tc-badge { background: rgba(30,41,59,0.07); color: #1e293b; border: 1px solid rgba(30,41,59,0.18); }
+  .p2 .swatches span:nth-child(1){background:#fff}
+  .p2 .swatches span:nth-child(2){background:#f1f5f9}
+  .p2 .swatches span:nth-child(3){background:#334155}
+  .p2 .swatches span:nth-child(4){background:#0ea5e9}
+  .p2 .swatches span:nth-child(5){background:#f59e0b}
+  .p2 .mini-sidebar { background: #1e293b; border-right: none; }
+  .p2 .logo { background: linear-gradient(135deg,#0ea5e9,#0284c7); color: #fff; }
+  .p2 .mini-nav-item { color: rgba(255,255,255,0.3); }
+  .p2 .mini-nav-item.active { background: rgba(14,165,233,0.2); color: #7dd3fc; }
+  .p2 .mini-header { background: #fff; border-bottom: 1px solid #e2e8f0; }
+  .p2 .mini-header .month-pill { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+  .p2 .mini-header .search { background: #f8fafc; color: #94a3b8; border-color: #e2e8f0; }
+  .p2 .mini-header .save-btn { background: #0ea5e9; color: #fff; }
+  .p2 .mini-header .avatar { background: linear-gradient(135deg,#f59e0b,#d97706); color: #fff; }
+  .p2 .mini-content { background: #f8fafc; }
+  .p2 .mini-banner { background: linear-gradient(135deg,#1e293b,#334155); color: #fff; }
+  .p2 .mini-stat { background: #fff; border: 1px solid #e2e8f0; color: #64748b; }
+  .p2 .mini-stat strong { color: #0ea5e9; }
+  .p2 .mini-table-row { background: #fff; color: #64748b; border: 1px solid #f1f5f9; }
+  .p2 .mini-table-row .tag { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+  .p2 .mini-chip { border-color: #e2e8f0; color: #64748b; background: #fff; }
+  .p2 .mini-chip.active { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
+  .p2 .vars-block { background: #f1f5f9; border-top: 1px solid #e2e8f0; }
+  .p2 .var-row { color: #475569; }
+
+  /* ═══════════════════════
+     P3 — FOREST PROFESSIONAL
+  ═══════════════════════ */
+  .p3 { background: #fff; border: 1.5px solid #d8ece2; }
+  .p3 .tc-header { background: #fff; border-bottom: 1px solid #d8ece2; }
+  .p3 .tc-name { color: #14532d; }
+  .p3 .tc-badge { background: rgba(20,83,45,0.08); color: #14532d; border: 1px solid rgba(20,83,45,0.2); }
+  .p3 .swatches span:nth-child(1){background:#fff}
+  .p3 .swatches span:nth-child(2){background:#f0faf4}
+  .p3 .swatches span:nth-child(3){background:#16a34a}
+  .p3 .swatches span:nth-child(4){background:#14532d}
+  .p3 .swatches span:nth-child(5){background:#fbbf24}
+  .p3 .mini-sidebar { background: #14532d; border-right: none; }
+  .p3 .logo { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #14532d; font-weight: 900; }
+  .p3 .mini-nav-item { color: rgba(255,255,255,0.3); }
+  .p3 .mini-nav-item.active { background: rgba(255,255,255,0.12); color: #fff; }
+  .p3 .mini-header { background: #fff; border-bottom: 1px solid #d8ece2; }
+  .p3 .mini-header .month-pill { background: #f0faf4; color: #14532d; border: 1px solid #d8ece2; }
+  .p3 .mini-header .search { background: #f7fdf9; color: #6b9c7c; border-color: #d8ece2; }
+  .p3 .mini-header .save-btn { background: #16a34a; color: #fff; }
+  .p3 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #14532d; font-weight: 900; }
+  .p3 .mini-content { background: #f7fdf9; }
+  .p3 .mini-banner { background: linear-gradient(135deg,#14532d,#16a34a); color: #fff; }
+  .p3 .mini-stat { background: #fff; border: 1px solid #d8ece2; color: #4a8c60; }
+  .p3 .mini-stat strong { color: #14532d; }
+  .p3 .mini-table-row { background: #fff; color: #4a8c60; border: 1px solid #ecf7f0; }
+  .p3 .mini-table-row .tag { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+  .p3 .mini-chip { border-color: #d8ece2; color: #4a8c60; background: #fff; }
+  .p3 .mini-chip.active { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .p3 .vars-block { background: #f0faf4; border-top: 1px solid #d8ece2; }
+  .p3 .var-row { color: #3a6c4c; }
+
+  /* ═══════════════════════
+     P4 — BURGUNDY EXECUTIVE
+  ═══════════════════════ */
+  .p4 { background: #fff; border: 1.5px solid #f0dde0; }
+  .p4 .tc-header { background: #fff; border-bottom: 1px solid #f0dde0; }
+  .p4 .tc-name { color: #881337; }
+  .p4 .tc-badge { background: rgba(136,19,55,0.08); color: #881337; border: 1px solid rgba(136,19,55,0.2); }
+  .p4 .swatches span:nth-child(1){background:#fff}
+  .p4 .swatches span:nth-child(2){background:#fff5f6}
+  .p4 .swatches span:nth-child(3){background:#be123c}
+  .p4 .swatches span:nth-child(4){background:#881337}
+  .p4 .swatches span:nth-child(5){background:#fbbf24}
+  .p4 .mini-sidebar { background: #881337; border-right: none; }
+  .p4 .logo { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #881337; font-weight: 900; }
+  .p4 .mini-nav-item { color: rgba(255,255,255,0.3); }
+  .p4 .mini-nav-item.active { background: rgba(255,255,255,0.14); color: #fff; }
+  .p4 .mini-header { background: #fff; border-bottom: 1px solid #f0dde0; }
+  .p4 .mini-header .month-pill { background: #fff5f6; color: #881337; border: 1px solid #f0dde0; }
+  .p4 .mini-header .search { background: #fffafb; color: #b07080; border-color: #f0dde0; }
+  .p4 .mini-header .save-btn { background: #be123c; color: #fff; }
+  .p4 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #881337; font-weight: 900; }
+  .p4 .mini-content { background: #fffafb; }
+  .p4 .mini-banner { background: linear-gradient(135deg,#881337,#be123c); color: #fff; }
+  .p4 .mini-stat { background: #fff; border: 1px solid #f0dde0; color: #b07080; }
+  .p4 .mini-stat strong { color: #881337; }
+  .p4 .mini-table-row { background: #fff; color: #b07080; border: 1px solid #faeaec; }
+  .p4 .mini-table-row .tag { background: #fce7ec; color: #881337; border: 1px solid #fbc8d2; }
+  .p4 .mini-chip { border-color: #f0dde0; color: #b07080; background: #fff; }
+  .p4 .mini-chip.active { background: #be123c; border-color: #be123c; color: #fff; }
+  .p4 .vars-block { background: #fff5f6; border-top: 1px solid #f0dde0; }
+  .p4 .var-row { color: #885060; }
+
+  /* ═══════════════════════
+     P5 — TEAL CORPORATE
+  ═══════════════════════ */
+  .p5 { background: #fff; border: 1.5px solid #d0ecea; }
+  .p5 .tc-header { background: #fff; border-bottom: 1px solid #d0ecea; }
+  .p5 .tc-name { color: #134e4a; }
+  .p5 .tc-badge { background: rgba(19,78,74,0.08); color: #134e4a; border: 1px solid rgba(19,78,74,0.2); }
+  .p5 .swatches span:nth-child(1){background:#fff}
+  .p5 .swatches span:nth-child(2){background:#f0fdfc}
+  .p5 .swatches span:nth-child(3){background:#0d9488}
+  .p5 .swatches span:nth-child(4){background:#134e4a}
+  .p5 .swatches span:nth-child(5){background:#fbbf24}
+  .p5 .mini-sidebar { background: #134e4a; border-right: none; }
+  .p5 .logo { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #134e4a; font-weight: 900; }
+  .p5 .mini-nav-item { color: rgba(255,255,255,0.3); }
+  .p5 .mini-nav-item.active { background: rgba(255,255,255,0.12); color: #fff; }
+  .p5 .mini-header { background: #fff; border-bottom: 1px solid #d0ecea; }
+  .p5 .mini-header .month-pill { background: #f0fdfc; color: #134e4a; border: 1px solid #d0ecea; }
+  .p5 .mini-header .search { background: #f7fefd; color: #5a8c8a; border-color: #d0ecea; }
+  .p5 .mini-header .save-btn { background: #0d9488; color: #fff; }
+  .p5 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #134e4a; font-weight: 900; }
+  .p5 .mini-content { background: #f7fefd; }
+  .p5 .mini-banner { background: linear-gradient(135deg,#134e4a,#0d9488); color: #fff; }
+  .p5 .mini-stat { background: #fff; border: 1px solid #d0ecea; color: #3a7c78; }
+  .p5 .mini-stat strong { color: #134e4a; }
+  .p5 .mini-table-row { background: #fff; color: #3a7c78; border: 1px solid #e8f8f7; }
+  .p5 .mini-table-row .tag { background: #ccfbf1; color: #134e4a; border: 1px solid #99f6e4; }
+  .p5 .mini-chip { border-color: #d0ecea; color: #3a7c78; background: #fff; }
+  .p5 .mini-chip.active { background: #0d9488; border-color: #0d9488; color: #fff; }
+  .p5 .vars-block { background: #f0fdfc; border-top: 1px solid #d0ecea; }
+  .p5 .var-row { color: #2a6c68; }
+
+  /* ═══════════════════════
+     P6 — ULTRAVIOLET PROFESSIONAL
+  ═══════════════════════ */
+  .p6 { background: #fff; border: 1.5px solid #e4dff5; }
+  .p6 .tc-header { background: #fff; border-bottom: 1px solid #e4dff5; }
+  .p6 .tc-name { color: #3b0764; }
+  .p6 .tc-badge { background: rgba(59,7,100,0.08); color: #3b0764; border: 1px solid rgba(59,7,100,0.18); }
+  .p6 .swatches span:nth-child(1){background:#fff}
+  .p6 .swatches span:nth-child(2){background:#faf5ff}
+  .p6 .swatches span:nth-child(3){background:#7c3aed}
+  .p6 .swatches span:nth-child(4){background:#3b0764}
+  .p6 .swatches span:nth-child(5){background:#fbbf24}
+  .p6 .mini-sidebar { background: #3b0764; border-right: none; }
+  .p6 .logo { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #3b0764; font-weight: 900; }
+  .p6 .mini-nav-item { color: rgba(255,255,255,0.3); }
+  .p6 .mini-nav-item.active { background: rgba(124,58,237,0.25); color: #d8b4fe; }
+  .p6 .mini-header { background: #fff; border-bottom: 1px solid #e4dff5; }
+  .p6 .mini-header .month-pill { background: #faf5ff; color: #3b0764; border: 1px solid #e4dff5; }
+  .p6 .mini-header .search { background: #fdfaff; color: #8b6aad; border-color: #e4dff5; }
+  .p6 .mini-header .save-btn { background: #7c3aed; color: #fff; }
+  .p6 .mini-header .avatar { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #3b0764; font-weight: 900; }
+  .p6 .mini-content { background: #fdfaff; }
+  .p6 .mini-banner { background: linear-gradient(135deg,#3b0764,#7c3aed); color: #fff; }
+  .p6 .mini-stat { background: #fff; border: 1px solid #e4dff5; color: #7c5aad; }
+  .p6 .mini-stat strong { color: #3b0764; }
+  .p6 .mini-table-row { background: #fff; color: #7c5aad; border: 1px solid #f3eeff; }
+  .p6 .mini-table-row .tag { background: #ede9fe; color: #3b0764; border: 1px solid #ddd6fe; }
+  .p6 .mini-chip { border-color: #e4dff5; color: #7c5aad; background: #fff; }
+  .p6 .mini-chip.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+  .p6 .vars-block { background: #faf5ff; border-top: 1px solid #e4dff5; }
+  .p6 .var-row { color: #5a3a8c; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <h1>💼 Professional Themes</h1>
+    <p>6 themes — all with coloured sidebar + gold accent. Click a card then say "apply 1–6".</p>
+  </div>
+  <button class="toggle-btn" id="toggleBtn" onclick="toggleMode()">🌙 Dark Mode</button>
+</div>
+
+<div class="tag-row">
+  <span>Clean white backgrounds</span>
+  <span>Corporate grade</span>
+  <span>High readability</span>
+  <span>Sidebar + gold accent</span>
+</div>
+
+<div class="grid">
+
+  <!-- P1 Corporate Navy -->
+  <div class="theme-card p1">
+    <div class="tc-header p1"><span class="tc-name">🏛 Corporate Navy</span><span class="tc-badge p1">Navy + Gold</span></div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar p1">
+        <div class="logo p1">E2E</div>
+        <div class="mini-nav-item p1 active">⌂</div>
+        <div class="mini-nav-item p1">⊞</div>
+        <div class="mini-nav-item p1">◈</div>
+        <div class="mini-nav-item p1">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header p1">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content p1">
+          <div class="mini-banner p1">MyISP – E2E Dashboard<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat p1"><strong>36</strong>Total</div>
+            <div class="mini-stat p1"><strong>28</strong>Done</div>
+            <div class="mini-stat p1"><strong style="color:#d97706">5</strong>WIP</div>
+            <div class="mini-stat p1"><strong style="color:#dc2626">3</strong>Blocked</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip p1 active">All</div>
+            <div class="mini-chip p1">In Progress</div>
+            <div class="mini-chip p1">Failed</div>
+          </div>
+          <div class="mini-table-row p1"><span class="cell">kalpana@accenture.com</span><span class="tag p1">Passed</span></div>
+          <div class="mini-table-row p1"><span class="cell">swati@accenture.com</span><span class="tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block p1">
+      <h4>:root values to apply</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#fff"></div><code>--bg-base: #ffffff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#1e40af"></div><code>--accent: #1e40af</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#1e3a5f"></div><code>--bg-sidebar: #1e3a5f</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#f0f5fc"></div><code>--bg-card: #f0f5fc</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#1e3a5f"></div><code>--text-primary: #1e3a5f</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2 Executive Slate -->
+  <div class="theme-card p2">
+    <div class="tc-header p2"><span class="tc-name">🪨 Executive Slate</span><span class="tc-badge p2">Slate + Sky Blue</span></div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar p2">
+        <div class="logo p2">E2E</div>
+        <div class="mini-nav-item p2 active">⌂</div>
+        <div class="mini-nav-item p2">⊞</div>
+        <div class="mini-nav-item p2">◈</div>
+        <div class="mini-nav-item p2">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header p2">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content p2">
+          <div class="mini-banner p2">MyISP – E2E Dashboard<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat p2"><strong>36</strong>Total</div>
+            <div class="mini-stat p2"><strong>28</strong>Done</div>
+            <div class="mini-stat p2"><strong style="color:#d97706">5</strong>WIP</div>
+            <div class="mini-stat p2"><strong style="color:#dc2626">3</strong>Blocked</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip p2 active">All</div>
+            <div class="mini-chip p2">In Progress</div>
+            <div class="mini-chip p2">Failed</div>
+          </div>
+          <div class="mini-table-row p2"><span class="cell">kalpana@accenture.com</span><span class="tag p2">Passed</span></div>
+          <div class="mini-table-row p2"><span class="cell">swati@accenture.com</span><span class="tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block p2">
+      <h4>:root values to apply</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#fff"></div><code>--bg-base: #ffffff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#0ea5e9"></div><code>--accent: #0ea5e9</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#1e293b"></div><code>--bg-sidebar: #1e293b</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#f59e0b"></div><code>--warning: #f59e0b</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#f1f5f9"></div><code>--bg-card: #f1f5f9</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#1e293b"></div><code>--text-primary: #1e293b</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3 Forest Professional -->
+  <div class="theme-card p3">
+    <div class="tc-header p3"><span class="tc-name">🌲 Forest Professional</span><span class="tc-badge p3">Deep Green + Gold</span></div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar p3">
+        <div class="logo p3">E2E</div>
+        <div class="mini-nav-item p3 active">⌂</div>
+        <div class="mini-nav-item p3">⊞</div>
+        <div class="mini-nav-item p3">◈</div>
+        <div class="mini-nav-item p3">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header p3">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content p3">
+          <div class="mini-banner p3">MyISP – E2E Dashboard<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat p3"><strong>36</strong>Total</div>
+            <div class="mini-stat p3"><strong>28</strong>Done</div>
+            <div class="mini-stat p3"><strong style="color:#d97706">5</strong>WIP</div>
+            <div class="mini-stat p3"><strong style="color:#dc2626">3</strong>Blocked</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip p3 active">All</div>
+            <div class="mini-chip p3">In Progress</div>
+            <div class="mini-chip p3">Failed</div>
+          </div>
+          <div class="mini-table-row p3"><span class="cell">kalpana@accenture.com</span><span class="tag p3">Passed</span></div>
+          <div class="mini-table-row p3"><span class="cell">swati@accenture.com</span><span class="tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block p3">
+      <h4>:root values to apply</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#fff"></div><code>--bg-base: #ffffff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#16a34a"></div><code>--accent: #16a34a</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#14532d"></div><code>--bg-sidebar: #14532d</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#f0faf4"></div><code>--bg-card: #f0faf4</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#14532d"></div><code>--text-primary: #14532d</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P4 Burgundy Executive -->
+  <div class="theme-card p4">
+    <div class="tc-header p4"><span class="tc-name">🍷 Burgundy Executive</span><span class="tc-badge p4">Burgundy + Gold</span></div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar p4">
+        <div class="logo p4">E2E</div>
+        <div class="mini-nav-item p4 active">⌂</div>
+        <div class="mini-nav-item p4">⊞</div>
+        <div class="mini-nav-item p4">◈</div>
+        <div class="mini-nav-item p4">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header p4">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content p4">
+          <div class="mini-banner p4">MyISP – E2E Dashboard<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat p4"><strong>36</strong>Total</div>
+            <div class="mini-stat p4"><strong>28</strong>Done</div>
+            <div class="mini-stat p4"><strong style="color:#d97706">5</strong>WIP</div>
+            <div class="mini-stat p4"><strong style="color:#dc2626">3</strong>Blocked</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip p4 active">All</div>
+            <div class="mini-chip p4">In Progress</div>
+            <div class="mini-chip p4">Failed</div>
+          </div>
+          <div class="mini-table-row p4"><span class="cell">kalpana@accenture.com</span><span class="tag p4">Passed</span></div>
+          <div class="mini-table-row p4"><span class="cell">swati@accenture.com</span><span class="tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block p4">
+      <h4>:root values to apply</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#fff"></div><code>--bg-base: #ffffff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#be123c"></div><code>--accent: #be123c</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#881337"></div><code>--bg-sidebar: #881337</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fff5f6"></div><code>--bg-card: #fff5f6</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#881337"></div><code>--text-primary: #881337</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P5 Teal Corporate -->
+  <div class="theme-card p5">
+    <div class="tc-header p5"><span class="tc-name">🌊 Teal Corporate</span><span class="tc-badge p5">Deep Teal + Gold</span></div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar p5">
+        <div class="logo p5">E2E</div>
+        <div class="mini-nav-item p5 active">⌂</div>
+        <div class="mini-nav-item p5">⊞</div>
+        <div class="mini-nav-item p5">◈</div>
+        <div class="mini-nav-item p5">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header p5">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content p5">
+          <div class="mini-banner p5">MyISP – E2E Dashboard<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat p5"><strong>36</strong>Total</div>
+            <div class="mini-stat p5"><strong>28</strong>Done</div>
+            <div class="mini-stat p5"><strong style="color:#d97706">5</strong>WIP</div>
+            <div class="mini-stat p5"><strong style="color:#dc2626">3</strong>Blocked</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip p5 active">All</div>
+            <div class="mini-chip p5">In Progress</div>
+            <div class="mini-chip p5">Failed</div>
+          </div>
+          <div class="mini-table-row p5"><span class="cell">kalpana@accenture.com</span><span class="tag p5">Passed</span></div>
+          <div class="mini-table-row p5"><span class="cell">swati@accenture.com</span><span class="tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block p5">
+      <h4>:root values to apply</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#fff"></div><code>--bg-base: #ffffff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#0d9488"></div><code>--accent: #0d9488</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#134e4a"></div><code>--bg-sidebar: #134e4a</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#f0fdfc"></div><code>--bg-card: #f0fdfc</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#134e4a"></div><code>--text-primary: #134e4a</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P6 Ultraviolet Professional -->
+  <div class="theme-card p6">
+    <div class="tc-header p6"><span class="tc-name">⚡ Ultraviolet</span><span class="tc-badge p6">Deep Purple + Gold</span></div>
+    <div class="swatches"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="mini-app">
+      <div class="mini-sidebar p6">
+        <div class="logo p6">E2E</div>
+        <div class="mini-nav-item p6 active">⌂</div>
+        <div class="mini-nav-item p6">⊞</div>
+        <div class="mini-nav-item p6">◈</div>
+        <div class="mini-nav-item p6">⚇</div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-header p6">
+          <div class="month-pill">Apr 2026</div>
+          <div class="search">Search…</div>
+          <div class="save-btn">Save</div>
+          <div class="avatar">RS</div>
+        </div>
+        <div class="mini-content p6">
+          <div class="mini-banner p6">MyISP – E2E Dashboard<span>April 2026 · 78% Overall Progress</span></div>
+          <div class="mini-stat-row">
+            <div class="mini-stat p6"><strong>36</strong>Total</div>
+            <div class="mini-stat p6"><strong>28</strong>Done</div>
+            <div class="mini-stat p6"><strong style="color:#d97706">5</strong>WIP</div>
+            <div class="mini-stat p6"><strong style="color:#dc2626">3</strong>Blocked</div>
+          </div>
+          <div class="mini-chip-row">
+            <div class="mini-chip p6 active">All</div>
+            <div class="mini-chip p6">In Progress</div>
+            <div class="mini-chip p6">Failed</div>
+          </div>
+          <div class="mini-table-row p6"><span class="cell">kalpana@accenture.com</span><span class="tag p6">Passed</span></div>
+          <div class="mini-table-row p6"><span class="cell">swati@accenture.com</span><span class="tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">In Progress</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vars-block p6">
+      <h4>:root values to apply</h4>
+      <div class="var-grid">
+        <div class="var-row"><div class="var-dot" style="background:#fff"></div><code>--bg-base: #ffffff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#7c3aed"></div><code>--accent: #7c3aed</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#3b0764"></div><code>--bg-sidebar: #3b0764</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#fbbf24"></div><code>--warning: #fbbf24</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#faf5ff"></div><code>--bg-card: #faf5ff</code></div>
+        <div class="var-row"><div class="var-dot" style="background:#3b0764"></div><code>--text-primary: #3b0764</code></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:0 0 56px;color:#888;font-size:12px;">
+  White content area · Coloured sidebar · Gold accents throughout.<br>
+  Tell me which one to apply.
+</div>
+
+<script>
+  function toggleMode() {
+    const isDark = document.body.classList.toggle('dark');
+    document.getElementById('toggleBtn').innerHTML = isDark ? '☀ Light Mode' : '🌙 Dark Mode';
+  }
+</script>
+</body>
+</html>

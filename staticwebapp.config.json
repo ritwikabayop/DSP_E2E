@@ -1,0 +1,22 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/*", "/*.js", "/*.css", "/*.ico", "/*.png", "/*.svg"]
+  },
+  "routes": [
+    {
+      "route": "/DSP_E2E/*",
+      "rewrite": "/index.html"
+    }
+  ],
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin"
+  },
+  "mimeTypes": {
+    ".js":   "application/javascript",
+    ".css":  "text/css",
+    ".json": "application/json"
+  }
+}

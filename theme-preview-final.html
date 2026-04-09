@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>E2E Dashboard — Light Gold Professional Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #f0ece4; display: flex; justify-content: center; padding: 48px 24px 64px; }
+
+  .wrapper { width: 100%; max-width: 1200px; }
+
+  h1 { text-align: center; font-size: 22px; color: #1c1207; margin-bottom: 4px; font-weight: 800; }
+  .sub { text-align: center; color: #a08060; font-size: 13px; margin-bottom: 36px; }
+
+  /* ── BROWSER CHROME ── */
+  .browser { background: #e8e0d0; border-radius: 14px; box-shadow: 0 20px 80px rgba(0,0,0,0.18); overflow: hidden; }
+  .browser-bar { height: 38px; background: #ddd5c4; display: flex; align-items: center; padding: 0 14px; gap: 8px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+  .url { flex: 1; background: #cfc8b8; border-radius: 6px; height: 22px; margin: 0 12px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; color: #8a7a60; }
+
+  /* ── APP SHELL ── */
+  .app { display: flex; height: 680px; background: #fafaf8; }
+
+  /* ── SIDEBAR ── */
+  .sidebar { width: 220px; background: #ffffff; border-right: 1px solid #e8dcc8; display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-logo { padding: 16px 14px 14px; border-bottom: 1px solid #e8dcc8; display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg,#d97706,#b45309); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 10px rgba(217,119,6,0.3); }
+  .logo-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+  .logo-text .t1 { font-size: 13px; font-weight: 800; color: #1c1207; line-height: 1.2; }
+  .logo-text .t2 { font-size: 10px; color: #a08060; }
+  .nav { padding: 10px 8px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .nav-item { height: 38px; border-radius: 8px; display: flex; align-items: center; gap: 10px; padding: 0 12px; font-size: 13px; color: #a08060; cursor: pointer; transition: all 0.15s; }
+  .nav-item:hover { background: #fef3c7; color: #b45309; }
+  .nav-item.active { background: rgba(217,119,6,0.1); color: #d97706; font-weight: 700; border-left: 3px solid #d97706; padding-left: 9px; }
+  .nav-icon { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .nav-section { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #c8b090; padding: 12px 12px 4px; }
+  .sidebar-bottom { padding: 12px 8px; border-top: 1px solid #e8dcc8; }
+  .user-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+  .user-row:hover { background: #fef3c7; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#d97706,#b45309); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0; }
+  .user-info .un { font-size: 12px; font-weight: 700; color: #1c1207; }
+  .user-info .ur { font-size: 10px; color: #a08060; }
+
+  /* ── MAIN ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── HEADER ── */
+  .header { height: 52px; background: #ffffff; border-bottom: 1px solid #e8dcc8; display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; }
+  .header-title { font-size: 15px; font-weight: 800; color: #1c1207; }
+  .header-spacer { flex: 1; }
+  .month-badge { background: #fef3c7; border: 1px solid #e8dcc8; color: #b45309; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 6px; }
+  .search-box { display: flex; align-items: center; gap: 6px; background: #fafaf8; border: 1px solid #e8dcc8; border-radius: 8px; padding: 5px 12px; width: 200px; }
+  .search-box input { border: none; background: transparent; font-size: 12px; color: #6b5a3e; outline: none; width: 100%; }
+  .search-box input::placeholder { color: #c8b090; }
+  .save-btn { background: linear-gradient(135deg,#d97706,#b45309); color: #fff; border: none; border-radius: 8px; padding: 6px 18px; font-size: 12px; font-weight: 800; cursor: pointer; letter-spacing: 0.3px; box-shadow: 0 2px 8px rgba(217,119,6,0.3); }
+  .save-btn:hover { filter: brightness(1.05); }
+  .export-btn { background: #ffffff; border: 1px solid #e8dcc8; color: #6b5a3e; border-radius: 8px; padding: 5px 14px; font-size: 12px; cursor: pointer; }
+
+  /* ── CONTENT ── */
+  .content { flex: 1; padding: 18px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #fafaf8; }
+
+  /* ── SAVE BAR ── */
+  .save-bar { background: rgba(217,119,6,0.07); border: 1px solid rgba(217,119,6,0.2); border-radius: 10px; padding: 9px 16px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: #b45309; font-weight: 600; }
+  .save-bar-dot { width: 8px; height: 8px; border-radius: 50%; background: #d97706; flex-shrink: 0; }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .stat-card { background: #ffffff; border: 1px solid #e8dcc8; border-radius: 10px; padding: 14px 16px; transition: all 0.15s; cursor: pointer; }
+  .stat-card:hover { border-color: #d97706; box-shadow: 0 4px 16px rgba(217,119,6,0.1); transform: translateY(-1px); }
+  .stat-label { font-size: 11px; color: #a08060; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .stat-val { font-size: 28px; font-weight: 900; color: #1c1207; line-height: 1; }
+  .stat-val.amber { color: #d97706; }
+  .stat-val.green { color: #16a34a; }
+  .stat-val.red   { color: #dc2626; }
+  .stat-val.blue  { color: #2563eb; }
+  .stat-sub { font-size: 11px; color: #c8b090; margin-top: 4px; }
+  .stat-bar { height: 3px; background: #f0e8d8; border-radius: 99px; margin-top: 8px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#d97706,#b45309); }
+
+  /* ── FILTER CHIPS ── */
+  .chip-row { display: flex; gap: 6px; align-items: center; }
+  .chip-label { font-size: 11px; color: #a08060; font-weight: 600; margin-right: 4px; }
+  .chip { padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid #e8dcc8; color: #a08060; background: #fff; transition: all 0.15s; }
+  .chip:hover { border-color: #d97706; color: #d97706; }
+  .chip.active { background: rgba(217,119,6,0.1); border-color: #d97706; color: #d97706; }
+
+  /* ── TABLE ── */
+  .table-card { background: #ffffff; border: 1px solid #e8dcc8; border-radius: 10px; overflow: hidden; }
+  .table-header { padding: 12px 16px; border-bottom: 1px solid #e8dcc8; display: flex; align-items: center; justify-content: space-between; }
+  .table-title { font-size: 13px; font-weight: 700; color: #1c1207; }
+  .table-count { font-size: 11px; color: #a08060; background: #f5f0e8; border: 1px solid #e8dcc8; padding: 2px 10px; border-radius: 20px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { background: #f5f0e8; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #a08060; padding: 8px 14px; text-align: left; border-bottom: 1px solid #e8dcc8; }
+  tbody tr { cursor: pointer; transition: background 0.1s; }
+  tbody tr:hover td { background: rgba(217,119,6,0.04); }
+  tbody td { padding: 9px 14px; font-size: 12px; color: #3a2808; border-bottom: 1px solid #f5ede0; }
+  .tag { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 5px; font-size: 11px; font-weight: 700; }
+  .tag.pass  { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+  .tag.fail  { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  .tag.wip   { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .tag.na    { background: #f5f0e8; color: #a08060; border: 1px solid #e8dcc8; }
+  .tester-cell { font-size: 11px; color: #a08060; }
+  .row-num { font-size: 10px; color: #c8b090; }
+
+  /* ── SECOND PANEL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+  .mini-card { background: #ffffff; border: 1px solid #e8dcc8; border-radius: 10px; padding: 14px 16px; }
+  .mini-card-title { font-size: 12px; font-weight: 700; color: #1c1207; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .mini-card-title span { font-size: 10px; font-weight: 600; color: #a08060; }
+  .progress-bar { height: 6px; background: #f0e8d8; border-radius: 99px; overflow: hidden; margin-top: 4px; }
+  .progress-fill { height: 100%; border-radius: 99px; }
+  .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .prog-label { font-size: 11px; color: #6b5a3e; width: 100px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .prog-pct { font-size: 11px; font-weight: 700; color: #1c1207; width: 36px; text-align: right; flex-shrink: 0; }
+  .activity-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: flex-start; }
+  .activity-dot { width: 6px; height: 6px; border-radius: 50%; background: #d97706; margin-top: 5px; flex-shrink: 0; }
+  .activity-text { font-size: 11px; color: #6b5a3e; line-height: 1.5; }
+  .activity-time { font-size: 10px; color: #c8b090; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <h1>✨ Light Gold — Professional Theme</h1>
+  <p class="sub">White sidebar · Amber/Gold accent · Clean light background · Full app mockup</p>
+
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="url">localhost:5173/DSP_E2E/</div>
+    </div>
+
+    <div class="app">
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="logo-text"><div class="t1">E2E Hub</div><div class="t2">Master Dashboard</div></div>
+        </div>
+        <div class="nav">
+          <div class="nav-section">Main</div>
+          <div class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Home
+          </div>
+          <div class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            DSP Sheet
+          </div>
+          <div class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Team
+          </div>
+          <div class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Reports
+          </div>
+          <div class="nav-section">Settings</div>
+          <div class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M5.34 5.34L3.93 3.93M12 20v2M12 2v2"/></svg>
+            KT Sessions
+          </div>
+          <div class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Access
+          </div>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="user-row">
+            <div class="avatar">RS</div>
+            <div class="user-info"><div class="un">Ritwik S.</div><div class="ur">Admin</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="main">
+        <div class="header">
+          <div class="header-title">DSP Sheet</div>
+          <div class="month-badge">April 2026</div>
+          <div class="header-spacer"></div>
+          <div class="search-box">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c8b090" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input placeholder="Search rows…" />
+          </div>
+          <button class="export-btn">Export</button>
+          <button class="save-btn">Save Changes</button>
+        </div>
+
+        <div class="content">
+
+          <!-- SAVE BAR -->
+          <div class="save-bar">
+            <div class="save-bar-dot"></div>
+            3 unsaved changes — click Save Changes to push
+          </div>
+
+          <!-- STAT CARDS -->
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Rows</div>
+              <div class="stat-val">36</div>
+              <div class="stat-sub">Manual + Automation</div>
+              <div class="stat-bar"><div class="stat-bar-fill" style="width:100%"></div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Passed</div>
+              <div class="stat-val green">24</div>
+              <div class="stat-sub">67% complete</div>
+              <div class="stat-bar"><div class="stat-bar-fill" style="width:67%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">In Progress</div>
+              <div class="stat-val amber">8</div>
+              <div class="stat-sub">22% of total</div>
+              <div class="stat-bar"><div class="stat-bar-fill" style="width:22%"></div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Failed / Blocked</div>
+              <div class="stat-val red">4</div>
+              <div class="stat-sub">Needs attention</div>
+              <div class="stat-bar"><div class="stat-bar-fill" style="width:11%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div>
+            </div>
+          </div>
+
+          <!-- CHIPS + TABLE -->
+          <div class="chip-row">
+            <span class="chip-label">Filter:</span>
+            <div class="chip active">All</div>
+            <div class="chip">Passed</div>
+            <div class="chip">In Progress</div>
+            <div class="chip">Failed</div>
+            <div class="chip">Mine</div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-header">
+              <div class="table-title">Manual Testing Rows</div>
+              <div class="table-count">24 rows</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Test Case</th><th>Module</th><th>Status</th><th>Tester</th><th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="row-num">1</td>
+                  <td>Login with valid credentials</td>
+                  <td>Auth</td>
+                  <td><span class="tag pass">Passed</span></td>
+                  <td class="tester-cell">kalpana.r</td>
+                  <td class="tester-cell">Apr 7</td>
+                </tr>
+                <tr>
+                  <td class="row-num">2</td>
+                  <td>Password reset flow</td>
+                  <td>Auth</td>
+                  <td><span class="tag wip">In Progress</span></td>
+                  <td class="tester-cell">swati.m</td>
+                  <td class="tester-cell">Apr 6</td>
+                </tr>
+                <tr>
+                  <td class="row-num">3</td>
+                  <td>Dashboard KPI load time</td>
+                  <td>DSP</td>
+                  <td><span class="tag pass">Passed</span></td>
+                  <td class="tester-cell">ritwik.s</td>
+                  <td class="tester-cell">Apr 7</td>
+                </tr>
+                <tr>
+                  <td class="row-num">4</td>
+                  <td>Export to Excel validation</td>
+                  <td>DSP</td>
+                  <td><span class="tag fail">Failed</span></td>
+                  <td class="tester-cell">kalpana.r</td>
+                  <td class="tester-cell">Apr 5</td>
+                </tr>
+                <tr>
+                  <td class="row-num">5</td>
+                  <td>Bulk row status update</td>
+                  <td>SSA</td>
+                  <td><span class="tag pass">Passed</span></td>
+                  <td class="tester-cell">swati.m</td>
+                  <td class="tester-cell">Apr 7</td>
+                </tr>
+                <tr>
+                  <td class="row-num">6</td>
+                  <td>Role-based access control</td>
+                  <td>Access</td>
+                  <td><span class="tag na">N/A</span></td>
+                  <td class="tester-cell">—</td>
+                  <td class="tester-cell">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- BOTTOM ROW -->
+          <div class="two-col">
+            <div class="mini-card">
+              <div class="mini-card-title">Module Breakdown <span>April 2026</span></div>
+              <div class="prog-row"><div class="prog-label">Authentication</div><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:80%;background:linear-gradient(90deg,#d97706,#b45309)"></div></div><div class="prog-pct">80%</div></div>
+              <div class="prog-row"><div class="prog-label">DSP Dashboard</div><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,#d97706,#b45309)"></div></div><div class="prog-pct">65%</div></div>
+              <div class="prog-row"><div class="prog-label">SSA Module</div><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:50%;background:linear-gradient(90deg,#f59e0b,#d97706)"></div></div><div class="prog-pct">50%</div></div>
+              <div class="prog-row"><div class="prog-label">Access Control</div><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div><div class="prog-pct">100%</div></div>
+              <div class="prog-row"><div class="prog-label">Reporting</div><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:40%;background:linear-gradient(90deg,#ef4444,#dc2626)"></div></div><div class="prog-pct">40%</div></div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-card-title">Recent Activity</div>
+              <div class="activity-row"><div class="activity-dot"></div><div><div class="activity-text"><b>kalpana.r</b> updated Login test → Passed</div><div class="activity-time">5 mins ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot" style="background:#dc2626"></div><div><div class="activity-text"><b>swati.m</b> flagged Export test → Failed</div><div class="activity-time">22 mins ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot" style="background:#2563eb"></div><div><div class="activity-text"><b>ritwik.s</b> added comment on DSP row 3</div><div class="activity-time">1 hr ago</div></div></div>
+              <div class="activity-row"><div class="activity-dot" style="background:#16a34a"></div><div><div class="activity-text"><b>ritwik.s</b> saved April 2026 data</div><div class="activity-time">2 hrs ago</div></div></div>
+            </div>
+          </div>
+
+        </div><!-- /content -->
+      </div><!-- /main -->
+    </div><!-- /app -->
+  </div><!-- /browser -->
+
+  <p style="text-align:center;margin-top:24px;color:#a08060;font-size:12px;">
+    Like this? Say <strong style="color:#d97706">"apply it"</strong> and it will be applied to your actual app.
+  </p>
+</div>
+</body>
+</html>

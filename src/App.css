@@ -1,152 +1,101 @@
-/* App.css — global overrides & Ant Design token patches */
+/* Ant Design dark token overrides */
+.ant-layout { background: #0d0f18 !important; }
+.ant-layout-sider { background: #0f1117 !important; }
+.ant-layout-header { background: #131720 !important; padding: 0 !important; }
+.ant-layout-content { background: #0d0f18 !important; }
+.ant-layout-footer { background: #0d0f18 !important; padding: 8px 16px !important; }
 
-#root {
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-}
-
-/* ── Ant Design overrides ── */
-
-/* Card header tighter padding */
-.ant-card-head {
-  min-height: 40px !important;
-  padding: 0 16px !important;
-}
-.ant-card-head-title {
-  padding: 8px 0 !important;
-  font-size: 13px !important;
-}
-.ant-card-body {
-  padding: 12px !important;
-}
-.ant-card-small > .ant-card-body {
-  padding: 10px !important;
+/* === Tables === */
+.ant-table-wrapper .ant-table {
+  border-radius: 10px !important;
+  overflow: hidden;
 }
 
-/* Badge count tweaks */
-.ant-badge-count {
-  font-size: 10px !important;
-  line-height: 16px !important;
-  height: 16px !important;
-  min-width: 16px !important;
-  padding: 0 4px !important;
+.ant-table-container { border-radius: 10px !important; }
+
+.ant-table-thead tr th.ant-table-column-has-sorters:hover {
+  background: #1a2235 !important;
+}
+
+/* === Tabs (removed, sidebar used instead) === */
+
+/* === Select dropdown === */
+.ant-select-dropdown {
+  background: #1a2035 !important;
+  border: 1px solid #252d42 !important;
   border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
 }
 
-/* Alert tweaks */
-.ant-alert {
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
+.ant-select-item { color: #8892a4 !important; border-radius: 5px !important; }
+.ant-select-item-option-selected { background: rgba(34,197,94,0.1) !important; color: #22c55e !important; }
+.ant-select-item-option-active  { background: rgba(255,255,255,0.04) !important; }
+
+/* === Popover / Tooltip === */
+.ant-tooltip-inner    { background: #1e2638 !important; border: 1px solid #252d42 !important; color: #e2e8f0 !important; }
+.ant-tooltip-arrow::before { background: #1e2638 !important; }
+
+/* === Segmented === */
+.ant-segmented-item { color: #8892a4 !important; border-radius: 6px !important; }
+.ant-segmented-item-selected { color: #22c55e !important; }
+.ant-segmented-item-label { padding: 0 10px !important; }
+
+/* === Badge === */
+.ant-badge-count { box-shadow: none !important; }
+
+/* === Input affix === */
+.ant-input-affix-wrapper {
+  background: #1a2035 !important;
+  border-color: #252d42 !important;
+}
+.ant-input-affix-wrapper:hover { border-color: #2d3850 !important; }
+.ant-input-affix-wrapper-focused { border-color: #22c55e !important; box-shadow: 0 0 0 2px rgba(34,197,94,0.15) !important; }
+.ant-input-affix-wrapper input { background: transparent !important; color: #e2e8f0 !important; }
+
+/* === Float button === */
+.ant-float-btn-default .ant-float-btn-body { background: #1a2035 !important; border: 1px solid #252d42 !important; }
+
+/* === Progress bar === */
+.ant-progress-bg { background: linear-gradient(90deg, #16a34a, #22c55e) !important; }
+
+/* === Alert === */
+.ant-alert-info    { background: rgba(59,130,246,0.08) !important; border-color: rgba(59,130,246,0.2) !important; }
+.ant-alert-success { background: rgba(34,197,94,0.08)  !important; border-color: rgba(34,197,94,0.2)  !important; }
+.ant-alert-warning { background: rgba(245,158,11,0.08) !important; border-color: rgba(245,158,11,0.2) !important; }
+.ant-alert-error   { background: rgba(239,68,68,0.08)  !important; border-color: rgba(239,68,68,0.2)  !important; }
+.ant-alert-message, .ant-alert-description { color: #e2e8f0 !important; }
+
+/* === Spin overlay === */
+.ant-spin-dot-item { background: #22c55e !important; }
+
+/* === Modal dark === */
+.ant-modal-mask { background: rgba(0,0,0,0.7) !important; }
+.ant-modal-content { background: #1a1f2e !important; border: 1px solid #252d42 !important; border-radius: 12px !important; }
+.ant-modal-header { background: #1a1f2e !important; border-bottom: 1px solid #252d42 !important; border-radius: 12px 12px 0 0 !important; }
+.ant-modal-title  { color: #e2e8f0 !important; }
+.ant-modal-body   { color: #8892a4 !important; }
+.ant-modal-close  { color: #8892a4 !important; }
+
+/* === Drawer === */
+.ant-drawer-content  { background: #1a1f2e !important; }
+.ant-drawer-header   { background: #1a1f2e !important; border-bottom: 1px solid #252d42 !important; }
+.ant-drawer-title    { color: #e2e8f0 !important; }
+
+/* === Data table row numbers === */
+.row-num { color: #4b5568 !important; font-size: 10px !important; font-variant-numeric: tabular-nums; }
+
+/* === Sheet wrapper === */
+.sheet-wrapper {
+  padding: 16px;
+  min-height: calc(100vh - 52px);
+  overflow-x: auto;
 }
 
-/* Statistic value size */
-.ant-statistic-content-value {
-  font-size: 24px !important;
-  font-weight: 700 !important;
-}
-.ant-statistic-title {
-  font-size: 11px !important;
+/* === Sider trigger override === */
+.ant-layout-sider-trigger {
+  background: #151d2c !important;
+  border-top: 1px solid #252d42 !important;
+  color: #8892a4 !important;
 }
 
-/* Tag line-height fix */
-.ant-tag {
-  line-height: 20px !important;
-  border-radius: 4px !important;
-}
-
-/* Select inside table cells */
-.ant-select-single.ant-select-sm .ant-select-selector {
-  padding: 0 6px !important;
-}
-
-/* Progress bar inside stat cards */
-.ant-progress-circle .ant-progress-text {
-  font-size: 10px !important;
-  font-weight: 700 !important;
-}
-
-/* Popconfirm */
-.ant-popconfirm-title {
-  font-weight: 600 !important;
-}
-
-/* Float button position */
-.ant-float-btn-body {
-  background: #217346 !important;
-}
-.ant-float-btn-body:hover {
-  background: #185C37 !important;
-}
-
-/* Segmented control */
-.ant-segmented {
-  font-size: 12px !important;
-}
-
-/* Table filter dropdowns */
-.ant-table-filter-trigger {
-  color: #8c8c8c;
-}
-.ant-table-filter-trigger.active {
-  color: #217346 !important;
-}
-
-/* ── Ribbon role selector ── */
-.ribbon .ant-select-selector {
-  background: rgba(255,255,255,.18) !important;
-  border: 1px solid rgba(255,255,255,.25) !important;
-  border-radius: 6px !important;
-}
-.ribbon .ant-select-arrow {
-  color: rgba(255,255,255,.7) !important;
-}
-
-/* ── Save All button pulse when dirty ── */
-@keyframes pulse-warning {
-  0%   { box-shadow: 0 0 0 0 rgba(250,173,20, 0.55); }
-  70%  { box-shadow: 0 0 0 6px rgba(250,173,20, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(250,173,20, 0); }
-}
-.save-all-btn {
-  animation: pulse-warning 1.8s infinite;
-}
-
-/* ── Home page section labels ── */
-.section-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: #999;
-  margin-bottom: 10px;
-  display: block;
-}
-
-/* ── Report table ── */
-.report-table .ant-table-thead > tr > th {
-  background: #fafafa !important;
-  font-size: 11px !important;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* ── Unsaved change row highlight ── */
-.row-modified {
-  background: #fffbe6 !important;
-}
-.row-modified td::after {
-  content: '●';
-  color: #faad14;
-  font-size: 8px;
-  margin-left: 4px;
-  vertical-align: super;
-}
-
-/* ── Responsive: hide less important ribbon items on small screens ── */
-@media (max-width: 900px) {
-  .ribbon-secondary {
-    display: none;
-  }
-}
+.ant-layout-sider-trigger:hover { background: rgba(34,197,94,0.08) !important; color: #22c55e !important; }
