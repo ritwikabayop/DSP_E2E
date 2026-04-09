@@ -11,7 +11,7 @@ import { supabase } from '../../services/supabase.js';
 const S = {
   page: {
     minHeight: '100vh',
-    background: '#0a0c14',
+    background: 'var(--bg-base)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -43,14 +43,14 @@ const S = {
   },
   right: {
     width: 420,
-    background: '#0d0f18',
+    background: 'var(--bg-surface)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     padding: '48px 40px',
   },
   label: {
-    color: '#6b7280',
+    color: 'var(--text-muted)',
     fontSize: 11,
     fontWeight: 700,
     letterSpacing: 0.7,
@@ -58,7 +58,7 @@ const S = {
     display: 'block',
     marginBottom: 6,
   },
-  inputStyle: { borderRadius: 10, height: 46, background: '#141824', borderColor: '#252d42', color: '#e2e8f0' },
+  inputStyle: { borderRadius: 10, height: 46, background: 'var(--bg-base)', borderColor: 'var(--border)', color: 'var(--text-primary)' },
   submitBtn: {
     width: '100%', height: 48, borderRadius: 10,
     background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',

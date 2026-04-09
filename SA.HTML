@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<title>E2E Dashboard — Theme Preview</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  /* ── DARK THEME (default) ── */
+  :root {
+    --bg-base:#0d0f18; --bg-surface:#131720; --bg-card:#1a1f2e;
+    --bg-sidebar:#0d0f18; --bg-header:#131720;
+    --border:#1e2535; --accent:#fbbf24; --accent-dim:#d97706;
+    --text-primary:#e8eaf0; --text-secondary:#7a8299; --text-muted:#4a5168;
+    --banner-bg:linear-gradient(135deg,#1a1f2e,#0d1525);
+    --banner-color:#fbbf24;
+    --stat-bg:#1a1f2e; --table-head:#131720; --table-row:#0d0f18;
+    --badge-bg:rgba(251,191,36,0.12); --badge-color:#fbbf24;
+    --row-hover:rgba(251,191,36,0.04);
+  }
+  /* ── LIGHT / IVORY GOLD ── */
+  [data-theme="light"] {
+    --bg-base:#ffffff; --bg-surface:#fffbeb; --bg-card:#fffbeb;
+    --bg-sidebar:#fef9e7; --bg-header:#fffdf6;
+    --border:#f0e6cc; --accent:#fbbf24; --accent-dim:#d97706;
+    --text-primary:#1c1207; --text-secondary:#92700a; --text-muted:#c8a04a;
+    --banner-bg:linear-gradient(135deg,#fef3c7,#fde68a);
+    --banner-color:#78350f;
+    --stat-bg:#fffbeb; --table-head:#fef9e7; --table-row:#fff;
+    --badge-bg:rgba(251,191,36,0.15); --badge-color:#78350f;
+    --row-hover:rgba(251,191,36,0.06);
+  }
+
+  body { font-family:'Segoe UI',sans-serif; background:var(--bg-base); color:var(--text-primary); height:100vh; display:flex; transition:background 0.3s,color 0.3s; }
+
+  /* Sidebar */
+  .sidebar {
+    width:64px; background:var(--bg-sidebar); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; padding:14px 0; gap:8px;
+    transition:background 0.3s,border-color 0.3s;
+  }
+  .logo {
+    width:40px; height:40px; border-radius:12px;
+    background:linear-gradient(135deg,#fbbf24,#d97706);
+    box-shadow:0 0 16px rgba(251,191,36,0.4);
+    display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; margin-bottom:8px;
+  }
+  .nav-item { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--text-muted); cursor:pointer; }
+  .nav-item.active { background:rgba(251,191,36,0.15); color:var(--text-secondary); }
+
+  /* Header */
+  .main { flex:1; display:flex; flex-direction:column; }
+  .header {
+    height:52px; background:var(--bg-header); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; padding:0 18px; gap:10px; transition:background 0.3s;
+  }
+  .pill { height:30px; border-radius:8px; padding:0 14px; background:var(--stat-bg); color:var(--text-secondary); border:1px solid var(--border); font-size:12px; font-weight:600; display:flex; align-items:center; }
+  .search-bar { flex:1; height:30px; border-radius:8px; background:var(--stat-bg); border:1px solid var(--border); padding:0 12px; font-size:12px; color:var(--text-primary); outline:none; transition:background 0.3s; }
+  .save-btn { height:30px; border-radius:8px; padding:0 16px; background:linear-gradient(135deg,#fbbf24,#d97706); color:#fff; font-size:12px; font-weight:700; border:none; cursor:pointer; }
+  .avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#92700a,#78350f); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+
+  /* Theme toggle */
+  .toggle-btn {
+    height:30px; border-radius:20px; padding:0 14px;
+    background:var(--stat-bg); border:1px solid var(--border);
+    color:var(--text-secondary); font-size:12px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; gap:6px; transition:all 0.2s;
+  }
+  .toggle-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* Content */
+  .content { flex:1; padding:18px; display:flex; flex-direction:column; gap:12px; overflow:auto; }
+  .banner {
+    border-radius:12px; padding:16px 20px;
+    background:var(--banner-bg); border:1px solid rgba(251,191,36,0.25); color:var(--banner-color);
+    transition:background 0.3s;
+  }
+  .banner h2 { font-size:18px; font-weight:800; }
+  .banner p  { font-size:12px; opacity:0.7; margin-top:4px; }
+
+  .stats { display:flex; gap:10px; }
+  .stat-card { flex:1; border-radius:10px; padding:14px 16px; background:var(--stat-bg); border:1px solid var(--border); transition:background 0.3s; }
+  .stat-card .num { font-size:28px; font-weight:900; color:var(--accent); }
+  .stat-card .lbl { font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+  table { width:100%; border-collapse:collapse; }
+  th { background:var(--table-head); color:var(--text-secondary); font-size:11px; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:8px 12px; font-size:12px; color:var(--text-primary); border-bottom:1px solid var(--border); transition:background 0.3s; }
+  tr:hover td { background:var(--row-hover); }
+  .badge { display:inline-flex; align-items:center; height:18px; border-radius:5px; padding:0 8px; font-size:10px; font-weight:700; background:var(--badge-bg); color:var(--badge-color); border:1px solid rgba(251,191,36,0.3); }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">⚡</div>
+  <div class="nav-item active">🏠</div>
+  <div class="nav-item">📊</div>
+  <div class="nav-item">🧪</div>
+  <div class="nav-item">👥</div>
+  <div class="nav-item">⚙️</div>
+</div>
+
+<div class="main">
+  <div class="header">
+    <div class="pill">April 2026</div>
+    <input class="search-bar" placeholder="🔍  Search test cases..."/>
+    <button class="save-btn">Save</button>
+    <!-- THEME TOGGLE -->
+    <button class="toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+    <div class="avatar">RS</div>
+  </div>
+
+  <div class="content">
+    <div class="banner" id="bannerTitle">
+      <h2 id="bannerHeading">E2E Dashboard — Dark Theme</h2>
+      <p>Click the toggle button in the header to switch themes</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card"><div class="num">142</div><div class="lbl">Total Tests</div></div>
+      <div class="stat-card"><div class="num">118</div><div class="lbl">Passing</div></div>
+      <div class="stat-card"><div class="num">17</div><div class="lbl">Blocked</div></div>
+      <div class="stat-card"><div class="num">7</div><div class="lbl">Failed</div></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Test ID</th><th>Module</th><th>Tester</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TC-001</td><td>Login Flow</td><td>Ritwik</td><td><span class="badge">Pass</span></td></tr>
+        <tr><td>TC-002</td><td>Checkout</td><td>Aisha</td><td><span class="badge">Pass</span></td></tr>
+        <tr><td>TC-003</td><td>Dashboard KPIs</td><td>Priya</td><td><span class="badge">Blocked</span></td></tr>
+        <tr><td>TC-004</td><td>API Gateway</td><td>Sam</td><td><span class="badge">Pass</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+    document.getElementById('bannerHeading').textContent = isDark
+      ? 'E2E Dashboard — Ivory Gold Theme'
+      : 'E2E Dashboard — Dark Theme';
+  }
+</script>
+</body>
+</html>

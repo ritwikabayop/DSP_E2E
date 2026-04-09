@@ -99,3 +99,169 @@
 }
 
 .ant-layout-sider-trigger:hover { background: rgba(34,197,94,0.08) !important; color: #22c55e !important; }
+
+/* ═══════════════════════════════════════════════
+   IVORY GOLD — Light Theme Ant Design overrides
+   ═══════════════════════════════════════════════ */
+[data-theme="light"] .ant-layout         { background: #ffffff !important; }
+[data-theme="light"] .ant-layout-sider   { background: #fef9e7 !important; }
+[data-theme="light"] .ant-layout-header  { background: #fffdf6 !important; border-bottom: 1px solid #f0e6cc !important; }
+[data-theme="light"] .ant-layout-content { background: #ffffff !important; }
+[data-theme="light"] .ant-layout-footer  { background: #ffffff !important; }
+
+[data-theme="light"] .ant-layout-sider-trigger {
+  background: #fef3c7 !important;
+  border-top: 1px solid #f0e6cc !important;
+  color: #92700a !important;
+}
+[data-theme="light"] .ant-layout-sider-trigger:hover {
+  background: rgba(251,191,36,0.15) !important;
+  color: #78350f !important;
+}
+
+/* Tables */
+[data-theme="light"] .ant-table-thead > tr > th {
+  background: #fef9e7 !important;
+  color: #92700a !important;
+  border-bottom: 1px solid #f0e6cc !important;
+  border-right: 1px solid #f0e6cc !important;
+}
+[data-theme="light"] .ant-table-tbody > tr > td {
+  background: #ffffff !important;
+  color: #1c1207 !important;
+  border-bottom: 1px solid #f7f0e0 !important;
+  border-right: 1px solid #f7f0e0 !important;
+}
+[data-theme="light"] .ant-table-thead tr th.ant-table-column-has-sorters:hover {
+  background: #fef3c7 !important;
+}
+
+/* Select */
+[data-theme="light"] .ant-select-dropdown {
+  background: #fffdf6 !important;
+  border: 1px solid #f0e6cc !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
+}
+[data-theme="light"] .ant-select-item { color: #92700a !important; }
+[data-theme="light"] .ant-select-item-option-selected {
+  background: rgba(251,191,36,0.12) !important;
+  color: #78350f !important;
+}
+[data-theme="light"] .ant-select-item-option-active {
+  background: rgba(251,191,36,0.06) !important;
+}
+
+/* Input */
+[data-theme="light"] .ant-input-affix-wrapper {
+  background: #fff8e6 !important;
+  border-color: #f0e6cc !important;
+}
+[data-theme="light"] .ant-input-affix-wrapper:hover { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-input-affix-wrapper-focused {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 0 2px rgba(251,191,36,0.2) !important;
+}
+[data-theme="light"] .ant-input-affix-wrapper input { color: #1c1207 !important; }
+[data-theme="light"] .ant-input {
+  background: #fff8e6 !important;
+  border-color: #f0e6cc !important;
+  color: #1c1207 !important;
+}
+[data-theme="light"] .ant-input::placeholder { color: #c8a04a !important; }
+[data-theme="light"] .ant-input:hover  { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-input:focus  {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 0 2px rgba(251,191,36,0.2) !important;
+}
+
+/* Modal */
+[data-theme="light"] .ant-modal-mask { background: rgba(120,80,0,0.25) !important; }
+[data-theme="light"] .ant-modal-content {
+  background: #fffdf6 !important;
+  border: 1px solid #f0e6cc !important;
+  backdrop-filter: none !important;
+}
+[data-theme="light"] .ant-modal-header {
+  background: #fffdf6 !important;
+  border-bottom: 1px solid #f0e6cc !important;
+}
+[data-theme="light"] .ant-modal-title { color: #1c1207 !important; }
+[data-theme="light"] .ant-modal-body  { color: #92700a !important; }
+[data-theme="light"] .ant-modal-close { color: #c8a04a !important; }
+
+/* Drawer */
+[data-theme="light"] .ant-drawer-content { background: #fffdf6 !important; }
+[data-theme="light"] .ant-drawer-header  { background: #fffdf6 !important; border-bottom: 1px solid #f0e6cc !important; }
+[data-theme="light"] .ant-drawer-title   { color: #1c1207 !important; }
+
+/* Tooltip */
+[data-theme="light"] .ant-tooltip-inner {
+  background: #1c1207 !important;
+  border: none !important;
+  color: #fef3c7 !important;
+}
+[data-theme="light"] .ant-tooltip-arrow::before { background: #1c1207 !important; }
+
+/* Buttons */
+[data-theme="light"] .ant-btn-default {
+  background: #fffbeb !important;
+  border-color: #f0e6cc !important;
+  color: #92700a !important;
+}
+[data-theme="light"] .ant-btn-default:hover {
+  border-color: #fbbf24 !important;
+  color: #78350f !important;
+}
+
+/* Tabs */
+[data-theme="light"] .ant-tabs-tab { color: #c8a04a !important; }
+[data-theme="light"] .ant-tabs-tab-active .ant-tabs-tab-btn { color: #92700a !important; }
+[data-theme="light"] .ant-tabs-ink-bar { background: #fbbf24 !important; }
+[data-theme="light"] .ant-tabs-nav { border-bottom-color: #f0e6cc !important; }
+
+/* Tags */
+[data-theme="light"] .ant-tag { color: #92700a !important; }
+
+/* Float button */
+[data-theme="light"] .ant-float-btn-default .ant-float-btn-body {
+  background: #fffbeb !important;
+  border: 1px solid #f0e6cc !important;
+}
+
+/* Progress */
+[data-theme="light"] .ant-progress-inner { background: #fef3c7 !important; }
+[data-theme="light"] .ant-progress-bg {
+  background: linear-gradient(90deg, #d97706, #fbbf24) !important;
+}
+
+/* Pagination */
+[data-theme="light"] .ant-pagination-item {
+  background: #fffbeb !important;
+  border-color: #f0e6cc !important;
+}
+[data-theme="light"] .ant-pagination-item a { color: #92700a !important; }
+[data-theme="light"] .ant-pagination-item-active { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-pagination-item-active a { color: #78350f !important; }
+
+/* Select selector inside header */
+[data-theme="light"] .ant-select-selector {
+  background: #fef3c7 !important;
+  border-color: #f0e6cc !important;
+  color: #92700a !important;
+}
+[data-theme="light"] .ant-select-selector:hover { border-color: #fbbf24 !important; }
+
+/* Segmented */
+[data-theme="light"] .ant-segmented { background: #fef3c7 !important; border-color: #f0e6cc !important; }
+[data-theme="light"] .ant-segmented-item-selected {
+  background: rgba(251,191,36,0.25) !important;
+  color: #78350f !important;
+}
+
+/* Card */
+[data-theme="light"] .ant-card-head {
+  background: #fef9e7 !important;
+  border-bottom: 1px solid #f0e6cc !important;
+}
+[data-theme="light"] .ant-card-head-title { color: #1c1207 !important; }
+[data-theme="light"] .ant-card-body { background: #fffbeb !important; }

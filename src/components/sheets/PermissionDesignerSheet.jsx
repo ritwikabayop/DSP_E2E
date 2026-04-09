@@ -150,11 +150,11 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
 
       {/* ── Left sidebar ── */}
       <div style={{
-        width: 220, flexShrink: 0, background: '#131720',
-        borderRight: '1px solid #252d42', display: 'flex', flexDirection: 'column', overflowY: 'auto',
+        width: 220, flexShrink: 0, background: 'var(--bg-sidebar)',
+        borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflowY: 'auto',
       }}>
-        <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #252d42' }}>
-          <Text style={{ fontSize: 10, color: '#4b5568', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 600 }}>
+        <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid var(--border)' }}>
+          <Text style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 600 }}>
             Roles
           </Text>
         </div>
@@ -174,12 +174,12 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: cfg.color ?? '#8c8c8c', flexShrink: 0 }} />
-                <Text style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{cfg.label ?? key}</Text>
+                <Text style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{cfg.label ?? key}</Text>
               </div>
               {cfg.inherits && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, marginLeft: 15 }}>
-                  <GitBranch size={10} color="#4b5568" />
-                  <Text style={{ fontSize: 10, color: '#4b5568' }}>
+                  <GitBranch size={10} color="var(--text-muted)" />
+                  <Text style={{ fontSize: 10, color: 'var(--text-muted)' }}>
                     inherits {configs[cfg.inherits]?.label ?? cfg.inherits}
                   </Text>
                 </div>
@@ -189,11 +189,11 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         })}
 
         {canEdit && (
-          <div style={{ padding: '10px 14px', marginTop: 'auto', borderTop: '1px solid #252d42' }}>
+          <div style={{ padding: '10px 14px', marginTop: 'auto', borderTop: '1px solid var(--border)' }}>
             <Button
               size="small" icon={<Plus size={12} />} type="dashed" block
               onClick={() => setNewRoleOpen(true)}
-              style={{ color: '#8892a4', borderColor: '#252d42', fontSize: 12 }}
+              style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)', fontSize: 12 }}
             >
               New role
             </Button>
@@ -202,11 +202,11 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
       </div>
 
       {/* ── Right panel ── */}
-      <div style={{ flex: 1, overflowY: 'auto', background: '#0d0f18', padding: '16px 20px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg-base)', padding: '16px 20px' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
-            <Text style={{ fontSize: 15, fontWeight: 700, color: '#e2e8f0' }}>
+            <Text style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
               <span style={{ color: selectedConfig.color ?? '#22c55e' }}>
                 {selectedConfig.label ?? selectedRole}
               </span>
@@ -214,10 +214,10 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
             </Text>
             {parentKey && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 4 }}>
-                <GitBranch size={11} color="#4b5568" />
-                <Text style={{ fontSize: 11, color: '#4b5568' }}>
+                <GitBranch size={11} color="var(--text-muted)" />
+                <Text style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                   Inherits from{' '}
-                  <b style={{ color: '#8892a4' }}>{configs[parentKey]?.label ?? parentKey}</b>.
+                  <b style={{ color: 'var(--text-secondary)' }}>{configs[parentKey]?.label ?? parentKey}</b>.
                   {' '}◈ = inherited &nbsp;·&nbsp; toggle to override
                 </Text>
               </div>
@@ -227,7 +227,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
             size="small"
             icon={<LayoutGrid size={12} />}
             onClick={() => setMatrixOpen(true)}
-            style={{ color: '#8892a4', borderColor: '#252d42', fontSize: 12, flexShrink: 0 }}
+            style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)', fontSize: 12, flexShrink: 0 }}
           >
             Full matrix
           </Button>
@@ -243,8 +243,8 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
               style={{
                 marginBottom: 12,
                 borderLeft: `3px solid ${gm.color}`,
-                background: '#1a1f2e',
-                border: `1px solid #252d42`,
+                background: 'var(--bg-card)',
+                border: `1px solid var(--border)`,
                 borderLeftColor: gm.color,
                 borderRadius: 8,
               }}
@@ -263,7 +263,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
                   return (
                     <div key={permKey} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <Space size={5}>
-                        <Text style={{ fontSize: 12, color: val ? '#e2e8f0' : '#4b5568' }}>
+                        <Text style={{ fontSize: 12, color: val ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                           {PERMISSION_LABELS[permKey] ?? permKey}
                         </Text>
                         {inherited && (
@@ -277,7 +277,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
                         checked={val}
                         disabled={!canEdit}
                         onChange={(checked) => handleToggle(permKey, checked)}
-                        style={val ? { background: gm.color } : { background: '#252d42' }}
+                        style={val ? { background: gm.color } : { background: 'var(--border)' }}
                       />
                     </div>
                   );
@@ -298,7 +298,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
             >
               Implement this ↗
             </Button>
-            <Button onClick={handleReset} style={{ color: '#8892a4', borderColor: '#252d42' }}>
+            <Button onClick={handleReset} style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
               Reset to defaults
             </Button>
           </div>
@@ -342,7 +342,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '10px 0' }}>
           <div>
-            <Text style={{ fontSize: 12, color: '#e2e8f0', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+            <Text style={{ fontSize: 12, color: 'var(--text-primary)', display: 'block', marginBottom: 6, fontWeight: 500 }}>
               Role name
             </Text>
             <Input
@@ -353,7 +353,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
             />
           </div>
           <div>
-            <Text style={{ fontSize: 12, color: '#e2e8f0', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+            <Text style={{ fontSize: 12, color: 'var(--text-primary)', display: 'block', marginBottom: 6, fontWeight: 500 }}>
               Inherit permissions from
             </Text>
             <Select
