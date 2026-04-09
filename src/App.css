@@ -104,74 +104,74 @@
    IVORY GOLD — Light Theme Ant Design overrides
    ═══════════════════════════════════════════════ */
 [data-theme="light"] .ant-layout         { background: #ffffff !important; }
-[data-theme="light"] .ant-layout-sider   { background: #fef9e7 !important; }
-[data-theme="light"] .ant-layout-header  { background: #fffdf6 !important; border-bottom: 1px solid #f0e6cc !important; }
+[data-theme="light"] .ant-layout-sider   { background: #f5f3ee !important; }
+[data-theme="light"] .ant-layout-header  { background: #fefefe !important; border-bottom: 1px solid rgba(210,200,180,0.4) !important; }
 [data-theme="light"] .ant-layout-content { background: #ffffff !important; }
 [data-theme="light"] .ant-layout-footer  { background: #ffffff !important; }
 
 [data-theme="light"] .ant-layout-sider-trigger {
-  background: #fef3c7 !important;
-  border-top: 1px solid #f0e6cc !important;
-  color: #92700a !important;
+  background: #ece9e1 !important;
+  border-top: 1px solid rgba(210,200,180,0.4) !important;
+  color: #7a6040 !important;
 }
 [data-theme="light"] .ant-layout-sider-trigger:hover {
-  background: rgba(251,191,36,0.15) !important;
-  color: #78350f !important;
+  background: rgba(180,140,60,0.1) !important;
+  color: #6b3f08 !important;
 }
 
 /* Tables */
 [data-theme="light"] .ant-table-thead > tr > th {
-  background: #fef9e7 !important;
-  color: #92700a !important;
-  border-bottom: 1px solid #f0e6cc !important;
-  border-right: 1px solid #f0e6cc !important;
+  background: #f5f3ee !important;
+  color: #7a6040 !important;
+  border-bottom: 1px solid rgba(210,200,180,0.5) !important;
+  border-right: 1px solid rgba(210,200,180,0.3) !important;
 }
 [data-theme="light"] .ant-table-tbody > tr > td {
   background: #ffffff !important;
-  color: #1c1207 !important;
-  border-bottom: 1px solid #f7f0e0 !important;
-  border-right: 1px solid #f7f0e0 !important;
+  color: #1a1209 !important;
+  border-bottom: 1px solid rgba(210,200,180,0.25) !important;
+  border-right: 1px solid rgba(210,200,180,0.2) !important;
 }
 [data-theme="light"] .ant-table-thead tr th.ant-table-column-has-sorters:hover {
-  background: #fef3c7 !important;
+  background: #ece9e1 !important;
 }
 
 /* Select */
 [data-theme="light"] .ant-select-dropdown {
-  background: #fffdf6 !important;
-  border: 1px solid #f0e6cc !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
+  background: #fefefe !important;
+  border: 1px solid rgba(210,200,180,0.5) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08) !important;
 }
-[data-theme="light"] .ant-select-item { color: #92700a !important; }
+[data-theme="light"] .ant-select-item { color: #7a6040 !important; }
 [data-theme="light"] .ant-select-item-option-selected {
-  background: rgba(251,191,36,0.12) !important;
-  color: #78350f !important;
+  background: rgba(217,119,6,0.08) !important;
+  color: #6b3f08 !important;
 }
 [data-theme="light"] .ant-select-item-option-active {
-  background: rgba(251,191,36,0.06) !important;
+  background: rgba(180,140,60,0.05) !important;
 }
 
 /* Input */
 [data-theme="light"] .ant-input-affix-wrapper {
-  background: #fff8e6 !important;
-  border-color: #f0e6cc !important;
+  background: #f9f7f2 !important;
+  border-color: rgba(210,200,180,0.5) !important;
 }
-[data-theme="light"] .ant-input-affix-wrapper:hover { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-input-affix-wrapper:hover { border-color: #d97706 !important; }
 [data-theme="light"] .ant-input-affix-wrapper-focused {
-  border-color: #fbbf24 !important;
-  box-shadow: 0 0 0 2px rgba(251,191,36,0.2) !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 0 0 2px rgba(217,119,6,0.15) !important;
 }
-[data-theme="light"] .ant-input-affix-wrapper input { color: #1c1207 !important; }
+[data-theme="light"] .ant-input-affix-wrapper input { color: #1a1209 !important; }
 [data-theme="light"] .ant-input {
-  background: #fff8e6 !important;
-  border-color: #f0e6cc !important;
-  color: #1c1207 !important;
+  background: #f9f7f2 !important;
+  border-color: rgba(210,200,180,0.5) !important;
+  color: #1a1209 !important;
 }
-[data-theme="light"] .ant-input::placeholder { color: #c8a04a !important; }
-[data-theme="light"] .ant-input:hover  { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-input::placeholder { color: #b0a080 !important; }
+[data-theme="light"] .ant-input:hover  { border-color: #d97706 !important; }
 [data-theme="light"] .ant-input:focus  {
-  border-color: #fbbf24 !important;
-  box-shadow: 0 0 0 2px rgba(251,191,36,0.2) !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 0 0 2px rgba(217,119,6,0.15) !important;
 }
 
 /* Modal */
@@ -245,11 +245,11 @@
 
 /* Select selector inside header */
 [data-theme="light"] .ant-select-selector {
-  background: #fef3c7 !important;
-  border-color: #f0e6cc !important;
-  color: #92700a !important;
+  background: #f5f3ee !important;
+  border-color: rgba(210,200,180,0.5) !important;
+  color: #7a6040 !important;
 }
-[data-theme="light"] .ant-select-selector:hover { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-select-selector:hover { border-color: #d97706 !important; }
 
 /* Segmented */
 [data-theme="light"] .ant-segmented { background: #fef3c7 !important; border-color: #f0e6cc !important; }
@@ -260,8 +260,8 @@
 
 /* Card */
 [data-theme="light"] .ant-card-head {
-  background: #fef9e7 !important;
-  border-bottom: 1px solid #f0e6cc !important;
+  background: #f5f3ee !important;
+  border-bottom: 1px solid rgba(210,200,180,0.4) !important;
 }
-[data-theme="light"] .ant-card-head-title { color: #1c1207 !important; }
-[data-theme="light"] .ant-card-body { background: #fffbeb !important; }
+[data-theme="light"] .ant-card-head-title { color: #1a1209 !important; }
+[data-theme="light"] .ant-card-body { background: #ffffff !important; }
