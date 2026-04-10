@@ -13,10 +13,10 @@ const modules = [
     label: 'E2E Testing',
     description: 'DSP Manual & Automation, SSA/GenAI test coverage, team roster and reporting.',
     icon: LayoutDashboard,
-    color: '#22c55e',
-    bg: 'rgba(34,197,94,0.08)',
-    border: 'rgba(34,197,94,0.25)',
-    hoverBorder: '#22c55e',
+    color: '#fbbf24',
+    bg: 'rgba(251,191,36,0.08)',
+    border: 'rgba(251,191,36,0.25)',
+    hoverBorder: '#fbbf24',
     chips: [
       { icon: Monitor,   label: 'DSP' },
       { icon: Shield,    label: 'SSA' },
@@ -49,7 +49,7 @@ const modules = [
     // Role buttons — each opens the tracker pre-selecting that role on the PIN screen
     roleButtons: [
       { role: 'admin',    label: 'Admin',     accent: '#a78bfa', bg: 'rgba(124,58,237,0.15)', border: 'rgba(124,58,237,0.35)' },
-      { role: 'operator', label: 'Operation', accent: '#4ade80', bg: 'rgba(34,197,94,0.12)',  border: 'rgba(34,197,94,0.30)' },
+      { role: 'operator', label: 'Operation', accent: '#fbbf24', bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.30)' },
     ],
   },
   {
@@ -205,9 +205,9 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         {/* Logo */}
         <div style={{
           width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-          background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+          background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 14px rgba(34,197,94,0.25)',
+          boxShadow: '0 0 14px rgba(251,191,36,0.25)',
         }}>
           <LayoutDashboard size={17} color="#fff" />
         </div>
@@ -234,9 +234,9 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
               {/* Avatar */}
               <div style={{
                 width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                background: 'linear-gradient(135deg, #fbbf24, #d97706)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 12px rgba(34,197,94,0.35)',
+                boxShadow: '0 0 12px rgba(251,191,36,0.35)',
               }}>
                 <User size={15} color="#fff" />
               </div>
@@ -273,7 +273,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         {/* Greeting */}
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <h1 style={{ color: 'var(--text-primary)', fontSize: 28, fontWeight: 700, margin: 0, lineHeight: 1.3 }}>
-            Welcome back, <span style={{ color: '#22c55e' }}>{displayName.split('@')[0]}</span>
+            Welcome back, <span style={{ color: 'var(--accent)' }}>{displayName.split('@')[0]}</span>
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 8, marginBottom: 0 }}>
             Choose a module to continue

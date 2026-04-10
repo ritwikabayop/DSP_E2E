@@ -32,8 +32,8 @@ const S = {
   },
   left: {
     flex: 1,
-    background: 'linear-gradient(145deg, #0f2318 0%, #0b1a12 50%, #091611 100%)',
-    borderRight: '1px solid rgba(34,197,94,0.12)',
+    background: 'linear-gradient(145deg, #1a1000 0%, #120d00 50%, #0c0900 100%)',
+    borderRight: '1px solid rgba(251,191,36,0.12)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -61,10 +61,11 @@ const S = {
   inputStyle: { borderRadius: 10, height: 46, background: 'var(--bg-base)', borderColor: 'var(--border)', color: 'var(--text-primary)' },
   submitBtn: {
     width: '100%', height: 48, borderRadius: 10,
-    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+    background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
     border: 'none', fontWeight: 700, fontSize: 15,
-    boxShadow: '0 4px 20px rgba(34,197,94,0.35)',
+    boxShadow: '0 4px 20px rgba(217,119,6,0.35)',
     letterSpacing: 0.2,
+    color: '#fff',
   },
 };
 
@@ -136,7 +137,7 @@ export default function LoginPage({ onSignIn }) {
   return (
     <div style={S.page}>
       {/* ── Ambient orbs ── */}
-      <div style={{ position:'fixed', top:'-10%', left:'-5%',  width:520, height:520, borderRadius:'50%', background:'radial-gradient(circle, rgba(34,197,94,0.10) 0%, transparent 65%)',  pointerEvents:'none', filter:'blur(10px)' }} />
+      <div style={{ position:'fixed', top:'-10%', left:'-5%',  width:520, height:520, borderRadius:'50%', background:'radial-gradient(circle, rgba(251,191,36,0.10) 0%, transparent 65%)',  pointerEvents:'none', filter:'blur(10px)' }} />
       <div style={{ position:'fixed', bottom:'-8%', right:'-5%', width:460, height:460, borderRadius:'50%', background:'radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)', pointerEvents:'none', filter:'blur(10px)' }} />
       <div style={{ position:'fixed', top:'40%', left:'30%', width:300, height:300, borderRadius:'50%', background:'radial-gradient(circle, rgba(14,165,233,0.06) 0%, transparent 70%)', pointerEvents:'none', filter:'blur(16px)' }} />
 
@@ -145,14 +146,14 @@ export default function LoginPage({ onSignIn }) {
         {/* ════ LEFT PANEL ════ */}
         <div style={S.left}>
           {/* Decorative grid overlay */}
-          <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(34,197,94,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.03) 1px, transparent 1px)', backgroundSize:'40px 40px', pointerEvents:'none' }} />
+          <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(251,191,36,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.03) 1px, transparent 1px)', backgroundSize:'40px 40px', pointerEvents:'none' }} />
           {/* Corner glow */}
-          <div style={{ position:'absolute', top:-80, right:-80, width:280, height:280, borderRadius:'50%', background:'radial-gradient(circle, rgba(34,197,94,0.18) 0%, transparent 65%)', pointerEvents:'none' }} />
+          <div style={{ position:'absolute', top:-80, right:-80, width:280, height:280, borderRadius:'50%', background:'radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 65%)', pointerEvents:'none' }} />
 
           {/* Logo */}
           <div style={{ position:'relative', zIndex:1 }}>
             <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:40 }}>
-              <div style={{ width:44, height:44, borderRadius:13, background:'linear-gradient(135deg,#22c55e,#16a34a)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 28px rgba(34,197,94,0.45), 0 0 0 1px rgba(34,197,94,0.3)' }}>
+              <div style={{ width:44, height:44, borderRadius:13, background:'linear-gradient(135deg,#fbbf24,#d97706)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 28px rgba(251,191,36,0.4), 0 0 0 1px rgba(251,191,36,0.25)' }}>
                 <LayoutDashboard size={22} color="#fff" />
               </div>
               <div>
@@ -162,7 +163,7 @@ export default function LoginPage({ onSignIn }) {
             </div>
 
             <div style={{ marginBottom:10 }}>
-              <span style={{ display:'inline-block', padding:'3px 12px', borderRadius:20, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', color:'#4ade80', fontSize:11, fontWeight:700, letterSpacing:0.5 }}>
+              <span style={{ display:'inline-block', padding:'3px 12px', borderRadius:20, background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.25)', color:'#fbbf24', fontSize:11, fontWeight:700, letterSpacing:0.5 }}>
                 ● LIVE
               </span>
             </div>
@@ -177,8 +178,8 @@ export default function LoginPage({ onSignIn }) {
             <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
               {features.map(({ Icon, label, sub }) => (
                 <div key={label} style={{ display:'flex', alignItems:'center', gap:12 }}>
-                  <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(34,197,94,0.1)', border:'1px solid rgba(34,197,94,0.18)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    <Icon size={15} color="#22c55e" />
+                  <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.18)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    <Icon size={15} color="#fbbf24" />
                   </div>
                   <div>
                     <div style={{ color:'var(--text-secondary)', fontSize:13, fontWeight:600, lineHeight:1.3 }}>{label}</div>
@@ -208,8 +209,8 @@ export default function LoginPage({ onSignIn }) {
             /* ── Forgot password ── */
             resetSent ? (
               <div style={{ textAlign:'center' }}>
-                <div style={{ width:64, height:64, borderRadius:18, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
-                  <Mail size={28} color="#22c55e" />
+                <div style={{ width:64, height:64, borderRadius:18, background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
+                  <Mail size={28} color="#fbbf24" />
                 </div>
                 <div style={{ color:'var(--text-primary)', fontSize:22, fontWeight:800, marginBottom:8 }}>Check your email</div>
                 <div style={{ color:'var(--text-muted)', fontSize:13, lineHeight:1.7, marginBottom:28 }}>
@@ -269,8 +270,8 @@ export default function LoginPage({ onSignIn }) {
                 /* ── Magic Link panel ── */
                 magicSent ? (
                   <div style={{ textAlign:'center', paddingTop:12 }}>
-                    <div style={{ width:56, height:56, borderRadius:16, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
-                      <Mail size={24} color="#22c55e" />
+                    <div style={{ width:56, height:56, borderRadius:16, background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.25)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
+                      <Mail size={24} color="#fbbf24" />
                     </div>
                     <div style={{ color:'var(--text-primary)', fontSize:20, fontWeight:800, marginBottom:8 }}>Check your email</div>
                     <div style={{ color:'var(--text-muted)', fontSize:13, lineHeight:1.7, marginBottom:24 }}>
@@ -328,7 +329,7 @@ export default function LoginPage({ onSignIn }) {
                       <span style={S.label}>Password</span>
                       <Button type="link" size="small"
                         onClick={() => { setForgotMode(true); setError(''); }}
-                        style={{ color:'#22c55e', fontSize:11, padding:0, height:'auto', lineHeight:1 }}>
+                        style={{ color:'#d97706', fontSize:11, padding:0, height:'auto', lineHeight:1 }}>
                         Forgot password?
                       </Button>
                     </div>

@@ -10,7 +10,7 @@ const { Text } = Typography;
 
 const GROUP_META = {
   data:    { label: 'Data',    color: '#3b82f6', border: 'rgba(59,130,246,0.4)'  },
-  reports: { label: 'Reports', color: '#22c55e', border: 'rgba(34,197,94,0.4)'   },
+  reports: { label: 'Reports', color: '#f59e0b', border: 'rgba(245,158,11,0.4)'  },
   admin:   { label: 'Admin',   color: '#f59e0b', border: 'rgba(245,158,11,0.4)'  },
 };
 
@@ -137,7 +137,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
           const inh = !['admin', 'viewer'].includes(rk) &&
                       !(row.permKey in (configs[rk]?.overrides ?? {}));
           if (val && inh) return <span style={{ color: '#1d39c4', fontSize: 15 }} title="Inherited">◈</span>;
-          if (val)        return <span style={{ color: '#22c55e', fontSize: 13 }}>✓</span>;
+          if (val)        return <span style={{ color: '#fbbf24', fontSize: 13 }}>✓</span>;
           return           <span style={{ color: '#9ca3af', fontSize: 13 }}>✗</span>;
         },
       };
@@ -167,8 +167,8 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
               onClick={() => setSelectedRole(key)}
               style={{
                 padding: '10px 14px', cursor: 'pointer',
-                borderLeft: `3px solid ${isActive ? (cfg.color ?? '#22c55e') : 'transparent'}`,
-                background: isActive ? `${cfg.color ?? '#22c55e'}18` : 'transparent',
+                borderLeft: `3px solid ${isActive ? (cfg.color ?? 'var(--accent)') : 'transparent'}`,
+                background: isActive ? `${cfg.color ?? '#fbbf2418'}` : 'transparent',
                 transition: 'all 0.15s',
               }}
             >
@@ -207,7 +207,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
             <Text style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
-              <span style={{ color: selectedConfig.color ?? '#22c55e' }}>
+              <span style={{ color: selectedConfig.color ?? 'var(--accent)' }}>
                 {selectedConfig.label ?? selectedRole}
               </span>
               {' '}permissions
@@ -313,7 +313,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         onCancel={() => setMatrixOpen(false)}
         footer={
           <div style={{ fontSize: 11, color: '#9ca3af', textAlign: 'left' }}>
-            <span style={{ color: '#22c55e' }}>✓</span> explicit true &nbsp;&nbsp;
+            <span style={{ color: '#fbbf24' }}>✓</span> explicit true &nbsp;&nbsp;
             <span style={{ color: '#3b82f6' }}>◈</span> inherited true &nbsp;&nbsp;
             <span style={{ color: '#9ca3af' }}>✗</span> false
           </div>
@@ -337,7 +337,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         onCancel={() => { setNewRoleOpen(false); setNewRoleName(''); }}
         onOk={handleAddRole}
         okText="Create"
-        okButtonProps={{ style: { background: '#22c55e', borderColor: '#22c55e' } }}
+        okButtonProps={{ style: { background: '#fbbf24', borderColor: '#d97706', color: '#0c0900' } }}
         width={380}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '10px 0' }}>

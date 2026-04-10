@@ -302,7 +302,7 @@ export default function MyIspModuleRolesSheet({ currentUser, role }) {
       {/* Summary cards */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
         {[
-          { label: 'Total Entries',  value: rows.length,     color: '#22c55e' },
+          { label: 'Total Entries',  value: rows.length,     color: 'var(--accent)' },
           { label: 'Create Interim', value: withInterim,     color: '#f59e0b' },
           { label: 'No Interim',     value: withoutInterim,  color: '#8892a4' },
         ].map(({ label, value, color }) => (
@@ -337,7 +337,7 @@ export default function MyIspModuleRolesSheet({ currentUser, role }) {
               <Button
                 type="primary" size="small" icon={<Plus size={13} />}
                 onClick={openAdd}
-                style={{ background: '#217346', borderColor: '#217346' }}
+                style={{ background: '#d97706', borderColor: '#b45309' }}
               >
                 Add Row
               </Button>
@@ -437,7 +437,7 @@ export default function MyIspModuleRolesSheet({ currentUser, role }) {
               <Button icon={<X size={13} />} onClick={closeModal}>Cancel</Button>
               <Button
                 type="primary" htmlType="submit" loading={saving}
-                style={{ background: '#217346', borderColor: '#217346' }}
+                style={{ background: '#d97706', borderColor: '#b45309' }}
               >
                 {editRow ? 'Save Changes' : 'Add Row'}
               </Button>

@@ -73,7 +73,7 @@ export default function HomePage({
   // progress variable removed — donut chart uses raw counts directly
 
   const moduleCards = [
-    { key: 'dsp',    label: 'DSP Testing',  icon: Monitor,  color: '#22c55e', bg: 'rgba(34,197,94,0.12)',
+    { key: 'dsp',    label: 'DSP Testing',  icon: Monitor,  color: '#fbbf24', bg: 'rgba(251,191,36,0.12)',
       count: allDsp.length, done: allDsp.filter((r) => /pass|complete|done/i.test(r.status || '')).length,
       description: `${dspManual.length} Manual · ${dspAuto.length} Automation` },
     { key: 'ssa',    label: 'SSA / GenAI',  icon: Shield,   color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)',
@@ -325,7 +325,7 @@ export default function HomePage({
                   {canEditEnv && editingEnv === env && (
                     <Space size={4}>
                       <Button type="text" size="small" icon={<Check size={12} />}
-                        onClick={() => saveEdit(env)} style={{ color: '#22c55e' }} />
+                        onClick={() => saveEdit(env)} style={{ color: '#fbbf24' }} />
                       <Button type="text" size="small" icon={<X size={12} />}
                         onClick={cancelEdit} style={{ color: '#f87171' }} />
                     </Space>

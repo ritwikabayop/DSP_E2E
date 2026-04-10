@@ -33,7 +33,7 @@ export default function StatCard({ icon: Icon, title, value, color, total, iconB
         </div>
         <div style={{ flex: 1 }}>
           <Text type="secondary" style={{ fontSize: 11, display: 'block' }}>{title}</Text>
-          <Text strong style={{ fontSize: 22, color, lineHeight: 1.1 }}>{value}</Text>
+          <Text strong style={{ fontSize: 22, color, lineHeight: 1.1 }} className="stat-value-glow">{value}</Text>
         </div>
         {total > 0 && (
           <Progress

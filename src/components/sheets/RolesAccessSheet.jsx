@@ -255,9 +255,9 @@ const [rows,       setRows]       = useState([]);
           const count = rows.filter((r) => r.role_category === value).length;
           return (
             <Col key={value} xs={12} sm={8} md={4}>
-              <Card size="small" style={{ borderTop: `3px solid var(--accent, #22c55e)`, background: 'var(--bg-card)' }}>
+              <Card size="small" style={{ borderTop: `3px solid var(--accent)`, background: 'var(--bg-card)' }}>
                 <Text type="secondary" style={{ fontSize: 11, display: 'block' }}>{value}</Text>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#22c55e', lineHeight: 1.3 }}>{count}</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--accent)', lineHeight: 1.3 }}>{count}</div>
               </Card>
             </Col>
           );
@@ -288,7 +288,7 @@ const [rows,       setRows]       = useState([]);
               <Button
                 type="primary" size="small" icon={<Plus size={13} />}
                 onClick={openAdd}
-                style={{ background: '#217346', borderColor: '#217346' }}
+                style={{ background: '#d97706', borderColor: '#b45309' }}
               >
                 Add Entry
               </Button>

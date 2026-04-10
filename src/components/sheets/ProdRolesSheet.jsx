@@ -211,7 +211,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
         style={{ margin: '16px 0', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}
         title={
           <Space>
-            <Users size={14} color="#22c55e" />
+            <Users size={14} color="var(--accent)" />
             <Text strong style={{ color: '#e2e8f0' }}>Prod Roles</Text>
             <Text style={{ color: '#64748b', fontSize: 11 }}>{filtered.length} entries</Text>
           </Space>
@@ -239,7 +239,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
               <Button size="small" type="text" icon={<RefreshCw size={13} />} onClick={load} style={{ color: '#8892a4' }} />
             </Tooltip>
             <Tooltip title="Export to Excel">
-              <Button size="small" type="text" icon={<Download size={13} />} onClick={exportExcel} style={{ color: '#22c55e' }} />
+              <Button size="small" type="text" icon={<Download size={13} />} onClick={exportExcel} style={{ color: 'var(--accent)' }} />
             </Tooltip>
             {canEdit && (
               <Button size="small" type="primary" icon={<Plus size={13} />} onClick={openAdd}>

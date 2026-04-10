@@ -38,13 +38,13 @@ const { Text } = Typography;
 const DARK_THEME = {
   algorithm: antTheme.darkAlgorithm,
   token: {
-    colorPrimary:       '#22c55e',
-    colorBgBase:        '#06080c',
-    colorBgContainer:   'rgba(13,17,28,0.55)',
-    colorBgElevated:    'rgba(20,26,42,0.8)',
-    colorBorder:        'rgba(255,255,255,0.07)',
-    colorText:          '#f1f5f9',
-    colorTextSecondary: '#94a3b8',
+    colorPrimary:       '#fbbf24',
+    colorBgBase:        '#0c0900',
+    colorBgContainer:   'rgba(18,13,0,0.6)',
+    colorBgElevated:    'rgba(26,18,0,0.85)',
+    colorBorder:        'rgba(46,32,0,0.9)',
+    colorText:          '#fef9ee',
+    colorTextSecondary: '#a38b3a',
     borderRadius:       12,
     borderRadiusLG:     20,
     fontFamily:         "'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -96,8 +96,8 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
       <div style={{ width: 420, background: 'var(--bg-card)', backdropFilter: 'blur(20px)', borderRadius: 20, padding: '32px 28px', border: '1px solid var(--border)' }}>
         {done ? (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(34,197,94,0.15)', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Lock size={24} color="#22c55e" />
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(251,191,36,0.15)', border: '2px solid #fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Lock size={24} color="#fbbf24" />
             </div>
               <Text strong style={{ color: 'var(--text-primary)', fontSize: 18, display: 'block', marginBottom: 8 }}>Password saved!</Text>
             <Text type="secondary" style={{ fontSize: 13 }}>Signing you out… please log in with your new password.</Text>
@@ -105,8 +105,8 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
         ) : (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Lock size={18} color="#22c55e" />
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Lock size={18} color="#fbbf24" />
               </div>
               <div>
                   <Text strong style={{ color: 'var(--text-primary)', display: 'block', fontSize: 15 }}>Set New Password</Text>
@@ -117,7 +117,7 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
             {/* Show which email account is being activated */}
             {email && (
                 <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#fff' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#0c0900' }}>
                   {email[0].toUpperCase()}
                 </div>
                 <div>
@@ -151,7 +151,7 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
                 <Input.Password size="large" prefix={<Lock size={14} color="var(--text-muted)" style={{ marginRight: 4 }} />} placeholder="Re-enter password" style={{ borderRadius: 9, height: 44 }} />
               </Form.Item>
               <Button type="primary" htmlType="submit" size="large" loading={saving}
-                style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', border: 'none', fontWeight: 700, fontSize: 15 }}>
+                style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)', border: 'none', fontWeight: 700, fontSize: 15, color: '#0c0900' }}>
                 {saving ? 'Saving…' : 'Save Password & Continue'}
               </Button>
             </Form>
@@ -176,8 +176,10 @@ function App() {
   // ── Theme persistence ──────────────────────────────────────
   useEffect(() => {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Force light mode on the login / password-reset screens
+    const effectiveTheme = !user ? 'light' : (isDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
+  }, [isDark, user]);
 
   // ── Hash routing ──────────────────────────────────────────
   useEffect(() => {
@@ -261,7 +263,7 @@ function App() {
   }
   if (!user) {
     return (
-      <ConfigProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
+      <ConfigProvider theme={LIGHT_THEME}>
         <LoginPage onSignIn={signIn} />
       </ConfigProvider>
     );
@@ -270,7 +272,7 @@ function App() {
   // User clicked a password-reset link — show set-password modal before anything else
   if (needsPasswordReset) {
     return (
-      <ConfigProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
+      <ConfigProvider theme={LIGHT_THEME}>
         <SetPasswordScreen updatePassword={updatePassword} signOut={signOut} setActiveModule={setActiveModule} email={user?.email} />
       </ConfigProvider>
     );
@@ -318,7 +320,7 @@ function App() {
           }}>
             <Button
               size="small" type="text"
-              icon={React.createElement(ShieldCheck, { size: 14, color: '#22c55e' })}
+              icon={React.createElement(ShieldCheck, { size: 14, color: '#fbbf24' })}
               onClick={() => setActiveModule(null)}
                 style={{ color: 'var(--text-secondary)', fontSize: 12 }}
             >
@@ -359,7 +361,7 @@ function App() {
           icon: React.createElement(Monitor, { size: 15 }),
           label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
             'DSP',
-            React.createElement(Badge, { count: dspManual.length + dspAuto.length, style: { background: 'rgba(34,197,94,0.15)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', fontSize: 9, boxShadow: 'none' } }),
+            React.createElement(Badge, { count: dspManual.length + dspAuto.length, style: { background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)', fontSize: 9, boxShadow: 'none' } }),
             React.createElement(DotDirty, { dirty: dirtyModules.dsp })
           ),
         },
@@ -478,9 +480,9 @@ function App() {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveModule(null); } }}
                 style={{
                   width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                  background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 0 14px rgba(34,197,94,0.25)',
+                  boxShadow: '0 0 14px rgba(251,191,36,0.3)',
                   cursor: 'pointer',
                 }}
               >
@@ -563,7 +565,7 @@ function App() {
                     onClick={saveAllModules}
                     disabled={!anyDirty}
                     type={anyDirty ? 'primary' : 'default'}
-                    style={anyDirty ? { background: '#22c55e', borderColor: '#22c55e', color: '#fff', fontWeight: 600 } : {}}
+                style={anyDirty ? { background: '#fbbf24', borderColor: '#d97706', color: '#0c0900', fontWeight: 700 } : {}}
                   >
                     Save
                   </Button>
@@ -666,7 +668,7 @@ function App() {
                   tabIndex: 0,
                   style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }
                 },
-                  React.createElement('div', { style: { width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #22c55e, #16a34a)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
+                  React.createElement('div', { style: { width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
                     React.createElement(RoleIcon, { size: 11, color: '#fff' })
                   ),
                   React.createElement('div', { style: { lineHeight: 1.2, maxWidth: 160 } },
