@@ -267,6 +267,80 @@ function App() {
   const _sharedRoleConfig = ROLES[_sharedRole] || ROLES.viewer;
   const _sharedRoleIcon   = _sharedRoleConfig.icon;
   const _sharedName       = profile?.display_name || user?.email || '';
+  const _actualRole       = authRole ?? 'viewer';
+
+  // Shared profile dropdown menu items — used by KT, Roles & Access, and main app
+  const _buildProfileMenu = (onSignOutCb) => [
+    { type: 'group', label: _sharedName },
+    {
+      key: 'role-info',
+      label: React.createElement('div', { style: { padding: '4px 0', pointerEvents: 'none' } },
+        allowedRoles && allowedRoles.length > 0 && React.createElement('div', null,
+          React.createElement('div', { style: { fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
+          React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 } },
+            ...allowedRoles.map((r) => {
+              const rc = ROLES[r] ?? ROLES.viewer;
+              const RIcon = rc.icon;
+              const isActive = _sharedRole === r;
+              return React.createElement(Tag, {
+                key: r,
+                style: { background: isActive ? rc.bg : 'transparent', color: rc.color, border: `1px solid ${isActive ? rc.border : 'var(--border)'}`, fontSize: 11, margin: 0, fontWeight: isActive ? 700 : 400 },
+              },
+                React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
+                  React.createElement(RIcon, { size: 10 }),
+                  rc.label,
+                  isActive && React.createElement('span', { style: { fontSize: 9, marginLeft: 2 } }, '●')
+                )
+              );
+            })
+          )
+        )
+      ),
+    },
+    { type: 'divider' },
+    ...(allowedRoles && allowedRoles.length > 1 ? [
+      { type: 'group', label: _actualRole === 'admin' ? 'Switch Role View' : 'Switch Role' },
+      ...(_actualRole === 'admin' ? ['admin', 'tl', 'tester', 'viewer'] : allowedRoles).map((r) => {
+        const rc = ROLES[r];
+        const RIcon = rc.icon;
+        const isCurrentActual = r === _actualRole && !viewAsRole;
+        const isActive = viewAsRole === r || isCurrentActual;
+        return {
+          key: 'preview-' + r,
+          label: React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 } },
+            React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 } },
+              React.createElement(RIcon, { size: 12 }), rc.label
+            ),
+            isCurrentActual
+              ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Current')
+              : isActive ? React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Active') : null
+          ),
+          onClick: () => { if (isCurrentActual) return; setViewAsRole(viewAsRole === r ? null : r); },
+        };
+      }),
+      { type: 'divider' },
+    ] : []),
+    { key: 'theme', label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+        React.createElement(isDark ? Sun : Moon, { size: 13, color: isDark ? '#fbbf24' : '#8892a4' }),
+        isDark ? 'Switch to Light (Ivory Gold)' : 'Switch to Dark'
+      ), onClick: () => setIsDark(v => !v) },
+    { type: 'divider' },
+    { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: onSignOutCb },
+  ];
+
+  // Shared profile button avatar element
+  const _profileAvatar = React.createElement('div', {
+    role: 'button', tabIndex: 0, 'aria-label': 'Profile options',
+    style: { display: 'flex', alignItems: 'center', gap: 10, padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer', background: 'rgba(255,255,255,0.08)', border: `1px solid ${_sharedRoleConfig.color}40` },
+  },
+    React.createElement('div', { style: { width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(251,191,36,0.35)' } },
+      React.createElement(_sharedRoleIcon, { size: 15, color: '#fff' })
+    ),
+    React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 1 } },
+      React.createElement('div', { style: { color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }, title: _sharedName }, _sharedName),
+      React.createElement('span', { style: { display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px', padding: '0 7px', borderRadius: 6, color: _sharedRoleConfig.color, background: `${_sharedRoleConfig.color}1a`, border: `1px solid ${_sharedRoleConfig.color}40`, letterSpacing: 0.3 } }, _sharedRoleConfig.label + (viewAsRole ? ' (preview)' : ''))
+    )
+  );
 
   if (!user) {
     return (
@@ -300,6 +374,8 @@ function App() {
           }}
           onSelect={(mod) => setActiveModule(mod)}
           onSignOut={() => { signOut(); setActiveModule(null); }}
+          profileAvatar={_profileAvatar}
+          profileMenuItems={_buildProfileMenu(() => { signOut(); setActiveModule(null); })}
         />
       </ConfigProvider>
     );
@@ -310,12 +386,8 @@ function App() {
       <ConfigProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
         <KTSessionsPage
           onBack={() => setActiveModule(null)}
-          displayName={_sharedName}
-          roleConfig={_sharedRoleConfig}
-          RoleIcon={_sharedRoleIcon}
-          isDark={isDark}
-          onToggleTheme={() => setIsDark(v => !v)}
-          onSignOut={() => { signOut(); setActiveModule(null); }}
+          profileAvatar={_profileAvatar}
+          profileMenuItems={_buildProfileMenu(() => { signOut(); setActiveModule(null); })}
         />
       </ConfigProvider>
     );
@@ -344,28 +416,8 @@ function App() {
             <div style={{ marginLeft: 'auto' }}>
               {React.createElement(Dropdown, {
                 trigger: ['click'],
-                menu: { items: [
-                  { type: 'group', label: _sharedName },
-                  { type: 'divider' },
-                  { key: 'theme', label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
-                      React.createElement(isDark ? Sun : Moon, { size: 13, color: isDark ? '#fbbf24' : '#8892a4' }),
-                      isDark ? 'Switch to Light' : 'Switch to Dark'
-                    ), onClick: () => setIsDark(v => !v) },
-                  { type: 'divider' },
-                  { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
-                ]},
-                children: React.createElement('div', {
-                  role: 'button', tabIndex: 0, 'aria-label': 'Profile options',
-                  style: { display: 'flex', alignItems: 'center', gap: 10, padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border)' },
-                },
-                  React.createElement('div', { style: { width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(251,191,36,0.35)' } },
-                    React.createElement(_sharedRoleIcon, { size: 15, color: '#fff' })
-                  ),
-                  React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 1 } },
-                    React.createElement('div', { style: { color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }, title: _sharedName }, _sharedName),
-                    React.createElement('span', { style: { display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px', padding: '0 7px', borderRadius: 6, color: _sharedRoleConfig.color, background: `${_sharedRoleConfig.color}1a`, border: `1px solid ${_sharedRoleConfig.color}40`, letterSpacing: 0.3 } }, _sharedRoleConfig.label)
-                  )
-                ),
+                menu: { items: _buildProfileMenu(() => { signOut(); setActiveModule(null); }) },
+                children: _profileAvatar,
               })}
             </div>
           </div>
@@ -626,123 +678,8 @@ function App() {
               {/* Profile dropdown */}
               {React.createElement(Dropdown, {
                 trigger: ['click'],
-                menu: {
-                  items: [
-                    { type: 'group', label: displayName },
-                    {
-                      key: 'role-info',
-                      label: React.createElement('div', { style: { padding: '4px 0', pointerEvents: 'none' } },
-                        allowedRoles && allowedRoles.length > 0 && React.createElement('div', null,
-                          React.createElement('div', { style: { fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 } }, 'Your Role'),
-                          React.createElement('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 } },
-                            ...allowedRoles.map((r) => {
-                              const rc = ROLES[r] ?? ROLES.viewer;
-                              const RIcon = rc.icon;
-                              const isActive = (viewAsRole ?? actualRole) === r;
-                              return React.createElement(Tag, {
-                                key: r,
-                                style: {
-                                  background: isActive ? rc.bg : 'transparent',
-                                  color: rc.color,
-                                  border: `1px solid ${isActive ? rc.border : 'var(--border)'}`,
-                                  fontSize: 11, margin: 0,
-                                  fontWeight: isActive ? 700 : 400,
-                                },
-                              },
-                                React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
-                                  React.createElement(RIcon, { size: 10 }),
-                                  rc.label,
-                                  isActive && React.createElement('span', { style: { fontSize: 9, marginLeft: 2 } }, '●')
-                                )
-                              );
-                            })
-                          )
-                        )
-                      ),
-                    },
-                    { type: 'divider' },
-                    // Switch Role — visible to any user with multiple allowed roles
-                    ...(allowedRoles && allowedRoles.length > 1 ? [
-                      { type: 'group', label: actualRole === 'admin' ? 'Switch Role View' : 'Switch Role' },
-                      // admin can preview all 4 roles; others can only switch to their allowed_roles
-                      ...(actualRole === 'admin' ? ['admin','tl','tester','viewer'] : allowedRoles).map((r) => {
-                        const rc = ROLES[r];
-                        const RIcon = rc.icon;
-                        const isCurrentActual = r === actualRole && !viewAsRole;
-                        const isActive = viewAsRole === r || isCurrentActual;
-                        return {
-                          key: 'preview-' + r,
-                          label: React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 } },
-                            React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 } },
-                              React.createElement(RIcon, { size: 12 }),
-                              rc.label
-                            ),
-                            isCurrentActual
-                              ? React.createElement(Tag, { color: 'green', style: { margin: 0, fontSize: 10 } }, 'Current')
-                              : isActive
-                                ? React.createElement(Tag, { color: 'orange', style: { margin: 0, fontSize: 10 } }, 'Active')
-                                : null
-                          ),
-                          onClick: () => {
-                            if (isCurrentActual) return;
-                            if (viewAsRole === r) setViewAsRole(null);
-                            else setViewAsRole(r);
-                            setActiveTab('home');
-                          },
-                        };
-                      }),
-                      { type: 'divider' },
-                    ] : []),
-                    {
-                      key: 'theme',
-                      label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
-                        React.createElement(isDark ? Sun : Moon, { size: 13, color: isDark ? '#fbbf24' : '#8892a4' }),
-                        React.createElement('span', null, isDark ? 'Switch to Light (Ivory Gold)' : 'Switch to Dark')
-                      ),
-                      onClick: () => setIsDark(v => !v),
-                    },
-                    { type: 'divider' },
-                    { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
-                  ],
-                },
-            children: React.createElement('div', {
-                  role: 'button',
-                  tabIndex: 0,
-                  'aria-label': 'Profile and role options',
-                  style: {
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer',
-                    background: 'var(--bg-card)', border: '1px solid var(--border)',
-                    transition: 'background 0.15s',
-                  },
-                },
-                  React.createElement('div', {
-                    style: {
-                      width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                      background: 'linear-gradient(135deg, #fbbf24, #d97706)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      boxShadow: '0 0 12px rgba(251,191,36,0.35)',
-                    }
-                  },
-                    React.createElement(RoleIcon, { size: 15, color: '#fff' })
-                  ),
-                  React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 1 } },
-                    React.createElement('div', {
-                      style: { color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 },
-                      title: displayName,
-                    }, displayName),
-                    React.createElement('span', {
-                      style: {
-                        display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
-                        padding: '0 7px', borderRadius: 6,
-                        color: roleConfig.color,
-                        background: `${roleConfig.color}1a`,
-                        border: `1px solid ${roleConfig.color}40`,
-                        letterSpacing: 0.3,
-                      }
-                    }, roleConfig.label + (viewAsRole ? ' (preview)' : ''))
-                  )
-                )
+                menu: { items: _buildProfileMenu(() => { signOut(); setActiveModule(null); }) },
+                children: _profileAvatar,
               })}
 
 

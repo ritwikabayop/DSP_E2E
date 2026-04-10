@@ -5,7 +5,7 @@ import {
   Monitor, Shield, Users, FileText, Activity, Video, BookOpen,
   ShieldCheck, KeyRound,
 } from 'lucide-react';
-import { ROLES, ROLE_HIERARCHY } from '../utils/constants.js';
+import { ROLES } from '../utils/constants.js';
 
 const modules = [
   {
@@ -90,13 +90,11 @@ const modules = [
   },
 ];
 
-export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut }) {
+export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut, profileAvatar, profileMenuItems }) {
   const [hovered, setHovered] = React.useState(null);
 
   const displayName    = profile?.display_name || user?.email || '';
   const roleConfig     = ROLES[role] ?? ROLES.viewer;
-  const _actualRole    = actualRole ?? role;
-  const actualHierarchy = ROLE_HIERARCHY[_actualRole] ?? 0;
 
   // Only show modules the current role can access
   const visibleModules = modules.filter((mod) => {
@@ -105,74 +103,6 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
     if (mod.key === 'rolesaccess') return roleConfig.canViewRolesAccess;
     return true; // e2e always visible
   });
-
-  // Role switch: only show roles at or below the user's actual hierarchy level
-  const switchableRoles = Object.keys(ROLES).filter(
-    (r) => (ROLE_HIERARCHY[r] ?? 0) <= actualHierarchy
-  );
-
-  // Build profile dropdown menu — mirrors the main dashboard dropdown
-  const profileMenuItems = [
-    { type: 'group', label: displayName },
-    {
-      key: 'role-info',
-      label: (
-        <div style={{ padding: '4px 0', pointerEvents: 'none' }}>
-          <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.6 }}>Your Role</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-            <span style={{ color: roleConfig.color, fontWeight: 700, fontSize: 12 }}>⬤ {roleConfig.label}</span>
-            {viewAsRole && <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Previewing</Tag>}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {[
-              ['Edit data',       roleConfig.canEdit],
-              ['Delete rows',     roleConfig.canDelete],
-              ['Add rows',        roleConfig.canAddRow],
-              ['Add team member', roleConfig.canAddTeamMember],
-              ['View reports',    roleConfig.canViewReport],
-              ['Download reports',roleConfig.canDownloadReport],
-              ['View logs',       roleConfig.canViewLogs],
-              ['Manage users',    roleConfig.canManageUsers],
-              ['Own rows only',   roleConfig.onlyOwnRows],
-            ].map(([perm, allowed]) => (
-              <div key={perm} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
-                <span style={{ color: allowed ? '#22c55e' : 'var(--text-muted)', fontSize: 13, lineHeight: 1 }}>{allowed ? '✓' : '✗'}</span>
-                <span style={{ color: allowed ? 'var(--text-primary)' : 'var(--text-muted)' }}>{perm}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ),
-    },
-    // Switch Role View — only shown to admin (for preview purposes only)
-    ...(_actualRole === 'admin' ? [
-      { type: 'divider' },
-      { type: 'group', label: 'Switch Role View' },
-      ...switchableRoles.map((r) => {
-        const rc = ROLES[r];
-        const isCurrentActual = r === _actualRole && !viewAsRole;
-        const isActive = viewAsRole === r || isCurrentActual;
-        return {
-          key: 'preview-' + r,
-          label: (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: rc.color, fontWeight: isActive ? 700 : 400 }}>
-                {rc.label}
-              </span>
-              {isCurrentActual
-                ? <Tag color="green" style={{ margin: 0, fontSize: 10 }}>Current</Tag>
-                : isActive
-                  ? <Tag color="orange" style={{ margin: 0, fontSize: 10 }}>Active</Tag>
-                  : null}
-            </div>
-          ),
-          onClick: () => onRoleSwitch && onRoleSwitch(isCurrentActual ? null : r),
-        };
-      }),
-    ] : []),
-    { type: 'divider' },
-    { key: 'signout', label: <span style={{ color: '#f87171' }}>Sign out</span>, onClick: onSignOut },
-  ];
 
   const handleClick = (mod) => {
     if (mod.external) {
@@ -220,43 +150,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
             trigger={['click']}
             menu={{ items: profileMenuItems }}
           >
-            <div
-              style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer',
-                background: 'var(--bg-card)', border: '1px solid var(--border)',
-                transition: 'background 0.15s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-card-hover)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; }}
-              aria-label="Profile and role options"
-            >
-              {/* Avatar */}
-              <div style={{
-                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                background: 'linear-gradient(135deg, #fbbf24, #d97706)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 12px rgba(251,191,36,0.35)',
-              }}>
-                {React.createElement(roleConfig.icon, { size: 15, color: '#fff' })}
-              </div>
-              {/* Name + role */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <span style={{ color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
-                  {displayName}
-                </span>
-                <span style={{
-                  display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
-                  padding: '0 7px', borderRadius: 6,
-                  color: roleConfig.color,
-                  background: `${roleConfig.color}1a`,
-                  border: `1px solid ${roleConfig.color}40`,
-                  letterSpacing: 0.3,
-                }}>
-                  {roleConfig.label}{viewAsRole && ' (preview)'}
-                </span>
-              </div>
-            </div>
+            {profileAvatar}
           </Dropdown>
         </div>
       </div>
