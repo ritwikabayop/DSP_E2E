@@ -13,10 +13,10 @@ const modules = [
     label: 'E2E Testing',
     description: 'DSP Manual & Automation, SSA/GenAI test coverage, team roster and reporting.',
     icon: LayoutDashboard,
-    color: '#fbbf24',
-    bg: 'rgba(251,191,36,0.08)',
-    border: 'rgba(251,191,36,0.25)',
-    hoverBorder: '#fbbf24',
+    color: '#d97706',
+    bg: 'rgba(217,119,6,0.08)',
+    border: 'rgba(217,119,6,0.25)',
+    hoverBorder: '#d97706',
     chips: [
       { icon: Monitor,   label: 'DSP' },
       { icon: Shield,    label: 'SSA' },
@@ -49,7 +49,7 @@ const modules = [
     // Role buttons — each opens the tracker pre-selecting that role on the PIN screen
     roleButtons: [
       { role: 'admin',    label: 'Admin',     accent: '#a78bfa', bg: 'rgba(124,58,237,0.15)', border: 'rgba(124,58,237,0.35)' },
-      { role: 'operator', label: 'Operation', accent: '#fbbf24', bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.30)' },
+      { role: 'operator', label: 'Operation', accent: '#d97706', bg: 'rgba(217,119,6,0.12)',  border: 'rgba(217,119,6,0.30)' },
     ],
   },
   {

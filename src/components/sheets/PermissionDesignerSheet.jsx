@@ -137,7 +137,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
           const inh = !['admin', 'viewer'].includes(rk) &&
                       !(row.permKey in (configs[rk]?.overrides ?? {}));
           if (val && inh) return <span style={{ color: '#1d39c4', fontSize: 15 }} title="Inherited">◈</span>;
-          if (val)        return <span style={{ color: '#fbbf24', fontSize: 13 }}>✓</span>;
+          if (val)        return <span style={{ color: 'var(--accent)', fontSize: 13 }}>✓</span>;
           return           <span style={{ color: '#9ca3af', fontSize: 13 }}>✗</span>;
         },
       };
@@ -313,7 +313,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         onCancel={() => setMatrixOpen(false)}
         footer={
           <div style={{ fontSize: 11, color: '#9ca3af', textAlign: 'left' }}>
-            <span style={{ color: '#fbbf24' }}>✓</span> explicit true &nbsp;&nbsp;
+            <span style={{ color: 'var(--accent)' }}>✓</span> explicit true &nbsp;&nbsp;
             <span style={{ color: '#3b82f6' }}>◈</span> inherited true &nbsp;&nbsp;
             <span style={{ color: '#9ca3af' }}>✗</span> false
           </div>
@@ -337,7 +337,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         onCancel={() => { setNewRoleOpen(false); setNewRoleName(''); }}
         onOk={handleAddRole}
         okText="Create"
-        okButtonProps={{ style: { background: '#fbbf24', borderColor: '#d97706', color: '#0c0900' } }}
+        okButtonProps={{ style: { background: 'var(--accent)', borderColor: 'var(--accent-dim)', color: '#0c0900' } }}
         width={380}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '10px 0' }}>

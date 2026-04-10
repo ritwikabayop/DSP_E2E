@@ -4,7 +4,7 @@ import { ArrowLeft, Video, Monitor, Shield, BookOpen, ExternalLink, Search } fro
 
 const CATEGORIES = [
   { value: 'All',     label: 'All Sessions', color: '#6b7280' },
-  { value: 'DSP KT',  label: 'DSP KT',       color: '#fbbf24', icon: Monitor },
+  { value: 'DSP KT',  label: 'DSP KT',       color: '#d97706', icon: Monitor },
   { value: 'SSA KT',  label: 'SSA KT',       color: '#8b5cf6', icon: Shield },
   { value: 'General', label: 'General',      color: '#f59e0b', icon: BookOpen },
 ];

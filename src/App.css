@@ -209,14 +209,14 @@
   color: #92700a !important;
 }
 [data-theme="light"] .ant-btn-default:hover {
-  border-color: #fbbf24 !important;
+  border-color: #d97706 !important;
   color: #78350f !important;
 }
 
 /* Tabs */
 [data-theme="light"] .ant-tabs-tab { color: #7a5c08 !important; }
 [data-theme="light"] .ant-tabs-tab-active .ant-tabs-tab-btn { color: #92700a !important; }
-[data-theme="light"] .ant-tabs-ink-bar { background: #fbbf24 !important; }
+[data-theme="light"] .ant-tabs-ink-bar { background: #d97706 !important; }
 [data-theme="light"] .ant-tabs-nav { border-bottom-color: #f0e6cc !important; }
 
 /* Tags */
@@ -231,7 +231,7 @@
 /* Progress */
 [data-theme="light"] .ant-progress-inner { background: #fef3c7 !important; }
 [data-theme="light"] .ant-progress-bg {
-  background: linear-gradient(90deg, #d97706, #fbbf24) !important;
+  background: linear-gradient(90deg, #b45309, #d97706) !important;
 }
 
 /* Pagination */
@@ -240,7 +240,7 @@
   border-color: #f0e6cc !important;
 }
 [data-theme="light"] .ant-pagination-item a { color: #92700a !important; }
-[data-theme="light"] .ant-pagination-item-active { border-color: #fbbf24 !important; }
+[data-theme="light"] .ant-pagination-item-active { border-color: #d97706 !important; }
 [data-theme="light"] .ant-pagination-item-active a { color: #78350f !important; }
 
 /* Select selector inside header */

@@ -96,8 +96,8 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
       <div style={{ width: 420, background: 'var(--bg-card)', backdropFilter: 'blur(20px)', borderRadius: 20, padding: '32px 28px', border: '1px solid var(--border)' }}>
         {done ? (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(251,191,36,0.15)', border: '2px solid #fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Lock size={24} color="#fbbf24" />
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(217,119,6,0.15)', border: '2px solid #d97706', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Lock size={24} color="#d97706" />
             </div>
               <Text strong style={{ color: 'var(--text-primary)', fontSize: 18, display: 'block', marginBottom: 8 }}>Password saved!</Text>
             <Text type="secondary" style={{ fontSize: 13 }}>Signing you out… please log in with your new password.</Text>
@@ -105,8 +105,8 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
         ) : (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Lock size={18} color="#fbbf24" />
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(217,119,6,0.1)', border: '1px solid rgba(217,119,6,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Lock size={18} color="#d97706" />
               </div>
               <div>
                   <Text strong style={{ color: 'var(--text-primary)', display: 'block', fontSize: 15 }}>Set New Password</Text>
