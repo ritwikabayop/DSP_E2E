@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Tag, Tooltip, Input, Dropdown } from 'antd';
+import { Button, Tag, Tooltip, Input } from 'antd';
 import { ArrowLeft, Video, Monitor, Shield, BookOpen, ExternalLink, Search } from 'lucide-react';
 
 const CATEGORIES = [
@@ -30,7 +30,7 @@ function catColor(cat) {
   return CATEGORIES.find((c) => c.value === cat)?.color ?? '#6b7280';
 }
 
-export default function KTSessionsPage({ onBack, profileAvatar, profileMenuItems }) {
+export default function KTSessionsPage({ onBack, profileDropdown }) {
   const [activecat, setActivecat] = useState('All');
   const [search, setSearch]       = useState('');
 
@@ -89,11 +89,7 @@ export default function KTSessionsPage({ onBack, profileAvatar, profileMenuItems
         />
 
         {/* Profile button */}
-        {profileAvatar && profileMenuItems && (
-          <Dropdown trigger={['click']} menu={{ items: profileMenuItems }}>
-            {profileAvatar}
-          </Dropdown>
-        )}
+        {profileDropdown}
       </div>
 
       {/* ── Body ── */}

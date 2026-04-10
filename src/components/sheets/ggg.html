@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Menu UI</title>
+    <style>
+        :root {
+            --primary-orange: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%);
+            --bg-gray: #f8f9fa;
+            --text-main: #333;
+            --text-muted: #888;
+            --border-color: #eee;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Main Card */
+        .profile-card {
+            width: 320px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 24px;
+        }
+
+        /* Profile Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-circle {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(252, 96, 118, 0.3);
+        }
+
+        .user-name {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .current-role-badge {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 12px;
+            background: #fff5f5;
+            color: #ff4d4d;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid #ffe3e3;
+        }
+
+        /* Role Selector Box */
+        .role-selector-box {
+            background: var(--bg-gray);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .role-pills {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pill {
+            flex: 1;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+            color: #666;
+        }
+
+        .pill.active {
+            border-color: #ff9a44;
+            color: #ff9a44;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Menu List */
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: #f0f0f0;
+        }
+
+        .menu-item.active-view {
+            color: #ff4d4d;
+        }
+
+        .current-tag {
+            background: #e6fffa;
+            color: #38b2ac;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 16px 0;
+        }
+
+        .sign-out {
+            color: #ff4d4d;
+        }
+
+        .sign-out:hover {
+            background: #fff5f5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-card">
+    <div class="header">
+        <div class="avatar-circle">A</div>
+        <h2 class="user-name">ABAY</h2>
+        <span class="current-role-badge" id="display-role">Operation User</span>
+    </div>
+
+    <div class="role-selector-box">
+        <span class="section-label">Your Role</span>
+        <div class="role-pills">
+            <div class="pill active" onclick="updateRole('Operation User')">Operation</div>
+            <div class="pill" onclick="updateRole('Super User')">Super</div>
+            <div class="pill" onclick="updateRole('Support')">Support</div>
+        </div>
+    </div>
+
+    <span class="section-label" style="padding-left: 10px;">Switch Role View</span>
+    <div class="menu-list">
+        <div class="menu-item active-view">
+            <span>👑 Operation User</span>
+            <span class="current-tag">Current</span>
+        </div>
+        <div class="menu-item">
+            <span>👤 Super User</span>
+        </div>
+        <div class="menu-item">
+            <span>🎧 Support</span>
+        </div>
+        <div class="menu-item" style="color: #bbb; cursor: not-allowed;">
+            <span>👁️ Viewer</span>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="menu-list">
+        <div class="menu-item">
+            <span>🎨 Theme Settings</span>
+        </div>
+        <div class="menu-item sign-out">
+            <span>🚪 Sign out</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateRole(roleName) {
+        // Update the badge
+        document.getElementById('display-role').innerText = roleName;
+        
+        // Update the pill styling
+        const pills = document.querySelectorAll('.pill');
+        pills.forEach(pill => {
+            pill.classList.remove('active');
+            if(roleName.includes(pill.innerText)) {
+                pill.classList.add('active');
+            }
+        });
+
+        // Small logic: If it's not Operation User, change badge color to blue
+        const badge = document.getElementById('display-role');
+        if(roleName === 'Super User') {
+            badge.style.color = '#3182ce';
+            badge.style.background = '#ebf8ff';
+            badge.style.borderColor = '#bee3f8';
+        } else if (roleName === 'Support') {
+            badge.style.color = '#dd6b20';
+            badge.style.background = '#fffaf0';
+            badge.style.borderColor = '#feebc8';
+        } else {
+            badge.style.color = '#ff4d4d';
+            badge.style.background = '#fff5f5';
+            badge.style.borderColor = '#ffe3e3';
+        }
+    }
+</script>
+
+</body>
+</html>

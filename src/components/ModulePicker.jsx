@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Tag, Tooltip, Dropdown } from 'antd';
+import { Button, Tag, Tooltip } from 'antd';
 import {
   LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
   Monitor, Shield, Users, FileText, Activity, Video, BookOpen,
@@ -90,7 +90,7 @@ const modules = [
   },
 ];
 
-export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut, profileAvatar, profileMenuItems }) {
+export default function ModulePicker({ user, profile, role, actualRole, viewAsRole, onRoleSwitch, onSelect, onSignOut, profileDropdown }) {
   const [hovered, setHovered] = React.useState(null);
 
   const displayName    = profile?.display_name || user?.email || '';
@@ -145,13 +145,8 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: 12 }}>&nbsp;– Insight &amp; Status Platform</span>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Profile dropdown — click to switch role / sign out */}
-          <Dropdown
-            trigger={['click']}
-            menu={{ items: profileMenuItems }}
-          >
-            {profileAvatar}
-          </Dropdown>
+          {/* Profile dropdown — self-contained, handles its own open state */}
+          {profileDropdown}
         </div>
       </div>
 
