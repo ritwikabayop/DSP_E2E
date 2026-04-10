@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Tag, Tooltip, Dropdown } from 'antd';
 import {
   LayoutDashboard, Calendar, LogOut, ArrowRight, ExternalLink,
-  Monitor, Shield, Users, FileText, Activity, Video, BookOpen, User,
+  Monitor, Shield, Users, FileText, Activity, Video, BookOpen,
   ShieldCheck, KeyRound,
 } from 'lucide-react';
 import { ROLES, ROLE_HIERARCHY } from '../utils/constants.js';
@@ -238,7 +238,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 0 12px rgba(251,191,36,0.35)',
               }}>
-                <User size={15} color="#fff" />
+                {React.createElement(roleConfig.icon, { size: 15, color: '#fff' })}
               </div>
               {/* Name + role */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>

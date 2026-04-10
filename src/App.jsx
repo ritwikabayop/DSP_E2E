@@ -666,14 +666,39 @@ function App() {
             children: React.createElement('div', {
                   role: 'button',
                   tabIndex: 0,
-                  style: { display: 'flex', alignItems: 'center', gap: 6, padding: '3px 8px', borderRadius: 8, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', cursor: 'pointer' }
+                  'aria-label': 'Profile and role options',
+                  style: {
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer',
+                    background: 'var(--bg-card)', border: '1px solid var(--border)',
+                    transition: 'background 0.15s',
+                  },
                 },
-                  React.createElement('div', { style: { width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
-                    React.createElement(RoleIcon, { size: 11, color: '#fff' })
+                  React.createElement('div', {
+                    style: {
+                      width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                      background: 'linear-gradient(135deg, #fbbf24, #d97706)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: '0 0 12px rgba(251,191,36,0.35)',
+                    }
+                  },
+                    React.createElement(RoleIcon, { size: 15, color: '#fff' })
                   ),
-                  React.createElement('div', { style: { lineHeight: 1.2, maxWidth: 160 } },
-                    React.createElement('div', { style: { color: 'var(--text-primary)', fontSize: 11, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, title: displayName }, displayName),
-                    React.createElement('div', { style: { color: roleConfig.color, fontSize: 10, fontWeight: 700 } }, roleConfig.label)
+                  React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 1 } },
+                    React.createElement('div', {
+                      style: { color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 },
+                      title: displayName,
+                    }, displayName),
+                    React.createElement('span', {
+                      style: {
+                        display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
+                        padding: '0 7px', borderRadius: 6,
+                        color: roleConfig.color,
+                        background: `${roleConfig.color}1a`,
+                        border: `1px solid ${roleConfig.color}40`,
+                        letterSpacing: 0.3,
+                      }
+                    }, roleConfig.label + (viewAsRole ? ' (preview)' : ''))
                   )
                 )
               })}
