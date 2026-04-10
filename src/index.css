@@ -115,6 +115,19 @@
   color: #5c3d0e !important;
 }
 
+[data-theme="light"] .ant-menu-dark .ant-menu-submenu-title {
+  color: #3d2a0a !important;
+}
+
+[data-theme="light"] .ant-menu-dark .ant-menu-submenu-title svg,
+[data-theme="light"] .ant-menu-dark .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  color: #5c3d0e !important;
+}
+
+[data-theme="light"] .ant-menu-dark .ant-menu-submenu-title:hover {
+  color: #1a1209 !important;
+}
+
 [data-theme="light"] .ant-menu-dark .ant-menu-item:hover {
   background: rgba(180,140,60,0.08) !important;
   color: #1a1209 !important;
@@ -426,6 +439,35 @@ body {
   width: calc(100% - 16px) !important;
   color: var(--text-secondary) !important;
   transition: background 0.2s, color 0.2s;
+}
+
+/* ── Submenu title — match regular item color ── */
+.ant-menu-dark .ant-menu-submenu-title {
+  border-radius: 12px !important;
+  margin: 2px 8px !important;
+  width: calc(100% - 16px) !important;
+  color: var(--text-secondary) !important;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ant-menu-dark .ant-menu-submenu-title:hover {
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-title svg,
+.ant-menu-dark .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  color: var(--text-secondary) !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-open > .ant-menu-submenu-title,
+.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: var(--text-primary) !important;
+}
+
+.ant-menu-dark .ant-menu-submenu-open > .ant-menu-submenu-title svg,
+.ant-menu-dark .ant-menu-submenu-open > .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  color: var(--accent) !important;
 }
 
 .ant-menu-dark .ant-menu-item:hover {
