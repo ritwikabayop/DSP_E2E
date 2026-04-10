@@ -61,6 +61,150 @@
   --mesh:          none;
 }
 
+/* ═══════════════════════════════════════════════
+   ROYAL GOLD — Explicit Dark Key (mirrors :root)
+   ═══════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg-base:       #0c0900;
+  --bg-surface:    #120d00;
+  --bg-card:       rgba(18, 13, 0, 0.7);
+  --bg-card-hover: rgba(26, 18, 0, 0.85);
+  --bg-sidebar:    rgba(8, 6, 0, 0.85);
+  --bg-header:     rgba(12, 9, 0, 0.92);
+  --bg-deep:       #0c0900;
+  --border:        rgba(46, 32, 0, 0.7);
+  --border-light:  rgba(46, 32, 0, 0.45);
+  --border-subtle: rgba(46, 32, 0, 0.25);
+  --accent:        #fbbf24;
+  --accent-dim:    #d97706;
+  --accent-glow:   rgba(251, 191, 36, 0.25);
+  --text-primary:  #fef9ee;
+  --text-secondary:#a38b3a;
+  --text-muted:    #5c4a14;
+  --mesh: radial-gradient(at 0% 0%, rgba(251,191,36,0.06) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(168,85,247,0.04) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   DEEP OCEAN — Dark Navy + Electric Cyan
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-ocean"] {
+  --bg-base:       #060d1a;
+  --bg-surface:    #071020;
+  --bg-card:       rgba(7, 16, 32, 0.75);
+  --bg-card-hover: rgba(12, 24, 44, 0.9);
+  --bg-sidebar:    rgba(4, 13, 26, 0.9);
+  --bg-header:     rgba(6, 13, 26, 0.95);
+  --bg-deep:       #060d1a;
+  --border:        rgba(14, 32, 64, 0.8);
+  --border-light:  rgba(14, 32, 64, 0.5);
+  --border-subtle: rgba(14, 32, 64, 0.3);
+  --accent:        #06b6d4;
+  --accent-dim:    #0284c7;
+  --accent-glow:   rgba(6, 182, 212, 0.25);
+  --text-primary:  #e0f2fe;
+  --text-secondary:#4d7a9e;
+  --text-muted:    #2a4a6b;
+  --mesh: radial-gradient(at 0% 0%, rgba(6,182,212,0.07) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(2,132,199,0.05) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   IMPERIAL PURPLE — Deep Indigo + Violet
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-violet"] {
+  --bg-base:       #0d0614;
+  --bg-surface:    #120819;
+  --bg-card:       rgba(18, 8, 25, 0.75);
+  --bg-card-hover: rgba(26, 12, 38, 0.9);
+  --bg-sidebar:    rgba(9, 4, 16, 0.9);
+  --bg-header:     rgba(13, 6, 20, 0.95);
+  --bg-deep:       #0d0614;
+  --border:        rgba(42, 16, 64, 0.8);
+  --border-light:  rgba(42, 16, 64, 0.5);
+  --border-subtle: rgba(42, 16, 64, 0.3);
+  --accent:        #a855f7;
+  --accent-dim:    #7c3aed;
+  --accent-glow:   rgba(168, 85, 247, 0.25);
+  --text-primary:  #f3e8ff;
+  --text-secondary:#9b6dca;
+  --text-muted:    #5b2f88;
+  --mesh: radial-gradient(at 0% 0%, rgba(168,85,247,0.07) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(124,58,237,0.05) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   CARBON NOIR — Pure Charcoal + Amber
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-carbon"] {
+  --bg-base:       #111111;
+  --bg-surface:    #161616;
+  --bg-card:       rgba(22, 22, 22, 0.75);
+  --bg-card-hover: rgba(32, 32, 32, 0.9);
+  --bg-sidebar:    rgba(14, 14, 14, 0.9);
+  --bg-header:     rgba(17, 17, 17, 0.95);
+  --bg-deep:       #111111;
+  --border:        rgba(40, 40, 40, 0.9);
+  --border-light:  rgba(40, 40, 40, 0.6);
+  --border-subtle: rgba(40, 40, 40, 0.35);
+  --accent:        #f59e0b;
+  --accent-dim:    #d97706;
+  --accent-glow:   rgba(245, 158, 11, 0.22);
+  --text-primary:  #f5f5f5;
+  --text-secondary:#a3a3a3;
+  --text-muted:    #737373;
+  --mesh: radial-gradient(at 0% 0%, rgba(245,158,11,0.06) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(115,115,115,0.04) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   ROSE NIGHT — Dark Red/Black + Rose
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-rose"] {
+  --bg-base:       #100a0a;
+  --bg-surface:    #180d0d;
+  --bg-card:       rgba(24, 13, 13, 0.75);
+  --bg-card-hover: rgba(34, 18, 18, 0.9);
+  --bg-sidebar:    rgba(13, 8, 8, 0.9);
+  --bg-header:     rgba(16, 10, 10, 0.95);
+  --bg-deep:       #100a0a;
+  --border:        rgba(46, 21, 21, 0.8);
+  --border-light:  rgba(46, 21, 21, 0.5);
+  --border-subtle: rgba(46, 21, 21, 0.3);
+  --accent:        #f43f5e;
+  --accent-dim:    #e11d48;
+  --accent-glow:   rgba(244, 63, 94, 0.25);
+  --text-primary:  #ffe4e8;
+  --text-secondary:#c4687d;
+  --text-muted:    #7a3f4e;
+  --mesh: radial-gradient(at 0% 0%, rgba(244,63,94,0.07) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(225,29,72,0.05) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   SLATE FROST — Dark Blue-Grey + Sky Blue
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-slate"] {
+  --bg-base:       #0c1018;
+  --bg-surface:    #101520;
+  --bg-card:       rgba(16, 21, 32, 0.75);
+  --bg-card-hover: rgba(22, 30, 46, 0.9);
+  --bg-sidebar:    rgba(9, 13, 20, 0.9);
+  --bg-header:     rgba(12, 16, 24, 0.95);
+  --bg-deep:       #0c1018;
+  --border:        rgba(30, 37, 53, 0.9);
+  --border-light:  rgba(30, 37, 53, 0.55);
+  --border-subtle: rgba(30, 37, 53, 0.35);
+  --accent:        #38bdf8;
+  --accent-dim:    #0284c7;
+  --accent-glow:   rgba(56, 189, 248, 0.22);
+  --text-primary:  #e0f2fe;
+  --text-secondary:#64748b;
+  --text-muted:    #475569;
+  --mesh: radial-gradient(at 0% 0%, rgba(56,189,248,0.06) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(2,132,199,0.04) 0px, transparent 55%);
+}
+
 [data-theme="light"] body {
   background: #ffffff;
   color: #1c1207;
