@@ -198,7 +198,7 @@ export const inviteUser = async (email, role, displayName = '', invitedBy = '') 
     email,
     password: crypto.randomUUID(),
     options: {
-      emailRedirectTo: window.location.origin + '/DSP_E2E/',
+      emailRedirectTo: window.location.origin + '/MyISPInsightStatusPlatform/',
       data: { display_name: displayName, role },
     },
   });

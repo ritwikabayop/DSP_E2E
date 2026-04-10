@@ -49,10 +49,10 @@ export default function Ribbon({
           </div>
           <div>
             <AntTitle level={4} style={{ margin: 0, color: '#fff', letterSpacing: 0.3, lineHeight: 1.2 }}>
-              MyISP – Insight &amp; Status Platform
+              MyISPInsightStatusPlatform
             </AntTitle>
             <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11 }}>
-              DSP_E2E — {monthLabel}
+              MyISPInsightStatusPlatform — {monthLabel}
             </Text>
           </div>
         </div>

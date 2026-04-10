@@ -101,7 +101,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
   };
 
   const handleCopyLink = () => {
-    const link = window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/');
+    const link = window.location.origin + (window.location.pathname.includes('/MyISPInsightStatusPlatform') ? '/MyISPInsightStatusPlatform/' : '/');
     navigator.clipboard.writeText(link).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
@@ -352,7 +352,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                   <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', marginBottom: 16 }}>
                     <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 6 }}>Share login link via Teams / email:</Text>
                     <Text code style={{ fontSize: 11, wordBreak: 'break-all' }}>
-                      {window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/')}
+                      {window.location.origin + (window.location.pathname.includes('/MyISPInsightStatusPlatform') ? '/MyISPInsightStatusPlatform/' : '/')}
                     </Text>
                   </div>
 

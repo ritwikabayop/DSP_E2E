@@ -104,7 +104,7 @@ export default function LoginPage({ onSignIn }) {
     if (!magicEmail.trim()) { setMagicError('Please enter your email.'); return; }
     setMagicError('');
     setMagicLoading(true);
-    const base = window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/';
+    const base = window.location.pathname.includes('/MyISPInsightStatusPlatform') ? '/MyISPInsightStatusPlatform/' : '/';
     const { error: err } = await supabase.auth.signInWithOtp({
       email: magicEmail.trim().toLowerCase(),
       options: { emailRedirectTo: window.location.origin + base },
@@ -127,7 +127,7 @@ export default function LoginPage({ onSignIn }) {
     setResetError('');
     setResetLoading(true);
     const { error: err } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
-      redirectTo: window.location.origin + (window.location.pathname.includes('/DSP_E2E') ? '/DSP_E2E/' : '/'),
+      redirectTo: window.location.origin + (window.location.pathname.includes('/MyISPInsightStatusPlatform') ? '/MyISPInsightStatusPlatform/' : '/'),
     });
     setResetLoading(false);
     if (err) { setResetError(err.message); return; }
@@ -157,8 +157,8 @@ export default function LoginPage({ onSignIn }) {
                 <LayoutDashboard size={22} color="#fff" />
               </div>
               <div>
-                <div style={{ color:'var(--text-primary)', fontWeight:800, fontSize:18, lineHeight:1.2 }}>MyISP</div>
-                <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:500 }}>Insight &amp; Status Platform</div>
+                <div style={{ color:'var(--text-primary)', fontWeight:800, fontSize:18, lineHeight:1.2 }}>MyISPInsightStatusPlatform</div>
+                <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:500 }}>Insight Status Platform</div>
               </div>
             </div>
 

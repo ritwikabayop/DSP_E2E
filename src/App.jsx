@@ -831,7 +831,7 @@ function App() {
             </Tooltip>
             {!collapsed && (
               <div style={{ overflow: 'hidden', cursor: 'pointer' }} onClick={() => setActiveModule(null)}>
-                <span style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>MyISP</span>
+                <span style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, display: 'block', lineHeight: 1.3, whiteSpace: 'nowrap' }}>MyISPInsightStatusPlatform</span>
                 <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>◀ Modules</span>
               </div>
             )}

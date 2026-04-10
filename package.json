@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ritwikabayop.github.io/DSP_E2E/",
+  "homepage": "https://ritwikabayop.github.io/MyISPInsightStatusPlatform/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
