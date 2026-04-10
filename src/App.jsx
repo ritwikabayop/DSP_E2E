@@ -624,7 +624,7 @@ function App() {
           }}>
             <Button
               size="small" type="text"
-              icon={React.createElement(ShieldCheck, { size: 14, color: '#fbbf24' })}
+              icon={React.createElement(ShieldCheck, { size: 14, color: 'var(--accent)' })}
               onClick={() => setActiveModule(null)}
               style={{ color: 'var(--text-secondary)', fontSize: 12 }}
             >

@@ -142,7 +142,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
       width: 130,
       render: (v) => {
         const lbl = MONTH_OPTIONS.find((m) => m.value === v)?.label ?? v ?? '—';
-        return <Text style={{ color: '#a78bfa', fontSize: 12 }}>{lbl}</Text>;
+        return <Text style={{ color: 'var(--purple)', fontSize: 12 }}>{lbl}</Text>;
       },
     },
     {
@@ -150,14 +150,14 @@ export default function ProdRolesSheet({ currentUser, role }) {
       dataIndex: 'team_lead',
       key: 'team_lead',
       width: 180,
-      render: (v) => <Text strong style={{ color: '#e2e8f0' }}>{v}</Text>,
+      render: (v) => <Text strong style={{ color: 'var(--text-primary)' }}>{v}</Text>,
     },
     {
       title: 'Module',
       dataIndex: 'module',
       key: 'module',
       width: 160,
-      render: (v) => <Text style={{ color: '#94a3b8' }}>{v}</Text>,
+      render: (v) => <Text style={{ color: 'var(--text-secondary)' }}>{v}</Text>,
     },
     {
       title: 'Resource EID',
@@ -165,14 +165,14 @@ export default function ProdRolesSheet({ currentUser, role }) {
       key: 'resource_eid',
       width: 200,
       render: (v) => (
-        <Text copyable style={{ color: '#38bdf8', fontFamily: 'monospace', fontSize: 12 }}>{v}</Text>
+        <Text copyable style={{ color: 'var(--link)', fontFamily: 'monospace', fontSize: 12 }}>{v}</Text>
       ),
     },
     {
       title: 'Role Details',
       dataIndex: 'role_details',
       key: 'role_details',
-      render: (v) => <Text style={{ color: '#cbd5e1' }}>{v}</Text>,
+      render: (v) => <Text style={{ color: 'var(--text-secondary)' }}>{v}</Text>,
     },
     ...(canEdit ? [{
       title: 'Actions',
@@ -186,7 +186,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
               type="text" size="small"
               icon={<Edit3 size={13} />}
               onClick={() => openEdit(record)}
-              style={{ color: '#60a5fa' }}
+              style={{ color: 'var(--accent)' }}
             />
           </Tooltip>
           {canDelete && (
@@ -212,8 +212,8 @@ export default function ProdRolesSheet({ currentUser, role }) {
         title={
           <Space>
             <Users size={14} color="var(--accent)" />
-            <Text strong style={{ color: '#e2e8f0' }}>Prod Roles</Text>
-            <Text style={{ color: '#64748b', fontSize: 11 }}>{filtered.length} entries</Text>
+            <Text strong style={{ color: 'var(--text-primary)' }}>Prod Roles</Text>
+            <Text style={{ color: 'var(--text-muted)', fontSize: 11 }}>{filtered.length} entries</Text>
           </Space>
         }
         extra={
@@ -236,7 +236,7 @@ export default function ProdRolesSheet({ currentUser, role }) {
               style={{ width: 150 }}
             />
             <Tooltip title="Refresh">
-              <Button size="small" type="text" icon={<RefreshCw size={13} />} onClick={load} style={{ color: '#8892a4' }} />
+              <Button size="small" type="text" icon={<RefreshCw size={13} />} onClick={load} style={{ color: 'var(--text-muted)' }} />
             </Tooltip>
             {canEdit && (
               <Button size="small" type="primary" icon={<Plus size={13} />} onClick={openAdd}>

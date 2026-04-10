@@ -150,7 +150,7 @@ export default function ActivityLogSheet({ selectedMonth, dspManual = [], dspAut
                 size="small" type="primary" icon={<RefreshCw size={13} />}
                 onClick={() => fetchLogs()}
                 loading={loading}
-                style={{ background: '#217346', borderColor: '#217346' }}
+                style={{ background: 'var(--excel-green)', borderColor: 'var(--excel-green)' }}
               >
                 Refresh
               </Button>

@@ -288,7 +288,7 @@ const [rows,       setRows]       = useState([]);
               <Button
                 type="primary" size="small" icon={<Plus size={13} />}
                 onClick={openAdd}
-                style={{ background: '#d97706', borderColor: '#b45309' }}
+                style={{ background: 'var(--accent)', borderColor: 'var(--accent-dim)' }}
               >
                 Add Entry
               </Button>

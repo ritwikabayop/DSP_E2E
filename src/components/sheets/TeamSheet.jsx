@@ -130,7 +130,7 @@ export default function TeamSheet({
           <Card
             title={<Space><Users size={16} /> Team Directory <Badge count={teamData.length} style={{ background: '#13c2c2' }} /></Space>}
             size="small" className="glass-card"
-            styles={{ header: { background: 'linear-gradient(90deg,#e6fffb,#f0f7ff)', borderBottom: '2px solid #87e8de' } }}
+            styles={{ header: { background: 'var(--bg-card)', borderBottom: '2px solid #87e8de' } }}
             extra={editMode && roleConfig.canAddTeamMember && (
               <Button type="dashed" size="small" icon={<Plus size={14} />} onClick={addRow}>Add Member</Button>
             )}

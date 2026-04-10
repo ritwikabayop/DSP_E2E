@@ -337,7 +337,7 @@ export default function MyIspModuleRolesSheet({ currentUser, role }) {
               <Button
                 type="primary" size="small" icon={<Plus size={13} />}
                 onClick={openAdd}
-                style={{ background: '#d97706', borderColor: '#b45309' }}
+                style={{ background: 'var(--accent)', borderColor: 'var(--accent-dim)' }}
               >
                 Add Row
               </Button>
@@ -437,7 +437,7 @@ export default function MyIspModuleRolesSheet({ currentUser, role }) {
               <Button icon={<X size={13} />} onClick={closeModal}>Cancel</Button>
               <Button
                 type="primary" htmlType="submit" loading={saving}
-                style={{ background: '#d97706', borderColor: '#b45309' }}
+                style={{ background: 'var(--accent)', borderColor: 'var(--accent-dim)' }}
               >
                 {editRow ? 'Save Changes' : 'Add Row'}
               </Button>

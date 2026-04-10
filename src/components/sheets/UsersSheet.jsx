@@ -267,7 +267,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
             {canEdit && (
               <Button type="primary" size="small" icon={<UserPlus size={13} />}
                 onClick={() => setInviteOpen(true)}
-                style={{ background: '#217346', borderColor: '#217346' }}>
+                style={{ background: 'var(--excel-green)', borderColor: 'var(--excel-green)' }}>
                 Add User
               </Button>
             )}
@@ -364,7 +364,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
                     >
                       {copied ? 'Copied!' : 'Copy Link'}
                     </Button>
-                    <Button type="primary" onClick={closeInviteModal} style={{ background: '#217346', borderColor: '#217346' }}>
+                    <Button type="primary" onClick={closeInviteModal} style={{ background: 'var(--excel-green)', borderColor: 'var(--excel-green)' }}>
                       Done
                     </Button>
                   </div>
@@ -472,7 +472,7 @@ export default function UsersSheet({ currentUserId, role, currentUserEmail }) {
               <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
                 <Button onClick={closeInviteModal}>Cancel</Button>
                 <Button type="primary" htmlType="submit" loading={inviting}
-                  style={{ background: '#217346', borderColor: '#217346' }}>
+                  style={{ background: 'var(--excel-green)', borderColor: 'var(--excel-green)' }}>
                   {users.find((u) => u.email?.toLowerCase() === inviteEmail) ? 'Add Role' : 'Send Invite'}
                 </Button>
               </Space>

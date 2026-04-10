@@ -522,10 +522,10 @@ body {
 .sidebar-logo-icon {
   width: 34px; height: 34px;
   border-radius: 9px;
-  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 16px rgba(251,191,36,0.3);
+  box-shadow: 0 0 16px var(--accent-glow);
 }
 
 .sidebar-logo-text .title {

@@ -168,7 +168,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
               style={{
                 padding: '10px 14px', cursor: 'pointer',
                 borderLeft: `3px solid ${isActive ? (cfg.color ?? 'var(--accent)') : 'transparent'}`,
-                background: isActive ? `${cfg.color ?? '#fbbf2418'}` : 'transparent',
+                background: isActive ? (cfg.color ? `${cfg.color}1a` : 'var(--accent-glow)') : 'transparent',
                 transition: 'all 0.15s',
               }}
             >
@@ -294,7 +294,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
               type="primary"
               icon={<SlidersHorizontal size={13} />}
               onClick={handleImplement}
-              style={{ background: '#d97706', borderColor: '#b45309', fontWeight: 600 }}
+              style={{ background: 'var(--accent)', borderColor: 'var(--accent-dim)', color: 'var(--bg-base)', fontWeight: 600 }}
             >
               Implement this ↗
             </Button>

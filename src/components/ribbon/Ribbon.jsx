@@ -133,7 +133,7 @@ export default function Ribbon({
             <Tooltip title="Save all unsaved modules">
               <Button
                 size="small" icon={<Save size={14} />} onClick={onSaveAll}
-                style={{ background: '#faad14', borderColor: '#faad14', color: '#fff', fontWeight: 600 }}
+                style={{ background: 'var(--accent)', borderColor: 'var(--accent-dim)', color: 'var(--bg-base)', fontWeight: 600 }}
               >
                 Save All
               </Button>

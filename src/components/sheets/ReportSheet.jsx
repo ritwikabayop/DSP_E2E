@@ -124,7 +124,7 @@ export default function ReportSheet({ dspManual, dspAuto, ssaData, teamData, sel
             Tester CSV
           </Button>
           <Button type="primary" size="small" icon={<FileText size={13} />} onClick={exportFullReport} disabled={!canDownload}
-            style={{ background: canDownload ? '#217346' : undefined, borderColor: canDownload ? '#217346' : undefined }}>
+            style={{ background: canDownload ? 'var(--excel-green)' : undefined, borderColor: canDownload ? 'var(--excel-green)' : undefined }}>
             Full Export
           </Button>
         </Space>
