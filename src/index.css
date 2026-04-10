@@ -205,6 +205,149 @@
           radial-gradient(at 100% 100%, rgba(2,132,199,0.04) 0px, transparent 55%);
 }
 
+/* ═══════════════════════════════════════════════
+   COSMIC NEBULA — Deep Void + Shifting Purple
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-nebula"] {
+  --bg-base:       #04010f;
+  --bg-surface:    #0a0220;
+  --bg-card:       rgba(10, 2, 30, 0.78);
+  --bg-card-hover: rgba(18, 6, 44, 0.9);
+  --bg-sidebar:    rgba(6, 1, 18, 0.92);
+  --bg-header:     rgba(4, 1, 15, 0.95);
+  --bg-deep:       #04010f;
+  --border:        rgba(160, 80, 255, 0.14);
+  --border-light:  rgba(160, 80, 255, 0.09);
+  --border-subtle: rgba(160, 80, 255, 0.06);
+  --accent:        #b44fff;
+  --accent-dim:    #7c3aed;
+  --accent-glow:   rgba(180, 79, 255, 0.28);
+  --text-primary:  #e8d8ff;
+  --text-secondary:#9b6dca;
+  --text-muted:    #5533aa;
+  --mesh: radial-gradient(ellipse at 20% 30%, rgba(180,60,255,0.18) 0px, transparent 55%),
+          radial-gradient(ellipse at 80% 70%, rgba(68,102,255,0.12) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   MATRIX CODE — Pure Black + Phosphor Green
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-matrix"] {
+  --bg-base:       #000500;
+  --bg-surface:    #000700;
+  --bg-card:       rgba(0, 7, 0, 0.8);
+  --bg-card-hover: rgba(0, 12, 0, 0.9);
+  --bg-sidebar:    rgba(0, 5, 0, 0.95);
+  --bg-header:     rgba(0, 7, 0, 0.96);
+  --bg-deep:       #000500;
+  --border:        rgba(0, 255, 50, 0.15);
+  --border-light:  rgba(0, 255, 50, 0.09);
+  --border-subtle: rgba(0, 255, 50, 0.05);
+  --accent:        #00ff32;
+  --accent-dim:    #00cc28;
+  --accent-glow:   rgba(0, 255, 50, 0.28);
+  --text-primary:  #88cc88;
+  --text-secondary:#44aa55;
+  --text-muted:    #1a5520;
+  --mesh: radial-gradient(at 80% 10%, rgba(0,255,50,0.06) 0px, transparent 55%),
+          radial-gradient(at 20% 90%, rgba(0,200,40,0.04) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   CANDY POP — Vivid Pastel Rainbow (Light)
+   ═══════════════════════════════════════════════ */
+[data-theme="candy-pop"] {
+  --bg-base:       #fff5fb;
+  --bg-surface:    #ffffff;
+  --bg-card:       #ffffff;
+  --bg-card-hover: #fdf0fa;
+  --bg-sidebar:    #ffffff;
+  --bg-header:     #ffffff;
+  --bg-deep:       #fff5fb;
+  --border:        #fce7f3;
+  --border-light:  rgba(236, 72, 153, 0.18);
+  --border-subtle: rgba(236, 72, 153, 0.1);
+  --accent:        #ec4899;
+  --accent-dim:    #db2777;
+  --accent-glow:   rgba(236, 72, 153, 0.2);
+  --text-primary:  #3b1f2b;
+  --text-secondary:#9333ea;
+  --text-muted:    #d1a8c8;
+  --mesh:          none;
+}
+
+/* ═══════════════════════════════════════════════
+   LAVA LAMP — Deep Dark Red + Orange Blobs
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-lava"] {
+  --bg-base:       #0f0200;
+  --bg-surface:    #150300;
+  --bg-card:       rgba(15, 2, 0, 0.78);
+  --bg-card-hover: rgba(24, 5, 0, 0.9);
+  --bg-sidebar:    rgba(10, 1, 0, 0.92);
+  --bg-header:     rgba(15, 2, 0, 0.95);
+  --bg-deep:       #0f0200;
+  --border:        rgba(255, 60, 0, 0.16);
+  --border-light:  rgba(255, 60, 0, 0.1);
+  --border-subtle: rgba(255, 60, 0, 0.06);
+  --accent:        #ff4500;
+  --accent-dim:    #cc3700;
+  --accent-glow:   rgba(255, 69, 0, 0.28);
+  --text-primary:  #ffddcc;
+  --text-secondary:#cc8855;
+  --text-muted:    #6a2200;
+  --mesh: radial-gradient(ellipse at 30% 80%, rgba(255,80,0,0.14) 0px, transparent 55%),
+          radial-gradient(ellipse at 80% 20%, rgba(255,0,100,0.1) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   GALACTIC CHROME — Dark + Silver Prism
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-chrome"] {
+  --bg-base:       #0c0c10;
+  --bg-surface:    #141428;
+  --bg-card:       rgba(20, 20, 40, 0.75);
+  --bg-card-hover: rgba(28, 28, 52, 0.9);
+  --bg-sidebar:    rgba(10, 10, 20, 0.92);
+  --bg-header:     rgba(12, 12, 16, 0.95);
+  --bg-deep:       #0c0c10;
+  --border:        rgba(180, 180, 255, 0.13);
+  --border-light:  rgba(180, 180, 255, 0.08);
+  --border-subtle: rgba(180, 180, 255, 0.05);
+  --accent:        #c0c0ff;
+  --accent-dim:    #9090dd;
+  --accent-glow:   rgba(192, 192, 255, 0.22);
+  --text-primary:  #d0d0f0;
+  --text-secondary:#9999cc;
+  --text-muted:    #555580;
+  --mesh: radial-gradient(ellipse at 50% 0%, rgba(180,180,255,0.1) 0px, transparent 55%),
+          radial-gradient(at 100% 100%, rgba(160,160,255,0.06) 0px, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════════
+   MIDNIGHT ZEN — Deep Navy + Soft Gold
+   ═══════════════════════════════════════════════ */
+[data-theme="dark-zen"] {
+  --bg-base:       #020614;
+  --bg-surface:    #060c28;
+  --bg-card:       rgba(6, 12, 40, 0.78);
+  --bg-card-hover: rgba(12, 20, 56, 0.9);
+  --bg-sidebar:    rgba(3, 6, 18, 0.92);
+  --bg-header:     rgba(2, 6, 20, 0.95);
+  --bg-deep:       #020614;
+  --border:        rgba(200, 170, 80, 0.13);
+  --border-light:  rgba(200, 170, 80, 0.08);
+  --border-subtle: rgba(200, 170, 80, 0.05);
+  --accent:        #c8aa50;
+  --accent-dim:    #a08830;
+  --accent-glow:   rgba(200, 170, 80, 0.25);
+  --text-primary:  #dcd4b0;
+  --text-secondary:#a08844;
+  --text-muted:    #665522;
+  --mesh: radial-gradient(ellipse at 60% 40%, rgba(10,16,64,0.8) 0px, transparent 55%),
+          radial-gradient(ellipse at 10% 80%, rgba(200,170,80,0.06) 0px, transparent 55%);
+}
+
 [data-theme="light"] body {
   background: #ffffff;
   color: #1c1207;
