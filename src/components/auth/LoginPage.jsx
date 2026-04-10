@@ -170,7 +170,7 @@ export default function LoginPage({ onSignIn }) {
             <h1 style={{ color:'var(--text-primary)', fontSize:30, fontWeight:800, lineHeight:1.2, margin:'0 0 12px', letterSpacing:'-0.5px' }}>
               Welcome back
             </h1>
-            <p style={{ color:'#64748b', fontSize:13, lineHeight:1.8, margin:'0 0 36px', maxWidth:300 }}>
+            <p style={{ color:'rgba(255,255,255,0.65)', fontSize:13, lineHeight:1.8, margin:'0 0 36px', maxWidth:300 }}>
               Your central hub for DSP, SSA, team testing data and attendance insights.
             </p>
 
@@ -178,12 +178,12 @@ export default function LoginPage({ onSignIn }) {
             <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
               {features.map(({ Icon, label, sub }) => (
                 <div key={label} style={{ display:'flex', alignItems:'center', gap:12 }}>
-                  <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.18)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(251,191,36,0.18)', border:'1px solid rgba(251,191,36,0.4)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <Icon size={15} color="#fbbf24" />
                   </div>
                   <div>
-                    <div style={{ color:'var(--text-secondary)', fontSize:13, fontWeight:600, lineHeight:1.3 }}>{label}</div>
-                    <div style={{ color:'var(--text-muted)', fontSize:11 }}>{sub}</div>
+                    <div style={{ color:'rgba(255,255,255,0.88)', fontSize:13, fontWeight:600, lineHeight:1.3 }}>{label}</div>
+                    <div style={{ color:'rgba(255,255,255,0.45)', fontSize:11 }}>{sub}</div>
                   </div>
                 </div>
               ))}
@@ -194,7 +194,7 @@ export default function LoginPage({ onSignIn }) {
           <div style={{ position:'relative', zIndex:1, display:'flex', gap:8, flexWrap:'wrap' }}>
             {stats.map(({ Icon, value, label }) => (
               <div key={label} style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 12px', borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)' }}>
-                <Icon size={12} color="#4ade80" />
+                <Icon size={12} color="#fbbf24" />
                 <span style={{ color:'var(--text-secondary)', fontSize:11, fontWeight:600 }}>{value}</span>
                 <span style={{ color:'var(--text-muted)', fontSize:11 }}>{label}</span>
               </div>
@@ -323,17 +323,15 @@ export default function LoginPage({ onSignIn }) {
                     style={S.inputStyle} />
                 </Form.Item>
 
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
+                  <span style={S.label}>PASSWORD</span>
+                  <Button type="link" size="small"
+                    onClick={() => { setForgotMode(true); setError(''); }}
+                    style={{ color:'#d97706', fontSize:11, padding:0, height:'auto', lineHeight:1 }}>
+                    Forgot password?
+                  </Button>
+                </div>
                 <Form.Item
-                  label={
-                    <div style={{ display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center' }}>
-                      <span style={S.label}>Password</span>
-                      <Button type="link" size="small"
-                        onClick={() => { setForgotMode(true); setError(''); }}
-                        style={{ color:'#d97706', fontSize:11, padding:0, height:'auto', lineHeight:1 }}>
-                        Forgot password?
-                      </Button>
-                    </div>
-                  }
                   name="password"
                   rules={[{ required:true, message:'Please enter your password' }]}
                   style={{ marginBottom:28 }}

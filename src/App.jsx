@@ -361,7 +361,7 @@ function App() {
           icon: React.createElement(Monitor, { size: 15 }),
           label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 4 } },
             'DSP',
-            React.createElement(Badge, { count: dspManual.length + dspAuto.length, style: { background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)', fontSize: 9, boxShadow: 'none' } }),
+            React.createElement(Badge, { count: dspManual.length + dspAuto.length, style: { background: 'rgba(180,100,6,0.12)', color: '#92400e', border: '1px solid rgba(180,100,6,0.3)', fontSize: 9, boxShadow: 'none' } }),
             React.createElement(DotDirty, { dirty: dirtyModules.dsp })
           ),
         },

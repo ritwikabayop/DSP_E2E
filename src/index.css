@@ -108,7 +108,11 @@
 }
 
 [data-theme="light"] .ant-menu-dark .ant-menu-item {
-  color: #7a6040 !important;
+  color: #3d2a0a !important;
+}
+
+[data-theme="light"] .ant-menu-dark .ant-menu-item svg {
+  color: #5c3d0e !important;
 }
 
 [data-theme="light"] .ant-menu-dark .ant-menu-item:hover {
