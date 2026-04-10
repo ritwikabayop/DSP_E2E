@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Tag, Tooltip, Input } from 'antd';
-import { ArrowLeft, Video, Monitor, Shield, BookOpen, ExternalLink, Search } from 'lucide-react';
+import { Button, Tag, Tooltip, Input, Dropdown } from 'antd';
+import { ArrowLeft, Video, Monitor, Shield, BookOpen, ExternalLink, Search, Sun, Moon } from 'lucide-react';
 
 const CATEGORIES = [
   { value: 'All',     label: 'All Sessions', color: '#6b7280' },
@@ -30,7 +30,7 @@ function catColor(cat) {
   return CATEGORIES.find((c) => c.value === cat)?.color ?? '#6b7280';
 }
 
-export default function KTSessionsPage({ onBack }) {
+export default function KTSessionsPage({ onBack, displayName = '', roleConfig = {}, RoleIcon, isDark, onToggleTheme, onSignOut }) {
   const [activecat, setActivecat] = useState('All');
   const [search, setSearch]       = useState('');
 
@@ -87,6 +87,38 @@ export default function KTSessionsPage({ onBack }) {
           size="small"
           style={{ marginLeft: 'auto', maxWidth: 260 }}
         />
+
+        {/* Profile button */}
+        {RoleIcon && (
+          <Dropdown
+            trigger={['click']}
+            menu={{ items: [
+              { type: 'group', label: displayName },
+              { type: 'divider' },
+              { key: 'theme', label: (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {isDark ? <Sun size={13} color="#fbbf24" /> : <Moon size={13} color="#8892a4" />}
+                    {isDark ? 'Switch to Light' : 'Switch to Dark'}
+                  </span>
+                ), onClick: onToggleTheme },
+              { type: 'divider' },
+              { key: 'signout', label: <span style={{ color: '#f87171' }}>Sign out</span>, onClick: onSignOut },
+            ]}}
+          >
+            <div
+              role="button" tabIndex={0} aria-label="Profile options"
+              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            >
+              <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(251,191,36,0.35)' }}>
+                <RoleIcon size={15} color="#fff" />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <div style={{ color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }} title={displayName}>{displayName}</div>
+                <span style={{ display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px', padding: '0 7px', borderRadius: 6, color: roleConfig.color, background: `${roleConfig.color}1a`, border: `1px solid ${roleConfig.color}40`, letterSpacing: 0.3 }}>{roleConfig.label}</span>
+              </div>
+            </div>
+          </Dropdown>
+        )}
       </div>
 
       {/* ── Body ── */}

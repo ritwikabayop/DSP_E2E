@@ -35,6 +35,19 @@
 .ant-tooltip-inner    { background: #1a1200 !important; border: 1px solid #2e2000 !important; color: #fef9ee !important; }
 .ant-tooltip-arrow::before { background: #1a1200 !important; }
 
+/* === Collapsed sidebar menu tooltip === */
+.ant-menu-inline-collapsed-tooltip .ant-tooltip-inner {
+  background: #1a1200 !important;
+  border: 1px solid #2e2000 !important;
+  color: #fef9ee !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 6px 12px !important;
+}
+.ant-menu-inline-collapsed-tooltip .ant-tooltip-arrow::before {
+  background: #1a1200 !important;
+}
+
 /* === Segmented === */
 .ant-segmented-item { color: #a38b3a !important; border-radius: 6px !important; }
 .ant-segmented-item-selected { color: #fbbf24 !important; }
@@ -201,6 +214,19 @@
   color: #fef3c7 !important;
 }
 [data-theme="light"] .ant-tooltip-arrow::before { background: #1c1207 !important; }
+
+/* Collapsed menu tooltip — light mode */
+[data-theme="light"] .ant-menu-inline-collapsed-tooltip .ant-tooltip-inner {
+  background: #1c1207 !important;
+  border: none !important;
+  color: #fef3c7 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 6px 12px !important;
+}
+[data-theme="light"] .ant-menu-inline-collapsed-tooltip .ant-tooltip-arrow::before {
+  background: #1c1207 !important;
+}
 
 /* Buttons */
 [data-theme="light"] .ant-btn-default {

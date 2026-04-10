@@ -261,6 +261,13 @@ function App() {
       </div>
     );
   }
+
+  // ── Shared vars needed by standalone module headers ──
+  const _sharedRole       = viewAsRole ?? authRole ?? 'viewer';
+  const _sharedRoleConfig = ROLES[_sharedRole] || ROLES.viewer;
+  const _sharedRoleIcon   = _sharedRoleConfig.icon;
+  const _sharedName       = profile?.display_name || user?.email || '';
+
   if (!user) {
     return (
       <ConfigProvider theme={LIGHT_THEME}>
@@ -301,7 +308,15 @@ function App() {
   if (activeModule === 'kt') {
     return (
       <ConfigProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
-        <KTSessionsPage onBack={() => setActiveModule(null)} />
+        <KTSessionsPage
+          onBack={() => setActiveModule(null)}
+          displayName={_sharedName}
+          roleConfig={_sharedRoleConfig}
+          RoleIcon={_sharedRoleIcon}
+          isDark={isDark}
+          onToggleTheme={() => setIsDark(v => !v)}
+          onSignOut={() => { signOut(); setActiveModule(null); }}
+        />
       </ConfigProvider>
     );
   }
@@ -312,7 +327,7 @@ function App() {
     if (!(ROLES[_role]?.canViewRolesAccess)) { setActiveModule(null); return null; }
     return (
       <ConfigProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
-          <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
+        <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
           <div style={{
             height: 52, background: 'var(--bg-sidebar)', borderBottom: '1px solid var(--border-subtle)',
             display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12,
@@ -322,10 +337,37 @@ function App() {
               size="small" type="text"
               icon={React.createElement(ShieldCheck, { size: 14, color: '#fbbf24' })}
               onClick={() => setActiveModule(null)}
-                style={{ color: 'var(--text-secondary)', fontSize: 12 }}
+              style={{ color: 'var(--text-secondary)', fontSize: 12 }}
             >
               ← Back to Modules
             </Button>
+            <div style={{ marginLeft: 'auto' }}>
+              {React.createElement(Dropdown, {
+                trigger: ['click'],
+                menu: { items: [
+                  { type: 'group', label: _sharedName },
+                  { type: 'divider' },
+                  { key: 'theme', label: React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+                      React.createElement(isDark ? Sun : Moon, { size: 13, color: isDark ? '#fbbf24' : '#8892a4' }),
+                      isDark ? 'Switch to Light' : 'Switch to Dark'
+                    ), onClick: () => setIsDark(v => !v) },
+                  { type: 'divider' },
+                  { key: 'signout', label: React.createElement('span', { style: { color: '#f87171' } }, 'Sign out'), onClick: () => { signOut(); setActiveModule(null); } },
+                ]},
+                children: React.createElement('div', {
+                  role: 'button', tabIndex: 0, 'aria-label': 'Profile options',
+                  style: { display: 'flex', alignItems: 'center', gap: 10, padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border)' },
+                },
+                  React.createElement('div', { style: { width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(251,191,36,0.35)' } },
+                    React.createElement(_sharedRoleIcon, { size: 15, color: '#fff' })
+                  ),
+                  React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 1 } },
+                    React.createElement('div', { style: { color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }, title: _sharedName }, _sharedName),
+                    React.createElement('span', { style: { display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px', padding: '0 7px', borderRadius: 6, color: _sharedRoleConfig.color, background: `${_sharedRoleConfig.color}1a`, border: `1px solid ${_sharedRoleConfig.color}40`, letterSpacing: 0.3 } }, _sharedRoleConfig.label)
+                  )
+                ),
+              })}
+            </div>
           </div>
           <AccessSheet currentUser={user.email} currentUserId={user.id} role={_role} />
         </div>
@@ -705,11 +747,6 @@ function App() {
 
 
 
-              <Tooltip title="Export month data as JSON">
-                <Button size="small" icon={React.createElement(Download, { size: 12 })} onClick={handleExportJSON}>
-                  Export
-                </Button>
-              </Tooltip>
             </div>
           </Header>
 

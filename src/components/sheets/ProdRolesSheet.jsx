@@ -238,9 +238,6 @@ export default function ProdRolesSheet({ currentUser, role }) {
             <Tooltip title="Refresh">
               <Button size="small" type="text" icon={<RefreshCw size={13} />} onClick={load} style={{ color: '#8892a4' }} />
             </Tooltip>
-            <Tooltip title="Export to Excel">
-              <Button size="small" type="text" icon={<Download size={13} />} onClick={exportExcel} style={{ color: 'var(--accent)' }} />
-            </Tooltip>
             {canEdit && (
               <Button size="small" type="primary" icon={<Plus size={13} />} onClick={openAdd}>
                 + Add Entry
