@@ -135,9 +135,9 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         {/* Logo */}
         <div style={{
           width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-          background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+          background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 14px rgba(251,191,36,0.25)',
+          boxShadow: '0 0 14px var(--accent-glow)',
         }}>
           <LayoutDashboard size={17} color="#fff" />
         </div>

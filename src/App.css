@@ -1,9 +1,9 @@
-/* Ant Design dark token overrides */
-.ant-layout { background: #0c0900 !important; }
-.ant-layout-sider { background: #080600 !important; }
-.ant-layout-header { background: #120d00 !important; padding: 0 !important; }
-.ant-layout-content { background: #0c0900 !important; }
-.ant-layout-footer { background: #0c0900 !important; padding: 8px 16px !important; }
+/* Ant Design token overrides — all colours via CSS variables so every theme works */
+.ant-layout         { background: var(--bg-base)    !important; }
+.ant-layout-sider   { background: var(--bg-base)    !important; }
+.ant-layout-header  { background: var(--bg-surface) !important; padding: 0 !important; }
+.ant-layout-content { background: var(--bg-base)    !important; }
+.ant-layout-footer  { background: var(--bg-base)    !important; padding: 8px 16px !important; }
 
 /* === Tables === */
 .ant-table-wrapper .ant-table {
@@ -14,43 +14,41 @@
 .ant-table-container { border-radius: 10px !important; }
 
 .ant-table-thead tr th.ant-table-column-has-sorters:hover {
-  background: #1a1200 !important;
+  background: var(--bg-surface) !important;
 }
-
-/* === Tabs (removed, sidebar used instead) === */
 
 /* === Select dropdown === */
 .ant-select-dropdown {
-  background: #1a1200 !important;
-  border: 1px solid #2e2000 !important;
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 8px !important;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
 }
 
-.ant-select-item { color: #a38b3a !important; border-radius: 5px !important; }
-.ant-select-item-option-selected { background: rgba(251,191,36,0.1) !important; color: #fbbf24 !important; }
+.ant-select-item { color: var(--text-secondary) !important; border-radius: 5px !important; }
+.ant-select-item-option-selected { background: var(--accent-glow) !important; color: var(--accent) !important; }
 .ant-select-item-option-active  { background: rgba(255,255,255,0.04) !important; }
 
 /* === Popover / Tooltip === */
-.ant-tooltip-inner    { background: #1a1200 !important; border: 1px solid #2e2000 !important; color: #fef9ee !important; }
-.ant-tooltip-arrow::before { background: #1a1200 !important; }
+.ant-tooltip-inner    { background: var(--bg-surface) !important; border: 1px solid var(--border) !important; color: var(--text-primary) !important; }
+.ant-tooltip-arrow::before { background: var(--bg-surface) !important; }
 
 /* === Collapsed sidebar menu tooltip === */
 .ant-menu-inline-collapsed-tooltip .ant-tooltip-inner {
-  background: #1a1200 !important;
-  border: 1px solid #2e2000 !important;
-  color: #fef9ee !important;
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
   font-size: 13px !important;
   font-weight: 600 !important;
   padding: 6px 12px !important;
 }
 .ant-menu-inline-collapsed-tooltip .ant-tooltip-arrow::before {
-  background: #1a1200 !important;
+  background: var(--bg-surface) !important;
 }
 
 /* === Segmented === */
-.ant-segmented-item { color: #a38b3a !important; border-radius: 6px !important; }
-.ant-segmented-item-selected { color: #fbbf24 !important; }
+.ant-segmented-item { color: var(--text-secondary) !important; border-radius: 6px !important; }
+.ant-segmented-item-selected { color: var(--accent) !important; }
 .ant-segmented-item-label { padding: 0 10px !important; }
 
 /* === Badge === */
@@ -58,44 +56,44 @@
 
 /* === Input affix === */
 .ant-input-affix-wrapper {
-  background: #1a1200 !important;
-  border-color: #2e2000 !important;
+  background: var(--bg-surface) !important;
+  border-color: var(--border) !important;
 }
-.ant-input-affix-wrapper:hover { border-color: #3a2800 !important; }
-.ant-input-affix-wrapper-focused { border-color: #fbbf24 !important; box-shadow: 0 0 0 2px rgba(251,191,36,0.15) !important; }
-.ant-input-affix-wrapper input { background: transparent !important; color: #fef9ee !important; }
+.ant-input-affix-wrapper:hover { border-color: var(--accent-dim) !important; }
+.ant-input-affix-wrapper-focused { border-color: var(--accent) !important; box-shadow: 0 0 0 2px var(--accent-glow) !important; }
+.ant-input-affix-wrapper input { background: transparent !important; color: var(--text-primary) !important; }
 
 /* === Float button === */
-.ant-float-btn-default .ant-float-btn-body { background: #1a1200 !important; border: 1px solid #2e2000 !important; }
+.ant-float-btn-default .ant-float-btn-body { background: var(--bg-surface) !important; border: 1px solid var(--border) !important; }
 
 /* === Progress bar === */
-.ant-progress-bg { background: linear-gradient(90deg, #d97706, #fbbf24) !important; }
+.ant-progress-bg { background: linear-gradient(90deg, var(--accent-dim), var(--accent)) !important; }
 
 /* === Alert === */
 .ant-alert-info    { background: rgba(59,130,246,0.08) !important; border-color: rgba(59,130,246,0.2) !important; }
 .ant-alert-success { background: rgba(34,197,94,0.08)  !important; border-color: rgba(34,197,94,0.2)  !important; }
 .ant-alert-warning { background: rgba(245,158,11,0.08) !important; border-color: rgba(245,158,11,0.2) !important; }
 .ant-alert-error   { background: rgba(239,68,68,0.08)  !important; border-color: rgba(239,68,68,0.2)  !important; }
-.ant-alert-message, .ant-alert-description { color: #e2e8f0 !important; }
+.ant-alert-message, .ant-alert-description { color: var(--text-primary) !important; }
 
 /* === Spin overlay === */
-.ant-spin-dot-item { background: #fbbf24 !important; }
+.ant-spin-dot-item { background: var(--accent) !important; }
 
-/* === Modal dark === */
+/* === Modal === */
 .ant-modal-mask { background: rgba(0,0,0,0.7) !important; }
-.ant-modal-content { background: #1a1200 !important; border: 1px solid #2e2000 !important; border-radius: 12px !important; }
-.ant-modal-header { background: #1a1200 !important; border-bottom: 1px solid #2e2000 !important; border-radius: 12px 12px 0 0 !important; }
-.ant-modal-title  { color: #fef9ee !important; }
-.ant-modal-body   { color: #a38b3a !important; }
-.ant-modal-close  { color: #a38b3a !important; }
+.ant-modal-content { background: var(--bg-surface) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; }
+.ant-modal-header { background: var(--bg-surface) !important; border-bottom: 1px solid var(--border) !important; border-radius: 12px 12px 0 0 !important; }
+.ant-modal-title  { color: var(--text-primary) !important; }
+.ant-modal-body   { color: var(--text-secondary) !important; }
+.ant-modal-close  { color: var(--text-secondary) !important; }
 
 /* === Drawer === */
-.ant-drawer-content  { background: #1a1200 !important; }
-.ant-drawer-header   { background: #1a1200 !important; border-bottom: 1px solid #2e2000 !important; }
-.ant-drawer-title    { color: #fef9ee !important; }
+.ant-drawer-content  { background: var(--bg-surface) !important; }
+.ant-drawer-header   { background: var(--bg-surface) !important; border-bottom: 1px solid var(--border) !important; }
+.ant-drawer-title    { color: var(--text-primary) !important; }
 
 /* === Data table row numbers === */
-.row-num { color: #4b5568 !important; font-size: 10px !important; font-variant-numeric: tabular-nums; }
+.row-num { color: var(--text-muted) !important; font-size: 10px !important; font-variant-numeric: tabular-nums; }
 
 /* === Sheet wrapper === */
 .sheet-wrapper {
@@ -106,12 +104,15 @@
 
 /* === Sider trigger override === */
 .ant-layout-sider-trigger {
-  background: #120d00 !important;
-  border-top: 1px solid #2e2000 !important;
-  color: #a38b3a !important;
+  background: var(--bg-surface) !important;
+  border-top: 1px solid var(--border) !important;
+  color: var(--text-secondary) !important;
 }
 
-.ant-layout-sider-trigger:hover { background: rgba(251,191,36,0.08) !important; color: #fbbf24 !important; }
+.ant-layout-sider-trigger:hover {
+  background: var(--accent-glow) !important;
+  color: var(--accent) !important;
+}
 
 /* ═══════════════════════════════════════════════
    IVORY GOLD — Light Theme Ant Design overrides

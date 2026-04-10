@@ -333,7 +333,7 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
             {/* Show which email account is being activated */}
             {email && (
                 <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#0c0900' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12, fontWeight: 700, color: 'var(--bg-base)' }}>
                   {email[0].toUpperCase()}
                 </div>
                 <div>
@@ -367,7 +367,7 @@ function SetPasswordScreen({ updatePassword, signOut, setActiveModule, email }) 
                 <Input.Password size="large" prefix={<Lock size={14} color="var(--text-muted)" style={{ marginRight: 4 }} />} placeholder="Re-enter password" style={{ borderRadius: 9, height: 44 }} />
               </Form.Item>
               <Button type="primary" htmlType="submit" size="large" loading={saving}
-                style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)', border: 'none', fontWeight: 700, fontSize: 15, color: '#0c0900' }}>
+                style={{ width: '100%', height: 46, borderRadius: 9, background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%)', border: 'none', fontWeight: 700, fontSize: 15, color: 'var(--bg-base)' }}>
                 {saving ? 'Saving…' : 'Save Password & Continue'}
               </Button>
             </Form>
@@ -550,7 +550,7 @@ function App() {
     role: 'button', tabIndex: 0, 'aria-label': 'Profile options',
     style: { display: 'flex', alignItems: 'center', gap: 10, padding: '5px 12px 5px 7px', borderRadius: 12, cursor: 'pointer', background: 'rgba(255,255,255,0.08)', border: `1px solid ${_sharedRoleConfig.color}40` },
   },
-    React.createElement('div', { style: { width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, #fbbf24, #d97706)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px rgba(251,191,36,0.35)' } },
+    React.createElement('div', { style: { width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, var(--accent), var(--accent-dim))', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 12px var(--accent-glow)' } },
       React.createElement(_sharedRoleIcon, { size: 15, color: '#fff' })
     ),
     React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 1 } },
@@ -809,9 +809,9 @@ function App() {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveModule(null); } }}
                 style={{
                   width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-                  background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+                  background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 0 14px rgba(251,191,36,0.3)',
+                  boxShadow: '0 0 14px var(--accent-glow)',
                   cursor: 'pointer',
                 }}
               >
@@ -894,7 +894,7 @@ function App() {
                     onClick={saveAllModules}
                     disabled={!anyDirty}
                     type={anyDirty ? 'primary' : 'default'}
-                style={anyDirty ? { background: '#fbbf24', borderColor: '#d97706', color: '#0c0900', fontWeight: 700 } : {}}
+                style={anyDirty ? { background: 'var(--accent)', borderColor: 'var(--accent-dim)', color: 'var(--bg-base)', fontWeight: 700 } : {}}
                   >
                     Save
                   </Button>

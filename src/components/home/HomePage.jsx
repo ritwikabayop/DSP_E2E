@@ -325,7 +325,7 @@ export default function HomePage({
                   {canEditEnv && editingEnv === env && (
                     <Space size={4}>
                       <Button type="text" size="small" icon={<Check size={12} />}
-                        onClick={() => saveEdit(env)} style={{ color: '#fbbf24' }} />
+                        onClick={() => saveEdit(env)} style={{ color: 'var(--accent)' }} />
                       <Button type="text" size="small" icon={<X size={12} />}
                         onClick={cancelEdit} style={{ color: '#f87171' }} />
                     </Space>

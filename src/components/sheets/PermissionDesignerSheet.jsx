@@ -337,7 +337,7 @@ export default function PermissionDesignerSheet({ role: currentUserRole }) {
         onCancel={() => { setNewRoleOpen(false); setNewRoleName(''); }}
         onOk={handleAddRole}
         okText="Create"
-        okButtonProps={{ style: { background: 'var(--accent)', borderColor: 'var(--accent-dim)', color: '#0c0900' } }}
+        okButtonProps={{ style: { background: 'var(--accent)', borderColor: 'var(--accent-dim)', color: 'var(--bg-base)' } }}
         width={380}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '10px 0' }}>
