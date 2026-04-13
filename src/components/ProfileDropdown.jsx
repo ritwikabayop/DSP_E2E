@@ -94,14 +94,14 @@ export default function ProfileDropdown({
           }}>
             Your Role
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {allowedRoles.map((r) => {
               const rrc = ROLES[r] ?? ROLES.viewer;
               const isActive = role === r;
               return (
                 <div key={r} style={{
-                  flex: 1, padding: '7px 4px', borderRadius: 8,
-                  textAlign: 'center', fontSize: 11,
+                  padding: '5px 12px', borderRadius: 20,
+                  fontSize: 11, whiteSpace: 'nowrap',
                   fontWeight: isActive ? 700 : 500,
                   background: isActive ? `${rrc.color}15` : 'var(--bg-surface)',
                   border: `1px solid ${isActive ? rrc.color : 'var(--border)'}`,
