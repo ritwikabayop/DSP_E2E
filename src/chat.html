@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyISPInsight - New UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #09090b;
+      --panel: rgba(255,255,255,0.06);
+      --line: rgba(255,255,255,0.09);
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --accent: #f59e0b;
+      --accent-2: #fb7185;
+      --card: rgba(15, 15, 20, 0.92);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(245, 158, 11, 0.16), transparent 24%),
+        radial-gradient(circle at 90% 14%, rgba(244, 63, 94, 0.12), transparent 20%),
+        radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.12), transparent 24%),
+        linear-gradient(135deg, #09090b 0%, #111114 48%, #0b0b0e 100%);
+      overflow: hidden;
+    }
+
+    .mesh::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black, transparent 85%);
+      pointer-events: none;
+    }
+
+    .blob, .blob-2, .blob-3 {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(50px);
+      opacity: 0.6;
+      animation: drift 10s ease-in-out infinite;
+    }
+
+    .blob { width: 280px; height: 280px; left: 7%; top: 10%; background: rgba(245, 158, 11, 0.18); }
+    .blob-2 { width: 220px; height: 220px; right: 12%; top: 16%; background: rgba(244, 63, 94, 0.14); animation-delay: -2s; }
+    .blob-3 { width: 240px; height: 240px; right: 24%; bottom: 10%; background: rgba(250, 204, 21, 0.12); animation-delay: -4s; }
+
+    @keyframes drift {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(10px,-16px,0) scale(1.06); }
+    }
+
+    .frame {
+      position: relative;
+      width: min(1260px, calc(100vw - 56px));
+      min-height: min(860px, calc(100vh - 56px));
+      margin: 28px auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+      border-radius: 32px;
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .surface {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .fade-up { animation: fadeUp .8s cubic-bezier(.2,.8,.2,1) both; }
+    .fade-up.delay-1 { animation-delay: .08s; }
+    .fade-up.delay-2 { animation-delay: .16s; }
+    .fade-up.delay-3 { animation-delay: .24s; }
+    .fade-up.delay-4 { animation-delay: .32s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .metric::after {
+      content: "";
+      position: absolute;
+      inset: auto 12px 0 12px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,158,11,0.35), transparent);
+    }
+
+    .input-shell {
+      position: relative;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.04);
+      transition: .22s ease;
+    }
+
+    .input-shell:focus-within {
+      border-color: rgba(245,158,11,0.5);
+      box-shadow: 0 0 0 4px rgba(245,158,11,0.12);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .input-shell input {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      color: #fff;
+      padding: 26px 16px 12px 16px;
+      font-size: 15px;
+    }
+
+    .input-shell label {
+      position: absolute;
+      left: 16px;
+      top: 15px;
+      color: #a1a1aa;
+      font-size: 14px;
+      pointer-events: none;
+      transition: .18s ease;
+    }
+
+    .input-shell input:focus + label,
+    .input-shell input:not(:placeholder-shown) + label {
+      transform: translateY(-7px) scale(.82);
+      color: #fbbf24;
+    }
+
+    .tab-wrap {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 6px;
+    }
+
+    .slider {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: calc(50% - 9px);
+      height: calc(100% - 12px);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(245,158,11,0.22), rgba(251,113,133,0.16));
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: transform .22s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .pill-live {
+      box-shadow: 0 0 0 0 rgba(245,158,11,.4);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(245,158,11,.35); }
+      70% { box-shadow: 0 0 0 14px rgba(245,158,11,0); }
+      100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+    }
+
+    .button-glow {
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 55%, #fb7185 100%);
+      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.22);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .button-glow:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(245, 158, 11, 0.28);
+    }
+
+    .tiny-chart {
+      height: 44px;
+      background:
+        linear-gradient(180deg, rgba(245,158,11,0.18), transparent),
+        radial-gradient(circle at 10% 60%, rgba(245,158,11,0.85) 0 2px, transparent 3px),
+        radial-gradient(circle at 34% 42%, rgba(245,158,11,0.8) 0 2px, transparent 3px),
+        radial-gradient(circle at 59% 50%, rgba(245,158,11,0.8) 0 2px, transparent 3px),
+        radial-gradient(circle at 80% 30%, rgba(245,158,11,0.8) 0 2px, transparent 3px);
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .tiny-chart::after {
+      content: "";
+      position: absolute;
+      left: 8%; right: 12%; top: 50%; height: 2px;
+      background: linear-gradient(90deg, #f59e0b 0%, #fb7185 100%);
+      transform: skewY(-16deg);
+      transform-origin: left center;
+      border-radius: 9999px;
+      opacity: .9;
+    }
+
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .frame {
+        width: calc(100vw - 24px);
+        min-height: auto;
+        margin: 12px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob"></div>
+  <div class="blob-2"></div>
+  <div class="blob-3"></div>
+
+  <main class="frame mesh">
+    <div class="grid lg:grid-cols-[1.2fr_0.82fr] min-h-[860px]">
+      <section class="relative p-7 lg:p-9">
+        <div class="flex items-center justify-between fade-up">
+          <div class="flex items-center gap-4">
+            <div class="surface h-14 w-14 rounded-2xl grid place-items-center text-xl">◢</div>
+            <div>
+              <div class="text-3xl font-semibold tracking-tight"><span class="text-amber-400">MyISP</span>Insight</div>
+              <div class="text-sm text-zinc-400">StatusPlatform</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="pill-live surface rounded-full px-4 py-2 text-xs uppercase tracking-[0.24em] text-amber-300">Live</div>
+            <button class="surface h-12 w-12 rounded-2xl text-zinc-300">☼</button>
+          </div>
+        </div>
+
+        <div class="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] items-start">
+          <div class="fade-up delay-1">
+            <div class="surface rounded-[28px] p-6 lg:p-7 overflow-hidden relative">
+              <div class="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-amber-400/10 blur-3xl"></div>
+              <div class="max-w-xl relative z-10">
+                <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs uppercase tracking-[0.24em] text-zinc-300">
+                  Quality Operations Intelligence
+                </div>
+                <h1 class="mt-5 text-5xl lg:text-6xl font-semibold leading-[1.02] tracking-tight">
+                  Command your
+                  <span class="bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400 bg-clip-text text-transparent">testing ecosystem</span>
+                  from one intelligent workspace.
+                </h1>
+                <p class="mt-5 max-w-lg text-base leading-7 text-zinc-400">
+                  Centralized access for DSP, SSA, attendance, execution tracking, and live coverage insights with enterprise-grade controls.
+                </p>
+
+                <div class="mt-7 flex flex-wrap gap-3 text-sm text-zinc-300">
+                  <span class="surface rounded-full px-4 py-2">Role access</span>
+                  <span class="surface rounded-full px-4 py-2">Realtime sync</span>
+                  <span class="surface rounded-full px-4 py-2">Coverage analytics</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-5 fade-up delay-2">
+            <div class="surface metric relative rounded-[24px] p-5">
+              <div class="text-xs uppercase tracking-[0.26em] text-zinc-500">System health</div>
+              <div class="mt-3 flex items-end justify-between gap-4">
+                <div>
+                  <div class="text-4xl font-semibold">99.92%</div>
+                  <div class="mt-1 text-sm text-zinc-400">Service uptime</div>
+                </div>
+                <div class="rounded-2xl bg-emerald-500/12 px-3 py-2 text-sm text-emerald-300">Stable</div>
+              </div>
+              <div class="mt-5 tiny-chart"></div>
+            </div>
+
+            <div class="surface rounded-[24px] p-5">
+              <div class="text-xs uppercase tracking-[0.26em] text-zinc-500">Signals</div>
+              <div class="mt-4 space-y-4">
+                <div class="flex items-center justify-between rounded-2xl bg-white/4 px-4 py-3">
+                  <div>
+                    <div class="font-medium">Team sync</div>
+                    <div class="text-sm text-zinc-500">Live attendance feed</div>
+                  </div>
+                  <div class="text-amber-300">●</div>
+                </div>
+                <div class="flex items-center justify-between rounded-2xl bg-white/4 px-4 py-3">
+                  <div>
+                    <div class="font-medium">Coverage tracker</div>
+                    <div class="text-sm text-zinc-500">Manual and automation</div>
+                  </div>
+                  <div class="text-amber-300">↗</div>
+                </div>
+                <div class="flex items-center justify-between rounded-2xl bg-white/4 px-4 py-3">
+                  <div>
+                    <div class="font-medium">Access control</div>
+                    <div class="text-sm text-zinc-500">Admin, TL, Tester, Viewer</div>
+                  </div>
+                  <div class="text-amber-300">✓</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-5 fade-up delay-3">
+          <div class="surface rounded-[24px] p-5">
+            <div class="text-sm text-zinc-500">Environment</div>
+            <div class="mt-2 text-2xl font-semibold">Production</div>
+            <div class="mt-1 text-sm text-zinc-400">Secure workspace enabled</div>
+          </div>
+          <div class="surface rounded-[24px] p-5">
+            <div class="text-sm text-zinc-500">Auth methods</div>
+            <div class="mt-2 text-2xl font-semibold">Password + Link</div>
+            <div class="mt-1 text-sm text-zinc-400">Flexible enterprise login</div>
+          </div>
+          <div class="surface rounded-[24px] p-5">
+            <div class="text-sm text-zinc-500">Data layer</div>
+            <div class="mt-2 text-2xl font-semibold">Supabase</div>
+            <div class="mt-1 text-sm text-zinc-400">Realtime event and session flows</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="relative p-7 lg:p-9 lg:border-l border-white/8 bg-black/20">
+        <div class="surface rounded-[30px] p-6 lg:p-7 max-w-md mx-auto fade-up delay-4">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="text-xs uppercase tracking-[0.28em] text-zinc-500">Secure portal</div>
+              <h2 class="mt-2 text-3xl font-semibold tracking-tight">Access workspace</h2>
+              <p class="mt-2 text-sm leading-6 text-zinc-400">Sign in to continue to dashboards, testing insights, and live operational data.</p>
+            </div>
+            <div class="rounded-2xl bg-emerald-500/12 px-3 py-2 text-xs font-medium text-emerald-300">Verified</div>
+          </div>
+
+          <div class="mt-6 tab-wrap">
+            <div id="slider" class="slider"></div>
+            <button id="tabPassword" class="relative z-10 rounded-[14px] px-4 py-3 text-sm font-medium text-white">Password</button>
+            <button id="tabMagic" class="relative z-10 rounded-[14px] px-4 py-3 text-sm font-medium text-zinc-500">Magic link</button>
+          </div>
+          <p id="modeText" class="mt-3 text-sm text-zinc-500">Use your email and password for direct sign in.</p>
+
+          <form class="mt-7 space-y-4">
+            <div class="input-shell">
+              <input id="email" type="email" placeholder=" " />
+              <label for="email">Work email address</label>
+            </div>
+
+            <div class="input-shell" id="passwordGroup">
+              <input id="password" type="password" placeholder=" " />
+              <label for="password">Password</label>
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+              <label class="flex items-center gap-2 text-zinc-400">
+                <input type="checkbox" class="rounded border-zinc-700 bg-transparent" />
+                Remember this device
+              </label>
+              <a href="#" class="text-amber-300 no-underline">Forgot password?</a>
+            </div>
+
+            <button class="button-glow mt-2 w-full rounded-[18px] px-5 py-4 text-base font-semibold text-white border-0">
+              Sign in
+            </button>
+          </form>
+
+          <div class="my-6 flex items-center gap-4 text-xs uppercase tracking-[0.28em] text-zinc-600">
+            <div class="h-px flex-1 bg-white/8"></div>
+            or continue with
+            <div class="h-px flex-1 bg-white/8"></div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button class="surface rounded-[18px] px-4 py-3 text-sm font-medium text-zinc-200">Microsoft</button>
+            <button class="surface rounded-[18px] px-4 py-3 text-sm font-medium text-zinc-200">Google</button>
+          </div>
+
+          <div class="mt-6 rounded-[24px] border border-amber-400/12 bg-amber-400/6 p-4">
+            <div class="flex gap-3">
+              <div class="text-lg">🔒</div>
+              <div>
+                <div class="font-medium">Enterprise-grade authentication</div>
+                <div class="mt-1 text-sm leading-6 text-zinc-400">Protected sessions, controlled access roles, and secure recovery support for your platform users.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex items-center justify-between rounded-[20px] bg-white/4 px-4 py-3 text-sm">
+            <div>
+              <div class="text-zinc-300">Current environment</div>
+              <div class="mt-1 text-zinc-500">Prod • secured by Supabase</div>
+            </div>
+            <div class="rounded-full bg-white/6 px-3 py-1 text-zinc-300">Active</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const slider = document.getElementById('slider');
+    const tabPassword = document.getElementById('tabPassword');
+    const tabMagic = document.getElementById('tabMagic');
+    const passwordGroup = document.getElementById('passwordGroup');
+    const modeText = document.getElementById('modeText');
+
+    function setMode(mode) {
+      const isMagic = mode === 'magic';
+      slider.style.transform = isMagic ? 'translateX(100%)' : 'translateX(0%)';
+      tabPassword.className = 'relative z-10 rounded-[14px] px-4 py-3 text-sm font-medium ' + (isMagic ? 'text-zinc-500' : 'text-white');
+      tabMagic.className = 'relative z-10 rounded-[14px] px-4 py-3 text-sm font-medium ' + (isMagic ? 'text-white' : 'text-zinc-500');
+      passwordGroup.style.display = isMagic ? 'none' : 'block';
+      modeText.textContent = isMagic
+        ? 'Get a secure sign-in link delivered to your inbox.'
+        : 'Use your email and password for direct sign in.';
+    }
+
+    tabPassword.addEventListener('click', () => setMode('password'));
+    tabMagic.addEventListener('click', () => setMode('magic'));
+  </script>
+</body>
+</html>
