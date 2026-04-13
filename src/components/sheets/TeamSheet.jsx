@@ -28,7 +28,7 @@ export default function TeamSheet({
   const addRow = () => {
     setTeamData((prev) => [
       ...prev,
-      { key: nextKey(teamData), name: '', track: '', modules: '', env: '', lastEditedBy: currentUser || 'Unknown', lastEditedAt: new Date().toISOString() },
+      { key: nextKey(teamData), id: crypto.randomUUID(), name: '', track: '', modules: '', env: '', lastEditedBy: currentUser || 'Unknown', lastEditedAt: new Date().toISOString() },
     ]);
     message.success('New team member added');
   };

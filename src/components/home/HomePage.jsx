@@ -59,7 +59,7 @@ export default function HomePage({
     todayStart.setHours(0, 0, 0, 0);
     fetchActivityLogs({ dateFrom: todayStart.toISOString(), monthKey: selectedMonth })
       .then((logs) => setRecentLogs(logs.slice(0, 5)))
-      .catch(() => {})
+      .catch((err) => console.warn('[HomePage] Failed to fetch activity logs:', err))
       .finally(() => setLogsLoading(false));
   }, [selectedMonth, canViewLogs]);
 

@@ -28,13 +28,15 @@ export function useAuth() {
     try {
       const p = await getUserProfile(authUser.id);
       setProfile(p);
-    } catch {
+    } catch (err) {
       // Profile may not exist yet (first sign-in before admin creates it).
       // Create a default viewer profile automatically.
+      console.warn('[useAuth] Profile fetch failed, creating default viewer profile:', err);
       try {
         await createUserProfile({ id: authUser.id, email: authUser.email, role: 'viewer' });
         setProfile({ id: authUser.id, email: authUser.email, display_name: '', role: 'viewer' });
-      } catch {
+      } catch (createErr) {
+        console.warn('[useAuth] Could not create profile, falling back to in-memory viewer:', createErr);
         setProfile({ id: authUser.id, email: authUser.email, display_name: '', role: 'viewer' });
       }
     }

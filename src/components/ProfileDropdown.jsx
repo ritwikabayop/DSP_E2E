@@ -228,7 +228,7 @@ export default function ProfileDropdown({
     </div>
   );
 
-  /* ─── Trigger button ─── */
+  /* ─── Trigger button — orbital profile pill ─── */
   const trigger = (
     <div
       role="button"
@@ -238,26 +238,38 @@ export default function ProfileDropdown({
       aria-label="Profile options"
       style={{
         display: 'flex', alignItems: 'center', gap: 8,
-        padding: '4px 10px 4px 5px', borderRadius: 12, cursor: 'pointer',
+        padding: '3px 12px 3px 3px', borderRadius: 50, cursor: 'pointer',
         background: 'rgba(255,255,255,0.06)',
         border: `1px solid ${rc.color}40`,
-        transition: 'background 0.15s',
+        transition: 'background 0.15s, border-color 0.15s',
+        boxShadow: `0 2px 12px ${rc.color}22`,
       }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
     >
-      {/* Monogram circle */}
-      <div style={{
-        width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
-        background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: '0 0 10px var(--accent-glow)',
-        color: 'var(--bg-base)',
-        fontSize: 13, fontWeight: 800,
-        userSelect: 'none',
-      }}>
-        {initial}
+      {/* Orbital spinner + monogram */}
+      <div style={{ position: 'relative', width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          borderRadius: '50%',
+          border: '2px solid transparent',
+          borderTop: `2px solid ${rc.color}`,
+          borderRight: `2px solid ${rc.color}`,
+          animation: 'ribbon-orb-spin 3s linear infinite',
+        }} />
+        <div style={{
+          width: 22, height: 22, borderRadius: '50%', zIndex: 2,
+          background: `linear-gradient(135deg, ${rc.color}cc 0%, ${rc.color} 100%)`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#fff', fontSize: 11, fontWeight: 800,
+          boxShadow: `0 1px 6px ${rc.color}55`,
+          userSelect: 'none',
+        }}>
+          {initial}
+        </div>
       </div>
 
-      {/* Name + role line */}
+      {/* Name + role label */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         <div style={{
           color: 'var(--text-primary)', fontSize: 12, fontWeight: 600, lineHeight: 1.3,
@@ -266,10 +278,10 @@ export default function ProfileDropdown({
           {displayName || 'User'}
         </div>
         <span style={{
-          display: 'inline-block', fontSize: 10, fontWeight: 700, lineHeight: '16px',
-          padding: '0 6px', borderRadius: 5,
-          color: rc.color, background: `${rc.color}1a`, border: `1px solid ${rc.color}40`,
-          letterSpacing: 0.3,
+          display: 'inline-block', fontSize: 9, fontWeight: 700, lineHeight: '15px',
+          padding: '0 6px', borderRadius: 20,
+          color: rc.color, background: `${rc.color}18`, border: `1px solid ${rc.color}38`,
+          letterSpacing: 0.4, textTransform: 'uppercase',
         }}>
           {rc.label}{viewAsRole ? ' (preview)' : ''}
         </span>
