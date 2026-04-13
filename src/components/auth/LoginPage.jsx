@@ -153,7 +153,7 @@ export default function LoginPage({ onSignIn }) {
           {/* Logo */}
           <div style={{ position:'relative', zIndex:1 }}>
             <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:40 }}>
-              <img src="/MyISPInsightStatusPlatform/logo.png" alt="MyISP Insight Status Platform logo" style={{ height: 52, width: 'auto', objectFit: 'contain' }} />
+              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="MyISP Insight Status Platform logo" style={{ height: 52, width: 'auto', objectFit: 'contain' }} />
             </div>
 
             <div style={{ marginBottom:10 }}>

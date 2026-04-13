@@ -810,7 +810,7 @@ function App() {
                   background: '#fff',
                 }}
               >
-                <img src="/MyISPInsightStatusPlatform/logo.png" alt="MyISP logo" style={{ width: 34, height: 34, objectFit: 'cover' }} />
+                <img src={`${import.meta.env.BASE_URL}logo.png`} alt="MyISP logo" style={{ width: 34, height: 34, objectFit: 'contain' }} />
               </div>
             </Tooltip>
             {!collapsed && (
