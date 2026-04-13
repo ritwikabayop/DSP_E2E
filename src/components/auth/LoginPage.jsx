@@ -153,13 +153,7 @@ export default function LoginPage({ onSignIn }) {
           {/* Logo */}
           <div style={{ position:'relative', zIndex:1 }}>
             <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:40 }}>
-              <div style={{ width:44, height:44, borderRadius:13, background:'linear-gradient(135deg,#fbbf24,#d97706)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 28px rgba(251,191,36,0.4), 0 0 0 1px rgba(251,191,36,0.25)' }}>
-                <LayoutDashboard size={22} color="#fff" />
-              </div>
-              <div>
-                <div style={{ color:'var(--text-primary)', fontWeight:800, fontSize:18, lineHeight:1.2 }}>MyISPInsightStatusPlatform</div>
-                <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:500 }}>Insight Status Platform</div>
-              </div>
+              <img src="/MyISPInsightStatusPlatform/logo.png" alt="MyISP Insight Status Platform logo" style={{ height: 52, width: 'auto', objectFit: 'contain' }} />
             </div>
 
             <div style={{ marginBottom:10 }}>

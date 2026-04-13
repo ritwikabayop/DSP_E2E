@@ -133,15 +133,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         gap: 12,
       }}>
         {/* Logo */}
-        <div style={{
-          width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-          background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 14px var(--accent-glow)',
-        }}>
-          <LayoutDashboard size={17} color="#fff" />
-        </div>
-        <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14 }}>MyISPInsightStatusPlatform</span>
+        <img src="/MyISPInsightStatusPlatform/logo.png" alt="MyISP logo" style={{ height: 36, width: 'auto', flexShrink: 0, objectFit: 'contain' }} />
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
           {/* Profile dropdown — self-contained, handles its own open state */}

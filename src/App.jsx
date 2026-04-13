@@ -804,13 +804,13 @@ function App() {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveModule(null); } }}
                 style={{
                   width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-                  background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%)',
+                  overflow: 'hidden',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 0 14px var(--accent-glow)',
                   cursor: 'pointer',
+                  background: '#fff',
                 }}
               >
-                <LayoutDashboard size={18} color="#fff" />
+                <img src="/MyISPInsightStatusPlatform/logo.png" alt="MyISP logo" style={{ width: 34, height: 34, objectFit: 'cover' }} />
               </div>
             </Tooltip>
             {!collapsed && (
