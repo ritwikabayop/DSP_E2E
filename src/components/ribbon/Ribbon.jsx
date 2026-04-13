@@ -1,6 +1,6 @@
 import { Select, Input, Button, Space, Tooltip, Tag, Typography, Segmented } from 'antd';
 import {
-  LayoutDashboard, Calendar, User, Save, Download, Search, Copy,
+  LayoutDashboard, Calendar, Save, Download, Search, Copy,
   PenTool, Eye, Edit3, AlertTriangle, LogOut, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { ROLES, MONTH_OPTIONS } from '../../utils/constants.js';
@@ -90,28 +90,57 @@ export default function Ribbon({
             })()}
           </div>
 
-          {/* Logged-in user badge (read-only) */}
-          <Tag
-            icon={<User size={11} />}
-            style={{
-              background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.3)',
-              color: '#fff', fontWeight: 600, fontSize: 12, maxWidth: 200,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}
-          >
-            {displayName}
-          </Tag>
-
-          {/* Role badge */}
-          <Tag
-            icon={<RoleIcon size={11} />}
-            style={{
-              background: roleConfig.bg, color: roleConfig.color,
-              border: `1px solid ${roleConfig.border}`, fontWeight: 700, fontSize: 12,
-            }}
-          >
-            {roleConfig.label}
-          </Tag>
+          {/* Orbital profile pill */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            background: 'rgba(255,255,255,0.07)',
+            backdropFilter: 'blur(10px)',
+            padding: '4px 14px 4px 4px',
+            borderRadius: 50,
+            border: '1px solid rgba(255,255,255,0.12)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          }}>
+            {/* Orbital spinner + monogram */}
+            <div style={{ position: 'relative', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{
+                position: 'absolute', inset: 0,
+                borderRadius: '50%',
+                border: '2px solid transparent',
+                borderTop: `2px solid ${roleConfig.color}`,
+                borderRight: `2px solid ${roleConfig.color}`,
+                animation: 'ribbon-orb-spin 3s linear infinite',
+              }} />
+              <div style={{
+                width: 26, height: 26,
+                background: `linear-gradient(135deg, ${roleConfig.color}cc 0%, ${roleConfig.color} 100%)`,
+                borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff',
+                fontSize: 13, fontWeight: 800,
+                boxShadow: `0 2px 8px ${roleConfig.color}55`,
+                userSelect: 'none',
+                zIndex: 2,
+              }}>
+                {(displayName || '?')[0].toUpperCase()}
+              </div>
+            </div>
+            {/* Name + role */}
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: 0.3, maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {displayName}
+              </span>
+              <span style={{
+                fontSize: 9, fontWeight: 700, color: roleConfig.color,
+                background: `${roleConfig.color}18`,
+                border: `1px solid ${roleConfig.color}38`,
+                padding: '1px 6px', borderRadius: 20,
+                textTransform: 'uppercase', letterSpacing: 0.5,
+                width: 'fit-content', marginTop: 2,
+              }}>
+                {roleConfig.label}
+              </span>
+            </div>
+          </div>
 
           {/* Edit / View toggle */}
           {role !== 'viewer' && (

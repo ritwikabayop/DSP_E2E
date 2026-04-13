@@ -1043,6 +1043,10 @@ body {
   0%,100% { text-shadow: 0 0 6px rgba(251,191,36,0.25); }
   50%      { text-shadow: 0 0 18px rgba(251,191,36,0.7), 0 0 32px rgba(251,191,36,0.3); }
 }
+@keyframes ribbon-orb-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
 .sidebar-logo-icon   { animation: logoGlow 3s ease-in-out infinite; }
 .glow-btn            { animation: glowPulse 2.5s ease-in-out infinite; }
