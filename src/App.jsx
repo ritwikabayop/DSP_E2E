@@ -17,6 +17,7 @@ import { useMonthData } from './hooks/useMonthData.js';
 // Components
 import LoginPage        from './components/auth/LoginPage.jsx';
 import ModulePicker     from './components/ModulePicker.jsx';
+import AppLogo          from './components/AppLogo.jsx';
 import KTSessionsPage   from './components/KTSessionsPage.jsx';
 import HomePage         from './components/home/HomePage.jsx';
 import DSPSheet         from './components/sheets/DSPSheet.jsx';
@@ -807,10 +808,9 @@ function App() {
                   overflow: 'hidden',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer',
-                  background: '#fff',
                 }}
               >
-                <img src={`${import.meta.env.BASE_URL}logo.png`} alt="MyISP logo" style={{ width: 34, height: 34, objectFit: 'contain' }} />
+                <AppLogo size={28} />
               </div>
             </Tooltip>
             {!collapsed && (

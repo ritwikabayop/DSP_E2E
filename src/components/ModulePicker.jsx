@@ -6,6 +6,7 @@ import {
   ShieldCheck, KeyRound,
 } from 'lucide-react';
 import { ROLES } from '../utils/constants.js';
+import AppLogo from './AppLogo.jsx';
 
 const modules = [
   {
@@ -133,8 +134,7 @@ export default function ModulePicker({ user, profile, role, actualRole, viewAsRo
         gap: 12,
       }}>
         {/* Logo */}
-        <img src={`${import.meta.env.BASE_URL}logo.png`} alt="MyISP Insight Status Platform" style={{ height: 32, width: 'auto', flexShrink: 0, objectFit: 'contain' }} />
-        <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14 }}>MyISPInsightStatusPlatform</span>
+        <AppLogo size={30} showName />
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
           {/* Profile dropdown — self-contained, handles its own open state */}

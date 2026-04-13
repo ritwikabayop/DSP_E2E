@@ -6,6 +6,7 @@ import {
   FileSpreadsheet, KeyRound, Activity, Users, BarChart2,
 } from 'lucide-react';
 import { supabase } from '../../services/supabase.js';
+import AppLogo from '../AppLogo.jsx';
 
 /* ─── Inline styles shared across the component ─── */
 const S = {
@@ -153,7 +154,7 @@ export default function LoginPage({ onSignIn }) {
           {/* Logo */}
           <div style={{ position:'relative', zIndex:1 }}>
             <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:40 }}>
-              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="MyISP Insight Status Platform logo" style={{ height: 52, width: 'auto', objectFit: 'contain' }} />
+              <AppLogo size={52} showName nameColor="#fff" />
             </div>
 
             <div style={{ marginBottom:10 }}>
